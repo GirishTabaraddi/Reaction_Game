@@ -1,0 +1,1137 @@
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"glower.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.RGB__Glower,"ax",%progbits
+  20              		.align	2
+  21              		.global	RGB__Glower
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	RGB__Glower, %function
+  25              	RGB__Glower:
+  26              	.LFB110:
+  27              		.file 1 "source\\bsw\\glower.c"
+   1:source\bsw/glower.c **** /**
+   2:source\bsw/glower.c **** * \file <filename>
+   3:source\bsw/glower.c **** * \author <author-name>
+   4:source\bsw/glower.c **** * \date <date>
+   5:source\bsw/glower.c **** *
+   6:source\bsw/glower.c **** * \brief <Symbolic File name>
+   7:source\bsw/glower.c **** *
+   8:source\bsw/glower.c **** * \copyright Copyright ©2016
+   9:source\bsw/glower.c **** * Department of electrical engineering and information technology, Hochschule Darmstadt - Universit
+  10:source\bsw/glower.c **** * Permission to use, copy, modify, and distribute this software and its documentation for education
+  11:source\bsw/glower.c **** * (unless permitted by h_da) and official h_da projects, is hereby granted for enrolled students of
+  12:source\bsw/glower.c **** * this paragraph and the following paragraph appear in all copies, modifications, and distributions
+  13:source\bsw/glower.c **** * Contact Prof.Dr.-Ing. Peter Fromm, peter.fromm@h-da.de, Birkenweg 8 64295 Darmstadt - GERMANY for
+  14:source\bsw/glower.c **** *
+  15:source\bsw/glower.c **** * \warning This software is a PROTOTYPE version and is not designed or intended for use in producti
+  16:source\bsw/glower.c **** * The user represents and warrants that it will NOT use or redistribute the Software for such purpo
+  17:source\bsw/glower.c **** * This prototype is for research purposes only. This software is provided "AS IS," without a warran
+  18:source\bsw/glower.c **** */
+  19:source\bsw/glower.c **** 
+  20:source\bsw/glower.c **** /*****************************************************************************/
+  21:source\bsw/glower.c **** /* Include files                                                             */
+  22:source\bsw/glower.c **** /*****************************************************************************/
+  23:source\bsw/glower.c **** #include "glower.h"
+  24:source\bsw/glower.c **** #include "project.h"
+  25:source\bsw/glower.c **** 
+  26:source\bsw/glower.c **** #include "glower.h"
+  27:source\bsw/glower.c **** /*****************************************************************************/
+  28:source\bsw/glower.c **** /* Local pre-processor symbols/macros ('#define')                            */
+  29:source\bsw/glower.c **** /*****************************************************************************/
+  30:source\bsw/glower.c **** 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 2
+
+
+  31:source\bsw/glower.c **** /*****************************************************************************/
+  32:source\bsw/glower.c **** /* Global variable definitions (declared in header file with 'extern')       */
+  33:source\bsw/glower.c **** /*****************************************************************************/
+  34:source\bsw/glower.c **** const RGB__Glow_t RGB_glowtable_1[9] = {
+  35:source\bsw/glower.c **** //Red   Green   Blue    TimeInMS
+  36:source\bsw/glower.c **** { 255,  0,      0,      500},
+  37:source\bsw/glower.c **** { 0,    255,    0,      500},
+  38:source\bsw/glower.c **** { 0,    0,      255,    500},
+  39:source\bsw/glower.c **** { 0,    0,      0,      100},
+  40:source\bsw/glower.c **** { 255,  255,    255,    100},
+  41:source\bsw/glower.c **** { 0,    0,      0,      100},
+  42:source\bsw/glower.c **** { 255,  255,    255,    100},
+  43:source\bsw/glower.c **** { 0,    0,      0,      100},
+  44:source\bsw/glower.c **** { 255,  255,    255,    100}
+  45:source\bsw/glower.c **** };
+  46:source\bsw/glower.c **** 
+  47:source\bsw/glower.c **** /*****************************************************************************/
+  48:source\bsw/glower.c **** /* Function implementation - global ('extern') and local ('static')          */
+  49:source\bsw/glower.c **** /*****************************************************************************/
+  50:source\bsw/glower.c **** void RGB__Glower()
+  51:source\bsw/glower.c **** {   
+  28              		.loc 1 51 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 38B5     		push	{r3, r4, r5, lr}
+  33              		.cfi_def_cfa_offset 16
+  34              		.cfi_offset 3, -16
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  52:source\bsw/glower.c ****     static uint16_t i = 0;
+  53:source\bsw/glower.c ****     RGB_Red_Write(RGB_glowtable_1[i].RGB__RedValue);
+  38              		.loc 1 53 0
+  39 0002 194D     		ldr	r5, .L5
+  40 0004 194C     		ldr	r4, .L5+4
+  41 0006 2388     		ldrh	r3, [r4]
+  42 0008 03EB4303 		add	r3, r3, r3, lsl #1
+  43 000c 5A00     		lsls	r2, r3, #1
+  44 000e A85C     		ldrb	r0, [r5, r2]	@ zero_extendqisi2
+  45 0010 FFF7FEFF 		bl	RGB_Red_Write
+  46              	.LVL0:
+  54:source\bsw/glower.c ****     RGB_Green_Write(RGB_glowtable_1[i].RGB__GreenValue);
+  47              		.loc 1 54 0
+  48 0014 2388     		ldrh	r3, [r4]
+  49 0016 03EB4303 		add	r3, r3, r3, lsl #1
+  50 001a 5A00     		lsls	r2, r3, #1
+  51 001c 2A44     		add	r2, r2, r5
+  52 001e 5078     		ldrb	r0, [r2, #1]	@ zero_extendqisi2
+  53 0020 FFF7FEFF 		bl	RGB_Green_Write
+  54              	.LVL1:
+  55:source\bsw/glower.c ****     RGB_Blue_Write(RGB_glowtable_1[i].RGB__BlueValue);
+  55              		.loc 1 55 0
+  56 0024 2388     		ldrh	r3, [r4]
+  57 0026 03EB4303 		add	r3, r3, r3, lsl #1
+  58 002a 5A00     		lsls	r2, r3, #1
+  59 002c 1544     		add	r5, r5, r2
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 3
+
+
+  60 002e A878     		ldrb	r0, [r5, #2]	@ zero_extendqisi2
+  61 0030 FFF7FEFF 		bl	RGB_Blue_Write
+  62              	.LVL2:
+  56:source\bsw/glower.c **** 
+  57:source\bsw/glower.c ****     if( i == 8)
+  63              		.loc 1 57 0
+  64 0034 2388     		ldrh	r3, [r4]
+  65 0036 082B     		cmp	r3, #8
+  66 0038 02D1     		bne	.L2
+  58:source\bsw/glower.c ****     {
+  59:source\bsw/glower.c ****         i = 0;
+  67              		.loc 1 59 0
+  68 003a 0022     		movs	r2, #0
+  69 003c 2280     		strh	r2, [r4]	@ movhi
+  70 003e 02E0     		b	.L3
+  71              	.L2:
+  60:source\bsw/glower.c ****     }
+  61:source\bsw/glower.c ****     else
+  62:source\bsw/glower.c ****     {
+  63:source\bsw/glower.c ****         i++;
+  72              		.loc 1 63 0
+  73 0040 0133     		adds	r3, r3, #1
+  74 0042 0A4A     		ldr	r2, .L5+4
+  75 0044 1380     		strh	r3, [r2]	@ movhi
+  76              	.L3:
+  64:source\bsw/glower.c ****     }
+  65:source\bsw/glower.c ****     CancelAlarm(alarm_glower);
+  77              		.loc 1 65 0
+  78 0046 0420     		movs	r0, #4
+  79 0048 FFF7FEFF 		bl	EE_oo_CancelAlarm
+  80              	.LVL3:
+  66:source\bsw/glower.c ****     SetRelAlarm(alarm_glower, RGB_glowtable_1[i].RGB__Delay, 0);
+  81              		.loc 1 66 0
+  82 004c 074B     		ldr	r3, .L5+4
+  83 004e 1B88     		ldrh	r3, [r3]
+  84 0050 03EB4303 		add	r3, r3, r3, lsl #1
+  85 0054 5A00     		lsls	r2, r3, #1
+  86 0056 044B     		ldr	r3, .L5
+  87 0058 1344     		add	r3, r3, r2
+  88 005a 0022     		movs	r2, #0
+  89 005c 9988     		ldrh	r1, [r3, #4]
+  90 005e 0420     		movs	r0, #4
+  91 0060 FFF7FEFF 		bl	EE_oo_SetRelAlarm
+  92              	.LVL4:
+  93 0064 38BD     		pop	{r3, r4, r5, pc}
+  94              	.L6:
+  95 0066 00BF     		.align	2
+  96              	.L5:
+  97 0068 00000000 		.word	.LANCHOR0
+  98 006c 00000000 		.word	.LANCHOR1
+  99              		.cfi_endproc
+ 100              	.LFE110:
+ 101              		.size	RGB__Glower, .-RGB__Glower
+ 102              		.global	RGB_glowtable_1
+ 103              		.section	.rodata
+ 104              		.align	2
+ 105              		.set	.LANCHOR0,. + 0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 4
+
+
+ 106              		.type	RGB_glowtable_1, %object
+ 107              		.size	RGB_glowtable_1, 54
+ 108              	RGB_glowtable_1:
+ 109 0000 FF       		.byte	-1
+ 110 0001 00       		.byte	0
+ 111 0002 00       		.byte	0
+ 112 0003 00       		.space	1
+ 113 0004 F401     		.short	500
+ 114 0006 00       		.byte	0
+ 115 0007 FF       		.byte	-1
+ 116 0008 00       		.byte	0
+ 117 0009 00       		.space	1
+ 118 000a F401     		.short	500
+ 119 000c 00       		.byte	0
+ 120 000d 00       		.byte	0
+ 121 000e FF       		.byte	-1
+ 122 000f 00       		.space	1
+ 123 0010 F401     		.short	500
+ 124 0012 00       		.byte	0
+ 125 0013 00       		.byte	0
+ 126 0014 00       		.byte	0
+ 127 0015 00       		.space	1
+ 128 0016 6400     		.short	100
+ 129 0018 FF       		.byte	-1
+ 130 0019 FF       		.byte	-1
+ 131 001a FF       		.byte	-1
+ 132 001b 00       		.space	1
+ 133 001c 6400     		.short	100
+ 134 001e 00       		.byte	0
+ 135 001f 00       		.byte	0
+ 136 0020 00       		.byte	0
+ 137 0021 00       		.space	1
+ 138 0022 6400     		.short	100
+ 139 0024 FF       		.byte	-1
+ 140 0025 FF       		.byte	-1
+ 141 0026 FF       		.byte	-1
+ 142 0027 00       		.space	1
+ 143 0028 6400     		.short	100
+ 144 002a 00       		.byte	0
+ 145 002b 00       		.byte	0
+ 146 002c 00       		.byte	0
+ 147 002d 00       		.space	1
+ 148 002e 6400     		.short	100
+ 149 0030 FF       		.byte	-1
+ 150 0031 FF       		.byte	-1
+ 151 0032 FF       		.byte	-1
+ 152 0033 00       		.space	1
+ 153 0034 6400     		.short	100
+ 154              		.bss
+ 155              		.align	1
+ 156              		.set	.LANCHOR1,. + 0
+ 157              		.type	i.6539, %object
+ 158              		.size	i.6539, 2
+ 159              	i.6539:
+ 160 0000 0000     		.space	2
+ 161              		.text
+ 162              	.Letext0:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 5
+
+
+ 163              		.file 2 "source\\bsw\\global.h"
+ 164              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 165              		.file 4 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 166              		.file 5 "Generated_Source\\PSoC5/cytypes.h"
+ 167              		.file 6 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_types.inc"
+ 168              		.file 7 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_cpu.inc"
+ 169              		.file 8 "source\\bsw\\glower.h"
+ 170              		.file 9 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_intfunc.inc"
+ 171              		.file 10 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_context.inc"
+ 172              		.file 11 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_primitives.inc"
+ 173              		.file 12 "Generated_Source\\PSoC5/core_cm3.h"
+ 174              		.file 13 "Generated_Source\\PSoC5/RGB_Red.h"
+ 175              		.file 14 "Generated_Source\\PSoC5/RGB_Green.h"
+ 176              		.file 15 "Generated_Source\\PSoC5/RGB_Blue.h"
+ 177              		.file 16 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_kernel.inc"
+ 178              		.section	.debug_info,"",%progbits
+ 179              	.Ldebug_info0:
+ 180 0000 5F020000 		.4byte	0x25f
+ 181 0004 0400     		.2byte	0x4
+ 182 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 183 000a 04       		.byte	0x4
+ 184 000b 01       		.uleb128 0x1
+ 185 000c 74000000 		.4byte	.LASF41
+ 186 0010 0C       		.byte	0xc
+ 187 0011 00000000 		.4byte	.LASF42
+ 188 0015 85020000 		.4byte	.LASF43
+ 189 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 190 001d 00000000 		.4byte	0
+ 191 0021 00000000 		.4byte	.Ldebug_line0
+ 192 0025 02       		.uleb128 0x2
+ 193 0026 01       		.byte	0x1
+ 194 0027 06       		.byte	0x6
+ 195 0028 04030000 		.4byte	.LASF0
+ 196 002c 02       		.uleb128 0x2
+ 197 002d 01       		.byte	0x1
+ 198 002e 08       		.byte	0x8
+ 199 002f 66000000 		.4byte	.LASF1
+ 200 0033 02       		.uleb128 0x2
+ 201 0034 02       		.byte	0x2
+ 202 0035 05       		.byte	0x5
+ 203 0036 66020000 		.4byte	.LASF2
+ 204 003a 03       		.uleb128 0x3
+ 205 003b 70020000 		.4byte	.LASF11
+ 206 003f 02       		.byte	0x2
+ 207 0040 93       		.byte	0x93
+ 208 0041 45000000 		.4byte	0x45
+ 209 0045 02       		.uleb128 0x2
+ 210 0046 02       		.byte	0x2
+ 211 0047 07       		.byte	0x7
+ 212 0048 1E000000 		.4byte	.LASF3
+ 213 004c 02       		.uleb128 0x2
+ 214 004d 04       		.byte	0x4
+ 215 004e 05       		.byte	0x5
+ 216 004f E4020000 		.4byte	.LASF4
+ 217 0053 02       		.uleb128 0x2
+ 218 0054 04       		.byte	0x4
+ 219 0055 07       		.byte	0x7
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 6
+
+
+ 220 0056 0B010000 		.4byte	.LASF5
+ 221 005a 02       		.uleb128 0x2
+ 222 005b 04       		.byte	0x4
+ 223 005c 04       		.byte	0x4
+ 224 005d 51000000 		.4byte	.LASF6
+ 225 0061 02       		.uleb128 0x2
+ 226 0062 08       		.byte	0x8
+ 227 0063 04       		.byte	0x4
+ 228 0064 59010000 		.4byte	.LASF7
+ 229 0068 02       		.uleb128 0x2
+ 230 0069 08       		.byte	0x8
+ 231 006a 05       		.byte	0x5
+ 232 006b FD010000 		.4byte	.LASF8
+ 233 006f 02       		.uleb128 0x2
+ 234 0070 08       		.byte	0x8
+ 235 0071 07       		.byte	0x7
+ 236 0072 BC010000 		.4byte	.LASF9
+ 237 0076 02       		.uleb128 0x2
+ 238 0077 01       		.byte	0x1
+ 239 0078 08       		.byte	0x8
+ 240 0079 1B020000 		.4byte	.LASF10
+ 241 007d 03       		.uleb128 0x3
+ 242 007e 14000000 		.4byte	.LASF12
+ 243 0082 03       		.byte	0x3
+ 244 0083 3F       		.byte	0x3f
+ 245 0084 4C000000 		.4byte	0x4c
+ 246 0088 04       		.uleb128 0x4
+ 247 0089 04       		.byte	0x4
+ 248 008a 05       		.byte	0x5
+ 249 008b 696E7400 		.ascii	"int\000"
+ 250 008f 02       		.uleb128 0x2
+ 251 0090 04       		.byte	0x4
+ 252 0091 07       		.byte	0x7
+ 253 0092 9D010000 		.4byte	.LASF13
+ 254 0096 03       		.uleb128 0x3
+ 255 0097 EC010000 		.4byte	.LASF14
+ 256 009b 04       		.byte	0x4
+ 257 009c 2C       		.byte	0x2c
+ 258 009d 7D000000 		.4byte	0x7d
+ 259 00a1 05       		.uleb128 0x5
+ 260 00a2 E6010000 		.4byte	.LASF15
+ 261 00a6 05       		.byte	0x5
+ 262 00a7 E801     		.2byte	0x1e8
+ 263 00a9 2C000000 		.4byte	0x2c
+ 264 00ad 05       		.uleb128 0x5
+ 265 00ae 70010000 		.4byte	.LASF16
+ 266 00b2 05       		.byte	0x5
+ 267 00b3 E901     		.2byte	0x1e9
+ 268 00b5 45000000 		.4byte	0x45
+ 269 00b9 02       		.uleb128 0x2
+ 270 00ba 08       		.byte	0x8
+ 271 00bb 04       		.byte	0x4
+ 272 00bc F8020000 		.4byte	.LASF17
+ 273 00c0 03       		.uleb128 0x3
+ 274 00c1 02010000 		.4byte	.LASF18
+ 275 00c5 06       		.byte	0x6
+ 276 00c6 53       		.byte	0x53
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 7
+
+
+ 277 00c7 88000000 		.4byte	0x88
+ 278 00cb 03       		.uleb128 0x3
+ 279 00cc B2010000 		.4byte	.LASF19
+ 280 00d0 06       		.byte	0x6
+ 281 00d1 54       		.byte	0x54
+ 282 00d2 8F000000 		.4byte	0x8f
+ 283 00d6 03       		.uleb128 0x3
+ 284 00d7 1D010000 		.4byte	.LASF20
+ 285 00db 07       		.byte	0x7
+ 286 00dc 4D       		.byte	0x4d
+ 287 00dd CB000000 		.4byte	0xcb
+ 288 00e1 03       		.uleb128 0x3
+ 289 00e2 AA010000 		.4byte	.LASF21
+ 290 00e6 07       		.byte	0x7
+ 291 00e7 4F       		.byte	0x4f
+ 292 00e8 CB000000 		.4byte	0xcb
+ 293 00ec 03       		.uleb128 0x3
+ 294 00ed 4A000000 		.4byte	.LASF22
+ 295 00f1 07       		.byte	0x7
+ 296 00f2 78       		.byte	0x78
+ 297 00f3 C0000000 		.4byte	0xc0
+ 298 00f7 02       		.uleb128 0x2
+ 299 00f8 04       		.byte	0x4
+ 300 00f9 07       		.byte	0x7
+ 301 00fa F4010000 		.4byte	.LASF23
+ 302 00fe 06       		.uleb128 0x6
+ 303 00ff 06       		.byte	0x6
+ 304 0100 08       		.byte	0x8
+ 305 0101 54       		.byte	0x54
+ 306 0102 37010000 		.4byte	0x137
+ 307 0106 07       		.uleb128 0x7
+ 308 0107 4B010000 		.4byte	.LASF24
+ 309 010b 08       		.byte	0x8
+ 310 010c 56       		.byte	0x56
+ 311 010d A1000000 		.4byte	0xa1
+ 312 0111 00       		.byte	0
+ 313 0112 07       		.uleb128 0x7
+ 314 0113 56020000 		.4byte	.LASF25
+ 315 0117 08       		.byte	0x8
+ 316 0118 57       		.byte	0x57
+ 317 0119 A1000000 		.4byte	0xa1
+ 318 011d 01       		.byte	0x1
+ 319 011e 07       		.uleb128 0x7
+ 320 011f 32020000 		.4byte	.LASF26
+ 321 0123 08       		.byte	0x8
+ 322 0124 58       		.byte	0x58
+ 323 0125 A1000000 		.4byte	0xa1
+ 324 0129 02       		.byte	0x2
+ 325 012a 07       		.uleb128 0x7
+ 326 012b ED020000 		.4byte	.LASF27
+ 327 012f 08       		.byte	0x8
+ 328 0130 59       		.byte	0x59
+ 329 0131 AD000000 		.4byte	0xad
+ 330 0135 04       		.byte	0x4
+ 331 0136 00       		.byte	0
+ 332 0137 03       		.uleb128 0x3
+ 333 0138 79020000 		.4byte	.LASF28
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 8
+
+
+ 334 013c 08       		.byte	0x8
+ 335 013d 5A       		.byte	0x5a
+ 336 013e FE000000 		.4byte	0xfe
+ 337 0142 08       		.uleb128 0x8
+ 338 0143 22030000 		.4byte	.LASF44
+ 339 0147 01       		.byte	0x1
+ 340 0148 32       		.byte	0x32
+ 341 0149 00000000 		.4byte	.LFB110
+ 342 014d 70000000 		.4byte	.LFE110-.LFB110
+ 343 0151 01       		.uleb128 0x1
+ 344 0152 9C       		.byte	0x9c
+ 345 0153 B6010000 		.4byte	0x1b6
+ 346 0157 09       		.uleb128 0x9
+ 347 0158 6900     		.ascii	"i\000"
+ 348 015a 01       		.byte	0x1
+ 349 015b 34       		.byte	0x34
+ 350 015c 3A000000 		.4byte	0x3a
+ 351 0160 05       		.uleb128 0x5
+ 352 0161 03       		.byte	0x3
+ 353 0162 00000000 		.4byte	i.6539
+ 354 0166 0A       		.uleb128 0xa
+ 355 0167 14000000 		.4byte	.LVL0
+ 356 016b 29020000 		.4byte	0x229
+ 357 016f 0A       		.uleb128 0xa
+ 358 0170 24000000 		.4byte	.LVL1
+ 359 0174 34020000 		.4byte	0x234
+ 360 0178 0B       		.uleb128 0xb
+ 361 0179 34000000 		.4byte	.LVL2
+ 362 017d 3F020000 		.4byte	0x23f
+ 363 0181 8E010000 		.4byte	0x18e
+ 364 0185 0C       		.uleb128 0xc
+ 365 0186 01       		.uleb128 0x1
+ 366 0187 50       		.byte	0x50
+ 367 0188 04       		.uleb128 0x4
+ 368 0189 75       		.byte	0x75
+ 369 018a 02       		.sleb128 2
+ 370 018b 94       		.byte	0x94
+ 371 018c 01       		.byte	0x1
+ 372 018d 00       		.byte	0
+ 373 018e 0B       		.uleb128 0xb
+ 374 018f 4C000000 		.4byte	.LVL3
+ 375 0193 4A020000 		.4byte	0x24a
+ 376 0197 A1010000 		.4byte	0x1a1
+ 377 019b 0C       		.uleb128 0xc
+ 378 019c 01       		.uleb128 0x1
+ 379 019d 50       		.byte	0x50
+ 380 019e 01       		.uleb128 0x1
+ 381 019f 34       		.byte	0x34
+ 382 01a0 00       		.byte	0
+ 383 01a1 0D       		.uleb128 0xd
+ 384 01a2 64000000 		.4byte	.LVL4
+ 385 01a6 56020000 		.4byte	0x256
+ 386 01aa 0C       		.uleb128 0xc
+ 387 01ab 01       		.uleb128 0x1
+ 388 01ac 50       		.byte	0x50
+ 389 01ad 01       		.uleb128 0x1
+ 390 01ae 34       		.byte	0x34
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 9
+
+
+ 391 01af 0C       		.uleb128 0xc
+ 392 01b0 01       		.uleb128 0x1
+ 393 01b1 52       		.byte	0x52
+ 394 01b2 01       		.uleb128 0x1
+ 395 01b3 30       		.byte	0x30
+ 396 01b4 00       		.byte	0
+ 397 01b5 00       		.byte	0
+ 398 01b6 0E       		.uleb128 0xe
+ 399 01b7 25010000 		.4byte	.LASF29
+ 400 01bb 09       		.byte	0x9
+ 401 01bc 40       		.byte	0x40
+ 402 01bd D6000000 		.4byte	0xd6
+ 403 01c1 0E       		.uleb128 0xe
+ 404 01c2 31000000 		.4byte	.LASF30
+ 405 01c6 09       		.byte	0x9
+ 406 01c7 47       		.byte	0x47
+ 407 01c8 E1000000 		.4byte	0xe1
+ 408 01cc 0E       		.uleb128 0xe
+ 409 01cd D3010000 		.4byte	.LASF31
+ 410 01d1 09       		.byte	0x9
+ 411 01d2 4A       		.byte	0x4a
+ 412 01d3 D6000000 		.4byte	0xd6
+ 413 01d7 0E       		.uleb128 0xe
+ 414 01d8 84010000 		.4byte	.LASF32
+ 415 01dc 0A       		.byte	0xa
+ 416 01dd 48       		.byte	0x48
+ 417 01de EC000000 		.4byte	0xec
+ 418 01e2 0E       		.uleb128 0xe
+ 419 01e3 41020000 		.4byte	.LASF33
+ 420 01e7 0B       		.byte	0xb
+ 421 01e8 44       		.byte	0x44
+ 422 01e9 D6000000 		.4byte	0xd6
+ 423 01ed 0F       		.uleb128 0xf
+ 424 01ee 77010000 		.4byte	.LASF34
+ 425 01f2 0C       		.byte	0xc
+ 426 01f3 1207     		.2byte	0x712
+ 427 01f5 F9010000 		.4byte	0x1f9
+ 428 01f9 10       		.uleb128 0x10
+ 429 01fa 96000000 		.4byte	0x96
+ 430 01fe 11       		.uleb128 0x11
+ 431 01ff 0E020000 		.4byte	0x20e
+ 432 0203 0E020000 		.4byte	0x20e
+ 433 0207 12       		.uleb128 0x12
+ 434 0208 F7000000 		.4byte	0xf7
+ 435 020c 08       		.byte	0x8
+ 436 020d 00       		.byte	0
+ 437 020e 13       		.uleb128 0x13
+ 438 020f 37010000 		.4byte	0x137
+ 439 0213 14       		.uleb128 0x14
+ 440 0214 0B020000 		.4byte	.LASF35
+ 441 0218 01       		.byte	0x1
+ 442 0219 22       		.byte	0x22
+ 443 021a 24020000 		.4byte	0x224
+ 444 021e 05       		.uleb128 0x5
+ 445 021f 03       		.byte	0x3
+ 446 0220 00000000 		.4byte	RGB_glowtable_1
+ 447 0224 13       		.uleb128 0x13
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 10
+
+
+ 448 0225 FE010000 		.4byte	0x1fe
+ 449 0229 15       		.uleb128 0x15
+ 450 022a 3D010000 		.4byte	.LASF36
+ 451 022e 3D010000 		.4byte	.LASF36
+ 452 0232 0D       		.byte	0xd
+ 453 0233 26       		.byte	0x26
+ 454 0234 15       		.uleb128 0x15
+ 455 0235 60010000 		.4byte	.LASF37
+ 456 0239 60010000 		.4byte	.LASF37
+ 457 023d 0E       		.byte	0xe
+ 458 023e 26       		.byte	0x26
+ 459 023f 15       		.uleb128 0x15
+ 460 0240 57000000 		.4byte	.LASF38
+ 461 0244 57000000 		.4byte	.LASF38
+ 462 0248 0F       		.byte	0xf
+ 463 0249 26       		.byte	0x26
+ 464 024a 16       		.uleb128 0x16
+ 465 024b 20020000 		.4byte	.LASF39
+ 466 024f 20020000 		.4byte	.LASF39
+ 467 0253 10       		.byte	0x10
+ 468 0254 F901     		.2byte	0x1f9
+ 469 0256 16       		.uleb128 0x16
+ 470 0257 10030000 		.4byte	.LASF40
+ 471 025b 10030000 		.4byte	.LASF40
+ 472 025f 10       		.byte	0x10
+ 473 0260 EF01     		.2byte	0x1ef
+ 474 0262 00       		.byte	0
+ 475              		.section	.debug_abbrev,"",%progbits
+ 476              	.Ldebug_abbrev0:
+ 477 0000 01       		.uleb128 0x1
+ 478 0001 11       		.uleb128 0x11
+ 479 0002 01       		.byte	0x1
+ 480 0003 25       		.uleb128 0x25
+ 481 0004 0E       		.uleb128 0xe
+ 482 0005 13       		.uleb128 0x13
+ 483 0006 0B       		.uleb128 0xb
+ 484 0007 03       		.uleb128 0x3
+ 485 0008 0E       		.uleb128 0xe
+ 486 0009 1B       		.uleb128 0x1b
+ 487 000a 0E       		.uleb128 0xe
+ 488 000b 55       		.uleb128 0x55
+ 489 000c 17       		.uleb128 0x17
+ 490 000d 11       		.uleb128 0x11
+ 491 000e 01       		.uleb128 0x1
+ 492 000f 10       		.uleb128 0x10
+ 493 0010 17       		.uleb128 0x17
+ 494 0011 00       		.byte	0
+ 495 0012 00       		.byte	0
+ 496 0013 02       		.uleb128 0x2
+ 497 0014 24       		.uleb128 0x24
+ 498 0015 00       		.byte	0
+ 499 0016 0B       		.uleb128 0xb
+ 500 0017 0B       		.uleb128 0xb
+ 501 0018 3E       		.uleb128 0x3e
+ 502 0019 0B       		.uleb128 0xb
+ 503 001a 03       		.uleb128 0x3
+ 504 001b 0E       		.uleb128 0xe
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 11
+
+
+ 505 001c 00       		.byte	0
+ 506 001d 00       		.byte	0
+ 507 001e 03       		.uleb128 0x3
+ 508 001f 16       		.uleb128 0x16
+ 509 0020 00       		.byte	0
+ 510 0021 03       		.uleb128 0x3
+ 511 0022 0E       		.uleb128 0xe
+ 512 0023 3A       		.uleb128 0x3a
+ 513 0024 0B       		.uleb128 0xb
+ 514 0025 3B       		.uleb128 0x3b
+ 515 0026 0B       		.uleb128 0xb
+ 516 0027 49       		.uleb128 0x49
+ 517 0028 13       		.uleb128 0x13
+ 518 0029 00       		.byte	0
+ 519 002a 00       		.byte	0
+ 520 002b 04       		.uleb128 0x4
+ 521 002c 24       		.uleb128 0x24
+ 522 002d 00       		.byte	0
+ 523 002e 0B       		.uleb128 0xb
+ 524 002f 0B       		.uleb128 0xb
+ 525 0030 3E       		.uleb128 0x3e
+ 526 0031 0B       		.uleb128 0xb
+ 527 0032 03       		.uleb128 0x3
+ 528 0033 08       		.uleb128 0x8
+ 529 0034 00       		.byte	0
+ 530 0035 00       		.byte	0
+ 531 0036 05       		.uleb128 0x5
+ 532 0037 16       		.uleb128 0x16
+ 533 0038 00       		.byte	0
+ 534 0039 03       		.uleb128 0x3
+ 535 003a 0E       		.uleb128 0xe
+ 536 003b 3A       		.uleb128 0x3a
+ 537 003c 0B       		.uleb128 0xb
+ 538 003d 3B       		.uleb128 0x3b
+ 539 003e 05       		.uleb128 0x5
+ 540 003f 49       		.uleb128 0x49
+ 541 0040 13       		.uleb128 0x13
+ 542 0041 00       		.byte	0
+ 543 0042 00       		.byte	0
+ 544 0043 06       		.uleb128 0x6
+ 545 0044 13       		.uleb128 0x13
+ 546 0045 01       		.byte	0x1
+ 547 0046 0B       		.uleb128 0xb
+ 548 0047 0B       		.uleb128 0xb
+ 549 0048 3A       		.uleb128 0x3a
+ 550 0049 0B       		.uleb128 0xb
+ 551 004a 3B       		.uleb128 0x3b
+ 552 004b 0B       		.uleb128 0xb
+ 553 004c 01       		.uleb128 0x1
+ 554 004d 13       		.uleb128 0x13
+ 555 004e 00       		.byte	0
+ 556 004f 00       		.byte	0
+ 557 0050 07       		.uleb128 0x7
+ 558 0051 0D       		.uleb128 0xd
+ 559 0052 00       		.byte	0
+ 560 0053 03       		.uleb128 0x3
+ 561 0054 0E       		.uleb128 0xe
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 12
+
+
+ 562 0055 3A       		.uleb128 0x3a
+ 563 0056 0B       		.uleb128 0xb
+ 564 0057 3B       		.uleb128 0x3b
+ 565 0058 0B       		.uleb128 0xb
+ 566 0059 49       		.uleb128 0x49
+ 567 005a 13       		.uleb128 0x13
+ 568 005b 38       		.uleb128 0x38
+ 569 005c 0B       		.uleb128 0xb
+ 570 005d 00       		.byte	0
+ 571 005e 00       		.byte	0
+ 572 005f 08       		.uleb128 0x8
+ 573 0060 2E       		.uleb128 0x2e
+ 574 0061 01       		.byte	0x1
+ 575 0062 3F       		.uleb128 0x3f
+ 576 0063 19       		.uleb128 0x19
+ 577 0064 03       		.uleb128 0x3
+ 578 0065 0E       		.uleb128 0xe
+ 579 0066 3A       		.uleb128 0x3a
+ 580 0067 0B       		.uleb128 0xb
+ 581 0068 3B       		.uleb128 0x3b
+ 582 0069 0B       		.uleb128 0xb
+ 583 006a 11       		.uleb128 0x11
+ 584 006b 01       		.uleb128 0x1
+ 585 006c 12       		.uleb128 0x12
+ 586 006d 06       		.uleb128 0x6
+ 587 006e 40       		.uleb128 0x40
+ 588 006f 18       		.uleb128 0x18
+ 589 0070 9742     		.uleb128 0x2117
+ 590 0072 19       		.uleb128 0x19
+ 591 0073 01       		.uleb128 0x1
+ 592 0074 13       		.uleb128 0x13
+ 593 0075 00       		.byte	0
+ 594 0076 00       		.byte	0
+ 595 0077 09       		.uleb128 0x9
+ 596 0078 34       		.uleb128 0x34
+ 597 0079 00       		.byte	0
+ 598 007a 03       		.uleb128 0x3
+ 599 007b 08       		.uleb128 0x8
+ 600 007c 3A       		.uleb128 0x3a
+ 601 007d 0B       		.uleb128 0xb
+ 602 007e 3B       		.uleb128 0x3b
+ 603 007f 0B       		.uleb128 0xb
+ 604 0080 49       		.uleb128 0x49
+ 605 0081 13       		.uleb128 0x13
+ 606 0082 02       		.uleb128 0x2
+ 607 0083 18       		.uleb128 0x18
+ 608 0084 00       		.byte	0
+ 609 0085 00       		.byte	0
+ 610 0086 0A       		.uleb128 0xa
+ 611 0087 898201   		.uleb128 0x4109
+ 612 008a 00       		.byte	0
+ 613 008b 11       		.uleb128 0x11
+ 614 008c 01       		.uleb128 0x1
+ 615 008d 31       		.uleb128 0x31
+ 616 008e 13       		.uleb128 0x13
+ 617 008f 00       		.byte	0
+ 618 0090 00       		.byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 13
+
+
+ 619 0091 0B       		.uleb128 0xb
+ 620 0092 898201   		.uleb128 0x4109
+ 621 0095 01       		.byte	0x1
+ 622 0096 11       		.uleb128 0x11
+ 623 0097 01       		.uleb128 0x1
+ 624 0098 31       		.uleb128 0x31
+ 625 0099 13       		.uleb128 0x13
+ 626 009a 01       		.uleb128 0x1
+ 627 009b 13       		.uleb128 0x13
+ 628 009c 00       		.byte	0
+ 629 009d 00       		.byte	0
+ 630 009e 0C       		.uleb128 0xc
+ 631 009f 8A8201   		.uleb128 0x410a
+ 632 00a2 00       		.byte	0
+ 633 00a3 02       		.uleb128 0x2
+ 634 00a4 18       		.uleb128 0x18
+ 635 00a5 9142     		.uleb128 0x2111
+ 636 00a7 18       		.uleb128 0x18
+ 637 00a8 00       		.byte	0
+ 638 00a9 00       		.byte	0
+ 639 00aa 0D       		.uleb128 0xd
+ 640 00ab 898201   		.uleb128 0x4109
+ 641 00ae 01       		.byte	0x1
+ 642 00af 11       		.uleb128 0x11
+ 643 00b0 01       		.uleb128 0x1
+ 644 00b1 31       		.uleb128 0x31
+ 645 00b2 13       		.uleb128 0x13
+ 646 00b3 00       		.byte	0
+ 647 00b4 00       		.byte	0
+ 648 00b5 0E       		.uleb128 0xe
+ 649 00b6 34       		.uleb128 0x34
+ 650 00b7 00       		.byte	0
+ 651 00b8 03       		.uleb128 0x3
+ 652 00b9 0E       		.uleb128 0xe
+ 653 00ba 3A       		.uleb128 0x3a
+ 654 00bb 0B       		.uleb128 0xb
+ 655 00bc 3B       		.uleb128 0x3b
+ 656 00bd 0B       		.uleb128 0xb
+ 657 00be 49       		.uleb128 0x49
+ 658 00bf 13       		.uleb128 0x13
+ 659 00c0 3F       		.uleb128 0x3f
+ 660 00c1 19       		.uleb128 0x19
+ 661 00c2 3C       		.uleb128 0x3c
+ 662 00c3 19       		.uleb128 0x19
+ 663 00c4 00       		.byte	0
+ 664 00c5 00       		.byte	0
+ 665 00c6 0F       		.uleb128 0xf
+ 666 00c7 34       		.uleb128 0x34
+ 667 00c8 00       		.byte	0
+ 668 00c9 03       		.uleb128 0x3
+ 669 00ca 0E       		.uleb128 0xe
+ 670 00cb 3A       		.uleb128 0x3a
+ 671 00cc 0B       		.uleb128 0xb
+ 672 00cd 3B       		.uleb128 0x3b
+ 673 00ce 05       		.uleb128 0x5
+ 674 00cf 49       		.uleb128 0x49
+ 675 00d0 13       		.uleb128 0x13
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 14
+
+
+ 676 00d1 3F       		.uleb128 0x3f
+ 677 00d2 19       		.uleb128 0x19
+ 678 00d3 3C       		.uleb128 0x3c
+ 679 00d4 19       		.uleb128 0x19
+ 680 00d5 00       		.byte	0
+ 681 00d6 00       		.byte	0
+ 682 00d7 10       		.uleb128 0x10
+ 683 00d8 35       		.uleb128 0x35
+ 684 00d9 00       		.byte	0
+ 685 00da 49       		.uleb128 0x49
+ 686 00db 13       		.uleb128 0x13
+ 687 00dc 00       		.byte	0
+ 688 00dd 00       		.byte	0
+ 689 00de 11       		.uleb128 0x11
+ 690 00df 01       		.uleb128 0x1
+ 691 00e0 01       		.byte	0x1
+ 692 00e1 49       		.uleb128 0x49
+ 693 00e2 13       		.uleb128 0x13
+ 694 00e3 01       		.uleb128 0x1
+ 695 00e4 13       		.uleb128 0x13
+ 696 00e5 00       		.byte	0
+ 697 00e6 00       		.byte	0
+ 698 00e7 12       		.uleb128 0x12
+ 699 00e8 21       		.uleb128 0x21
+ 700 00e9 00       		.byte	0
+ 701 00ea 49       		.uleb128 0x49
+ 702 00eb 13       		.uleb128 0x13
+ 703 00ec 2F       		.uleb128 0x2f
+ 704 00ed 0B       		.uleb128 0xb
+ 705 00ee 00       		.byte	0
+ 706 00ef 00       		.byte	0
+ 707 00f0 13       		.uleb128 0x13
+ 708 00f1 26       		.uleb128 0x26
+ 709 00f2 00       		.byte	0
+ 710 00f3 49       		.uleb128 0x49
+ 711 00f4 13       		.uleb128 0x13
+ 712 00f5 00       		.byte	0
+ 713 00f6 00       		.byte	0
+ 714 00f7 14       		.uleb128 0x14
+ 715 00f8 34       		.uleb128 0x34
+ 716 00f9 00       		.byte	0
+ 717 00fa 03       		.uleb128 0x3
+ 718 00fb 0E       		.uleb128 0xe
+ 719 00fc 3A       		.uleb128 0x3a
+ 720 00fd 0B       		.uleb128 0xb
+ 721 00fe 3B       		.uleb128 0x3b
+ 722 00ff 0B       		.uleb128 0xb
+ 723 0100 49       		.uleb128 0x49
+ 724 0101 13       		.uleb128 0x13
+ 725 0102 3F       		.uleb128 0x3f
+ 726 0103 19       		.uleb128 0x19
+ 727 0104 02       		.uleb128 0x2
+ 728 0105 18       		.uleb128 0x18
+ 729 0106 00       		.byte	0
+ 730 0107 00       		.byte	0
+ 731 0108 15       		.uleb128 0x15
+ 732 0109 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 15
+
+
+ 733 010a 00       		.byte	0
+ 734 010b 3F       		.uleb128 0x3f
+ 735 010c 19       		.uleb128 0x19
+ 736 010d 3C       		.uleb128 0x3c
+ 737 010e 19       		.uleb128 0x19
+ 738 010f 6E       		.uleb128 0x6e
+ 739 0110 0E       		.uleb128 0xe
+ 740 0111 03       		.uleb128 0x3
+ 741 0112 0E       		.uleb128 0xe
+ 742 0113 3A       		.uleb128 0x3a
+ 743 0114 0B       		.uleb128 0xb
+ 744 0115 3B       		.uleb128 0x3b
+ 745 0116 0B       		.uleb128 0xb
+ 746 0117 00       		.byte	0
+ 747 0118 00       		.byte	0
+ 748 0119 16       		.uleb128 0x16
+ 749 011a 2E       		.uleb128 0x2e
+ 750 011b 00       		.byte	0
+ 751 011c 3F       		.uleb128 0x3f
+ 752 011d 19       		.uleb128 0x19
+ 753 011e 3C       		.uleb128 0x3c
+ 754 011f 19       		.uleb128 0x19
+ 755 0120 6E       		.uleb128 0x6e
+ 756 0121 0E       		.uleb128 0xe
+ 757 0122 03       		.uleb128 0x3
+ 758 0123 0E       		.uleb128 0xe
+ 759 0124 3A       		.uleb128 0x3a
+ 760 0125 0B       		.uleb128 0xb
+ 761 0126 3B       		.uleb128 0x3b
+ 762 0127 05       		.uleb128 0x5
+ 763 0128 00       		.byte	0
+ 764 0129 00       		.byte	0
+ 765 012a 00       		.byte	0
+ 766              		.section	.debug_aranges,"",%progbits
+ 767 0000 1C000000 		.4byte	0x1c
+ 768 0004 0200     		.2byte	0x2
+ 769 0006 00000000 		.4byte	.Ldebug_info0
+ 770 000a 04       		.byte	0x4
+ 771 000b 00       		.byte	0
+ 772 000c 0000     		.2byte	0
+ 773 000e 0000     		.2byte	0
+ 774 0010 00000000 		.4byte	.LFB110
+ 775 0014 70000000 		.4byte	.LFE110-.LFB110
+ 776 0018 00000000 		.4byte	0
+ 777 001c 00000000 		.4byte	0
+ 778              		.section	.debug_ranges,"",%progbits
+ 779              	.Ldebug_ranges0:
+ 780 0000 00000000 		.4byte	.LFB110
+ 781 0004 70000000 		.4byte	.LFE110
+ 782 0008 00000000 		.4byte	0
+ 783 000c 00000000 		.4byte	0
+ 784              		.section	.debug_line,"",%progbits
+ 785              	.Ldebug_line0:
+ 786 0000 84020000 		.section	.debug_str,"MS",%progbits,1
+ 786      02006702 
+ 786      00000201 
+ 786      FB0E0D00 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 16
+
+
+ 786      01010101 
+ 787              	.LASF42:
+ 788 0000 736F7572 		.ascii	"source\\bsw\\glower.c\000"
+ 788      63655C62 
+ 788      73775C67 
+ 788      6C6F7765 
+ 788      722E6300 
+ 789              	.LASF12:
+ 790 0014 5F5F696E 		.ascii	"__int32_t\000"
+ 790      7433325F 
+ 790      7400
+ 791              	.LASF3:
+ 792 001e 73686F72 		.ascii	"short unsigned int\000"
+ 792      7420756E 
+ 792      7369676E 
+ 792      65642069 
+ 792      6E7400
+ 793              	.LASF30:
+ 794 0031 45455F6F 		.ascii	"EE_oo_IRQ_suspend_status\000"
+ 794      6F5F4952 
+ 794      515F7375 
+ 794      7370656E 
+ 794      645F7374 
+ 795              	.LASF22:
+ 796 004a 45455F54 		.ascii	"EE_TID\000"
+ 796      494400
+ 797              	.LASF6:
+ 798 0051 666C6F61 		.ascii	"float\000"
+ 798      7400
+ 799              	.LASF38:
+ 800 0057 5247425F 		.ascii	"RGB_Blue_Write\000"
+ 800      426C7565 
+ 800      5F577269 
+ 800      746500
+ 801              	.LASF1:
+ 802 0066 756E7369 		.ascii	"unsigned char\000"
+ 802      676E6564 
+ 802      20636861 
+ 802      7200
+ 803              	.LASF41:
+ 804 0074 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 804      43313120 
+ 804      352E342E 
+ 804      31203230 
+ 804      31363036 
+ 805 00a7 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 805      20726576 
+ 805      6973696F 
+ 805      6E203233 
+ 805      37373135 
+ 806 00da 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 806      66756E63 
+ 806      74696F6E 
+ 806      2D736563 
+ 806      74696F6E 
+ 807              	.LASF18:
+ 808 0102 45455F49 		.ascii	"EE_INT32\000"
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 17
+
+
+ 808      4E543332 
+ 808      00
+ 809              	.LASF5:
+ 810 010b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 810      20756E73 
+ 810      69676E65 
+ 810      6420696E 
+ 810      7400
+ 811              	.LASF20:
+ 812 011d 45455F55 		.ascii	"EE_UREG\000"
+ 812      52454700 
+ 813              	.LASF29:
+ 814 0125 45455F6F 		.ascii	"EE_oo_IRQ_disable_count\000"
+ 814      6F5F4952 
+ 814      515F6469 
+ 814      7361626C 
+ 814      655F636F 
+ 815              	.LASF36:
+ 816 013d 5247425F 		.ascii	"RGB_Red_Write\000"
+ 816      5265645F 
+ 816      57726974 
+ 816      6500
+ 817              	.LASF24:
+ 818 014b 5247425F 		.ascii	"RGB__RedValue\000"
+ 818      5F526564 
+ 818      56616C75 
+ 818      6500
+ 819              	.LASF7:
+ 820 0159 646F7562 		.ascii	"double\000"
+ 820      6C6500
+ 821              	.LASF37:
+ 822 0160 5247425F 		.ascii	"RGB_Green_Write\000"
+ 822      47726565 
+ 822      6E5F5772 
+ 822      69746500 
+ 823              	.LASF16:
+ 824 0170 75696E74 		.ascii	"uint16\000"
+ 824      313600
+ 825              	.LASF34:
+ 826 0177 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 826      52784275 
+ 826      66666572 
+ 826      00
+ 827              	.LASF32:
+ 828 0184 45455F73 		.ascii	"EE_std_endcycle_next_tid\000"
+ 828      74645F65 
+ 828      6E646379 
+ 828      636C655F 
+ 828      6E657874 
+ 829              	.LASF13:
+ 830 019d 756E7369 		.ascii	"unsigned int\000"
+ 830      676E6564 
+ 830      20696E74 
+ 830      00
+ 831              	.LASF21:
+ 832 01aa 45455F46 		.ascii	"EE_FREG\000"
+ 832      52454700 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 18
+
+
+ 833              	.LASF19:
+ 834 01b2 45455F55 		.ascii	"EE_UINT32\000"
+ 834      494E5433 
+ 834      3200
+ 835              	.LASF9:
+ 836 01bc 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 836      206C6F6E 
+ 836      6720756E 
+ 836      7369676E 
+ 836      65642069 
+ 837              	.LASF31:
+ 838 01d3 45455F41 		.ascii	"EE_ApplicationMode\000"
+ 838      70706C69 
+ 838      63617469 
+ 838      6F6E4D6F 
+ 838      646500
+ 839              	.LASF15:
+ 840 01e6 75696E74 		.ascii	"uint8\000"
+ 840      3800
+ 841              	.LASF14:
+ 842 01ec 696E7433 		.ascii	"int32_t\000"
+ 842      325F7400 
+ 843              	.LASF23:
+ 844 01f4 73697A65 		.ascii	"sizetype\000"
+ 844      74797065 
+ 844      00
+ 845              	.LASF8:
+ 846 01fd 6C6F6E67 		.ascii	"long long int\000"
+ 846      206C6F6E 
+ 846      6720696E 
+ 846      7400
+ 847              	.LASF35:
+ 848 020b 5247425F 		.ascii	"RGB_glowtable_1\000"
+ 848      676C6F77 
+ 848      7461626C 
+ 848      655F3100 
+ 849              	.LASF10:
+ 850 021b 63686172 		.ascii	"char\000"
+ 850      00
+ 851              	.LASF39:
+ 852 0220 45455F6F 		.ascii	"EE_oo_CancelAlarm\000"
+ 852      6F5F4361 
+ 852      6E63656C 
+ 852      416C6172 
+ 852      6D00
+ 853              	.LASF26:
+ 854 0232 5247425F 		.ascii	"RGB__BlueValue\000"
+ 854      5F426C75 
+ 854      6556616C 
+ 854      756500
+ 855              	.LASF33:
+ 856 0241 45455F49 		.ascii	"EE_IRQ_nesting_level\000"
+ 856      52515F6E 
+ 856      65737469 
+ 856      6E675F6C 
+ 856      6576656C 
+ 857              	.LASF25:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccs4lceC.s 			page 19
+
+
+ 858 0256 5247425F 		.ascii	"RGB__GreenValue\000"
+ 858      5F477265 
+ 858      656E5661 
+ 858      6C756500 
+ 859              	.LASF2:
+ 860 0266 73686F72 		.ascii	"short int\000"
+ 860      7420696E 
+ 860      7400
+ 861              	.LASF11:
+ 862 0270 75696E74 		.ascii	"uint16_t\000"
+ 862      31365F74 
+ 862      00
+ 863              	.LASF28:
+ 864 0279 5247425F 		.ascii	"RGB__Glow_t\000"
+ 864      5F476C6F 
+ 864      775F7400 
+ 865              	.LASF43:
+ 866 0285 433A5C55 		.ascii	"C:\\Users\\giris\\OneDrive\\Documents\\PSoC Creator"
+ 866      73657273 
+ 866      5C676972 
+ 866      69735C4F 
+ 866      6E654472 
+ 867 02b3 5C457269 		.ascii	"\\Erika_OS_ReactionGame\\Erika_Reaction_Game.cydsn\000"
+ 867      6B615F4F 
+ 867      535F5265 
+ 867      61637469 
+ 867      6F6E4761 
+ 868              	.LASF4:
+ 869 02e4 6C6F6E67 		.ascii	"long int\000"
+ 869      20696E74 
+ 869      00
+ 870              	.LASF27:
+ 871 02ed 5247425F 		.ascii	"RGB__Delay\000"
+ 871      5F44656C 
+ 871      617900
+ 872              	.LASF17:
+ 873 02f8 6C6F6E67 		.ascii	"long double\000"
+ 873      20646F75 
+ 873      626C6500 
+ 874              	.LASF0:
+ 875 0304 7369676E 		.ascii	"signed char\000"
+ 875      65642063 
+ 875      68617200 
+ 876              	.LASF40:
+ 877 0310 45455F6F 		.ascii	"EE_oo_SetRelAlarm\000"
+ 877      6F5F5365 
+ 877      7452656C 
+ 877      416C6172 
+ 877      6D00
+ 878              	.LASF44:
+ 879 0322 5247425F 		.ascii	"RGB__Glower\000"
+ 879      5F476C6F 
+ 879      77657200 
+ 880              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,7 @@
+C:\Users\Girish\OneDrive\Documents\PSoC Creator\Erika_OS_WorkSpace\ErikaOS_Example1.cydsn\ErikaOS_Example1.cyprj|fce80630-8ef4-43c6-b69f-132d9a603ff1
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|bc7dc0e1-04b1-4ca1-8253-0de9a6cb45e9
+C:\Users\Girish\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|9ecf345d-86de-4ad5-aead-c01337563749
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|41382068-294d-4637-9abf-24403f18f687
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|a7b914eb-b688-452e-a537-b7044c52a9ec
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|8ffe2091-0e2e-4263-93eb-550890d013d0
+C:\Users\Girish\OneDrive\Documents\PSoC Creator\Erika_OS_WorkSpace\Erika_LEDBlink.cydsn\Erika_LEDBlink.cyprj|474360f8-3651-4a38-a1e5-a16aaf41de85

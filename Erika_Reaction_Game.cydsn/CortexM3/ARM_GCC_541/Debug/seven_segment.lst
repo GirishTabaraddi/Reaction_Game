@@ -1,0 +1,1784 @@
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"seven_segment.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.SevenSegmentClear,"ax",%progbits
+  20              		.align	2
+  21              		.global	SevenSegmentClear
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	SevenSegmentClear, %function
+  25              	SevenSegmentClear:
+  26              	.LFB111:
+  27              		.file 1 "source\\bsw\\seven_segment.c"
+   1:source\bsw/seven_segment.c **** /**
+   2:source\bsw/seven_segment.c **** * \file <filename>
+   3:source\bsw/seven_segment.c **** * \author <author-name>
+   4:source\bsw/seven_segment.c **** * \date <date>
+   5:source\bsw/seven_segment.c **** *
+   6:source\bsw/seven_segment.c **** * \brief <Symbolic File name>
+   7:source\bsw/seven_segment.c **** *
+   8:source\bsw/seven_segment.c **** * \copyright Copyright ©2016
+   9:source\bsw/seven_segment.c **** * Department of electrical engineering and information technology, Hochschule Darmstadt - Universit
+  10:source\bsw/seven_segment.c **** * Permission to use, copy, modify, and distribute this software and its documentation for education
+  11:source\bsw/seven_segment.c **** * (unless permitted by h_da) and official h_da projects, is hereby granted for enrolled students of
+  12:source\bsw/seven_segment.c **** * this paragraph and the following paragraph appear in all copies, modifications, and distributions
+  13:source\bsw/seven_segment.c **** * Contact Prof.Dr.-Ing. Peter Fromm, peter.fromm@h-da.de, Birkenweg 8 64295 Darmstadt - GERMANY for
+  14:source\bsw/seven_segment.c **** *
+  15:source\bsw/seven_segment.c **** * \warning This software is a PROTOTYPE version and is not designed or intended for use in producti
+  16:source\bsw/seven_segment.c **** * The user represents and warrants that it will NOT use or redistribute the Software for such purpo
+  17:source\bsw/seven_segment.c **** * This prototype is for research purposes only. This software is provided "AS IS," without a warran
+  18:source\bsw/seven_segment.c **** */
+  19:source\bsw/seven_segment.c **** 
+  20:source\bsw/seven_segment.c **** /*****************************************************************************/
+  21:source\bsw/seven_segment.c **** /* Include files                                                             */
+  22:source\bsw/seven_segment.c **** /*****************************************************************************/
+  23:source\bsw/seven_segment.c **** #include "project.h"
+  24:source\bsw/seven_segment.c **** #include "seven_segment.h"
+  25:source\bsw/seven_segment.c **** 
+  26:source\bsw/seven_segment.c **** /*****************************************************************************/
+  27:source\bsw/seven_segment.c **** /* Local pre-processor symbols/macros ('#define')                            */
+  28:source\bsw/seven_segment.c **** /*****************************************************************************/
+  29:source\bsw/seven_segment.c **** 
+  30:source\bsw/seven_segment.c **** /*****************************************************************************/
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 2
+
+
+  31:source\bsw/seven_segment.c **** /* Global variable definitions (declared in header file with 'extern')       */
+  32:source\bsw/seven_segment.c **** /*****************************************************************************/
+  33:source\bsw/seven_segment.c **** 
+  34:source\bsw/seven_segment.c **** /*****************************************************************************/
+  35:source\bsw/seven_segment.c **** /* Local type definitions ('typedef')                                        */
+  36:source\bsw/seven_segment.c **** /*****************************************************************************/
+  37:source\bsw/seven_segment.c **** 
+  38:source\bsw/seven_segment.c **** /*****************************************************************************/
+  39:source\bsw/seven_segment.c **** /* Local variable definitions ('static')                                     */
+  40:source\bsw/seven_segment.c **** /*****************************************************************************/
+  41:source\bsw/seven_segment.c **** const static uint8_t Seven_Segment_Lookup [] = {
+  42:source\bsw/seven_segment.c ****     0b00111111, // 0
+  43:source\bsw/seven_segment.c ****     0b00000110, // 1
+  44:source\bsw/seven_segment.c ****     0b01011011, // 2
+  45:source\bsw/seven_segment.c ****     0b01001111, // 3
+  46:source\bsw/seven_segment.c ****     0b01100110, // 4
+  47:source\bsw/seven_segment.c ****     0b01101101, // 5
+  48:source\bsw/seven_segment.c ****     0b01111101, // 6
+  49:source\bsw/seven_segment.c ****     0b00000111, // 7
+  50:source\bsw/seven_segment.c ****     0b01111111, // 8
+  51:source\bsw/seven_segment.c ****     0b01101111, // 9
+  52:source\bsw/seven_segment.c ****     0x77,       // a
+  53:source\bsw/seven_segment.c ****     0x7c,       // b
+  54:source\bsw/seven_segment.c ****     0x39,       // c
+  55:source\bsw/seven_segment.c ****     0x5e,       // d
+  56:source\bsw/seven_segment.c ****     0x79,       // e
+  57:source\bsw/seven_segment.c ****     0x71,       // f
+  58:source\bsw/seven_segment.c **** };
+  59:source\bsw/seven_segment.c **** 
+  60:source\bsw/seven_segment.c **** /*****************************************************************************/
+  61:source\bsw/seven_segment.c **** /* Local function prototypes ('static')                                      */
+  62:source\bsw/seven_segment.c **** /*****************************************************************************/
+  63:source\bsw/seven_segment.c **** 
+  64:source\bsw/seven_segment.c **** 
+  65:source\bsw/seven_segment.c **** /*****************************************************************************/
+  66:source\bsw/seven_segment.c **** /* Function implementation - global ('extern') and local ('static')          */
+  67:source\bsw/seven_segment.c **** /*****************************************************************************/
+  68:source\bsw/seven_segment.c **** 
+  69:source\bsw/seven_segment.c **** /**
+  70:source\bsw/seven_segment.c ****  * This function initializes the seven segment displays needed for the game.
+  71:source\bsw/seven_segment.c ****  * @param None
+  72:source\bsw/seven_segment.c ****  * @return RC_t Success, if the function executes without any error.
+  73:source\bsw/seven_segment.c ****  */
+  74:source\bsw/seven_segment.c **** RC_t SevenSegment_init()
+  75:source\bsw/seven_segment.c **** {
+  76:source\bsw/seven_segment.c ****     SevenSegmentClear(Seven_Segment_Left);
+  77:source\bsw/seven_segment.c ****     SevenSegmentClear(Seven_Segment_Right);
+  78:source\bsw/seven_segment.c ****     return RC_SUCCESS;
+  79:source\bsw/seven_segment.c **** }
+  80:source\bsw/seven_segment.c **** 
+  81:source\bsw/seven_segment.c **** /**
+  82:source\bsw/seven_segment.c ****  * This function is used to clear the 7 segment displays.
+  83:source\bsw/seven_segment.c ****  * @param Segement_ID - takes the left or right display as parameter
+  84:source\bsw/seven_segment.c ****  * @return RC_t Success, if the function executes without any error.
+  85:source\bsw/seven_segment.c ****  */
+  86:source\bsw/seven_segment.c **** RC_t SevenSegmentClear(mySeven_t Segement_ID)
+  87:source\bsw/seven_segment.c **** {
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 3
+
+
+  28              		.loc 1 87 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 08B5     		push	{r3, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  88:source\bsw/seven_segment.c ****     if(Segement_ID == Seven_Segment_Left)
+  37              		.loc 1 88 0
+  38 0002 0128     		cmp	r0, #1
+  39 0004 02D1     		bne	.L2
+  89:source\bsw/seven_segment.c ****     {
+  90:source\bsw/seven_segment.c ****         SEVEN_Select_Write(1);   
+  40              		.loc 1 90 0
+  41 0006 FFF7FEFF 		bl	SEVEN_Select_Write
+  42              	.LVL1:
+  43 000a 02E0     		b	.L3
+  44              	.LVL2:
+  45              	.L2:
+  91:source\bsw/seven_segment.c ****     }
+  92:source\bsw/seven_segment.c ****     else
+  93:source\bsw/seven_segment.c ****     {
+  94:source\bsw/seven_segment.c ****         SEVEN_Select_Write(0);
+  46              		.loc 1 94 0
+  47 000c 0020     		movs	r0, #0
+  48              	.LVL3:
+  49 000e FFF7FEFF 		bl	SEVEN_Select_Write
+  50              	.LVL4:
+  51              	.L3:
+  95:source\bsw/seven_segment.c ****     }
+  96:source\bsw/seven_segment.c ****     Seven_Segment_Register_Write(0);
+  52              		.loc 1 96 0
+  53 0012 0020     		movs	r0, #0
+  54 0014 FFF7FEFF 		bl	Seven_Segment_Register_Write
+  55              	.LVL5:
+  97:source\bsw/seven_segment.c ****     
+  98:source\bsw/seven_segment.c ****     return RC_SUCCESS;
+  99:source\bsw/seven_segment.c **** }
+  56              		.loc 1 99 0
+  57 0018 0020     		movs	r0, #0
+  58 001a 08BD     		pop	{r3, pc}
+  59              		.cfi_endproc
+  60              	.LFE111:
+  61              		.size	SevenSegmentClear, .-SevenSegmentClear
+  62              		.section	.text.SevenSegment_init,"ax",%progbits
+  63              		.align	2
+  64              		.global	SevenSegment_init
+  65              		.thumb
+  66              		.thumb_func
+  67              		.type	SevenSegment_init, %function
+  68              	SevenSegment_init:
+  69              	.LFB110:
+  75:source\bsw/seven_segment.c ****     SevenSegmentClear(Seven_Segment_Left);
+  70              		.loc 1 75 0
+  71              		.cfi_startproc
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 4
+
+
+  72              		@ args = 0, pretend = 0, frame = 0
+  73              		@ frame_needed = 0, uses_anonymous_args = 0
+  74 0000 08B5     		push	{r3, lr}
+  75              		.cfi_def_cfa_offset 8
+  76              		.cfi_offset 3, -8
+  77              		.cfi_offset 14, -4
+  76:source\bsw/seven_segment.c ****     SevenSegmentClear(Seven_Segment_Right);
+  78              		.loc 1 76 0
+  79 0002 0120     		movs	r0, #1
+  80 0004 FFF7FEFF 		bl	SevenSegmentClear
+  81              	.LVL6:
+  77:source\bsw/seven_segment.c ****     return RC_SUCCESS;
+  82              		.loc 1 77 0
+  83 0008 0020     		movs	r0, #0
+  84 000a FFF7FEFF 		bl	SevenSegmentClear
+  85              	.LVL7:
+  79:source\bsw/seven_segment.c **** 
+  86              		.loc 1 79 0
+  87 000e 0020     		movs	r0, #0
+  88 0010 08BD     		pop	{r3, pc}
+  89              		.cfi_endproc
+  90              	.LFE110:
+  91              		.size	SevenSegment_init, .-SevenSegment_init
+  92 0012 00BF     		.section	.text.Seven_Segment_Write,"ax",%progbits
+  93              		.align	2
+  94              		.global	Seven_Segment_Write
+  95              		.thumb
+  96              		.thumb_func
+  97              		.type	Seven_Segment_Write, %function
+  98              	Seven_Segment_Write:
+  99              	.LFB112:
+ 100:source\bsw/seven_segment.c **** 
+ 101:source\bsw/seven_segment.c **** /**
+ 102:source\bsw/seven_segment.c ****  * This function writes a value to the selected display
+ 103:source\bsw/seven_segment.c ****  * @param pass the mySeven_t id from the enum
+ 104:source\bsw/seven_segment.c ****  * @param value to be displayed 
+ 105:source\bsw/seven_segment.c ****  * @return Success, if the function executes without any error.
+ 106:source\bsw/seven_segment.c ****  */
+ 107:source\bsw/seven_segment.c **** RC_t Seven_Segment_Write(mySeven_t Segment_ID, uint8_t value)
+ 108:source\bsw/seven_segment.c **** {
+ 100              		.loc 1 108 0
+ 101              		.cfi_startproc
+ 102              		@ args = 0, pretend = 0, frame = 0
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104              	.LVL8:
+ 105 0000 10B5     		push	{r4, lr}
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 4, -8
+ 108              		.cfi_offset 14, -4
+ 109 0002 0C46     		mov	r4, r1
+ 109:source\bsw/seven_segment.c ****     SEVEN_Select_Write(Segment_ID);
+ 110              		.loc 1 109 0
+ 111 0004 FFF7FEFF 		bl	SEVEN_Select_Write
+ 112              	.LVL9:
+ 110:source\bsw/seven_segment.c ****     
+ 111:source\bsw/seven_segment.c ****     uint8_t Letter_to_print = Seven_Segment_Lookup[value];
+ 112:source\bsw/seven_segment.c ****     Seven_Segment_Register_Write(Letter_to_print);
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 5
+
+
+ 113              		.loc 1 112 0
+ 114 0008 024B     		ldr	r3, .L9
+ 115 000a 185D     		ldrb	r0, [r3, r4]	@ zero_extendqisi2
+ 116 000c FFF7FEFF 		bl	Seven_Segment_Register_Write
+ 117              	.LVL10:
+ 113:source\bsw/seven_segment.c ****     
+ 114:source\bsw/seven_segment.c ****     if(Letter_to_print > 0xff) return RC_ERROR_BAD_PARAM;
+ 115:source\bsw/seven_segment.c ****     
+ 116:source\bsw/seven_segment.c ****     return RC_SUCCESS;
+ 117:source\bsw/seven_segment.c **** }
+ 118              		.loc 1 117 0
+ 119 0010 0020     		movs	r0, #0
+ 120 0012 10BD     		pop	{r4, pc}
+ 121              	.LVL11:
+ 122              	.L10:
+ 123              		.align	2
+ 124              	.L9:
+ 125 0014 00000000 		.word	.LANCHOR0
+ 126              		.cfi_endproc
+ 127              	.LFE112:
+ 128              		.size	Seven_Segment_Write, .-Seven_Segment_Write
+ 129              		.section	.text.Seven_Segment_Print,"ax",%progbits
+ 130              		.align	2
+ 131              		.global	Seven_Segment_Print
+ 132              		.thumb
+ 133              		.thumb_func
+ 134              		.type	Seven_Segment_Print, %function
+ 135              	Seven_Segment_Print:
+ 136              	.LFB113:
+ 118:source\bsw/seven_segment.c **** 
+ 119:source\bsw/seven_segment.c **** /**
+ 120:source\bsw/seven_segment.c ****  * This function prints the numbers on the selected display
+ 121:source\bsw/seven_segment.c ****  * @param pass the mySeven_t id from the enum
+ 122:source\bsw/seven_segment.c ****  * @return Success, if the function executes without any error.
+ 123:source\bsw/seven_segment.c ****  */
+ 124:source\bsw/seven_segment.c **** RC_t Seven_Segment_Print(mySeven_t Segment_ID)
+ 125:source\bsw/seven_segment.c **** {
+ 137              		.loc 1 125 0
+ 138              		.cfi_startproc
+ 139              		@ args = 0, pretend = 0, frame = 0
+ 140              		@ frame_needed = 0, uses_anonymous_args = 0
+ 141              	.LVL12:
+ 142 0000 38B5     		push	{r3, r4, r5, lr}
+ 143              		.cfi_def_cfa_offset 16
+ 144              		.cfi_offset 3, -16
+ 145              		.cfi_offset 4, -12
+ 146              		.cfi_offset 5, -8
+ 147              		.cfi_offset 14, -4
+ 148 0002 0546     		mov	r5, r0
+ 149              	.LVL13:
+ 150              	.LBB2:
+ 126:source\bsw/seven_segment.c ****     for(uint8_t i = 0; i < 16; i++)
+ 151              		.loc 1 126 0
+ 152 0004 0024     		movs	r4, #0
+ 153 0006 09E0     		b	.L12
+ 154              	.LVL14:
+ 155              	.L13:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 6
+
+
+ 127:source\bsw/seven_segment.c ****     {
+ 128:source\bsw/seven_segment.c ****         Seven_Segment_Write(Segment_ID, i);
+ 156              		.loc 1 128 0 discriminator 3
+ 157 0008 2146     		mov	r1, r4
+ 158 000a 2846     		mov	r0, r5
+ 159 000c FFF7FEFF 		bl	Seven_Segment_Write
+ 160              	.LVL15:
+ 129:source\bsw/seven_segment.c ****         CyDelay(1000);
+ 161              		.loc 1 129 0 discriminator 3
+ 162 0010 4FF47A70 		mov	r0, #1000
+ 163 0014 FFF7FEFF 		bl	CyDelay
+ 164              	.LVL16:
+ 126:source\bsw/seven_segment.c ****     for(uint8_t i = 0; i < 16; i++)
+ 165              		.loc 1 126 0 discriminator 3
+ 166 0018 0134     		adds	r4, r4, #1
+ 167              	.LVL17:
+ 168 001a E4B2     		uxtb	r4, r4
+ 169              	.LVL18:
+ 170              	.L12:
+ 126:source\bsw/seven_segment.c ****     for(uint8_t i = 0; i < 16; i++)
+ 171              		.loc 1 126 0 is_stmt 0 discriminator 1
+ 172 001c 0F2C     		cmp	r4, #15
+ 173 001e F3D9     		bls	.L13
+ 174              	.LBE2:
+ 130:source\bsw/seven_segment.c ****     }
+ 131:source\bsw/seven_segment.c ****     
+ 132:source\bsw/seven_segment.c ****     return RC_SUCCESS;   
+ 133:source\bsw/seven_segment.c **** }...
+ 175              		.loc 1 133 0 is_stmt 1
+ 176 0020 0020     		movs	r0, #0
+ 177 0022 38BD     		pop	{r3, r4, r5, pc}
+ 178              		.cfi_endproc
+ 179              	.LFE113:
+ 180              		.size	Seven_Segment_Print, .-Seven_Segment_Print
+ 181              		.section	.rodata
+ 182              		.align	2
+ 183              		.set	.LANCHOR0,. + 0
+ 184              		.type	Seven_Segment_Lookup, %object
+ 185              		.size	Seven_Segment_Lookup, 16
+ 186              	Seven_Segment_Lookup:
+ 187 0000 3F       		.byte	63
+ 188 0001 06       		.byte	6
+ 189 0002 5B       		.byte	91
+ 190 0003 4F       		.byte	79
+ 191 0004 66       		.byte	102
+ 192 0005 6D       		.byte	109
+ 193 0006 7D       		.byte	125
+ 194 0007 07       		.byte	7
+ 195 0008 7F       		.byte	127
+ 196 0009 6F       		.byte	111
+ 197 000a 77       		.byte	119
+ 198 000b 7C       		.byte	124
+ 199 000c 39       		.byte	57
+ 200 000d 5E       		.byte	94
+ 201 000e 79       		.byte	121
+ 202 000f 71       		.byte	113
+ 203              		.text
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 7
+
+
+ 204              	.Letext0:
+ 205              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 206              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 207              		.file 4 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_types.inc"
+ 208              		.file 5 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_cpu.inc"
+ 209              		.file 6 "source\\bsw\\global.h"
+ 210              		.file 7 "source\\bsw\\seven_segment.h"
+ 211              		.file 8 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_intfunc.inc"
+ 212              		.file 9 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_context.inc"
+ 213              		.file 10 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_primitives.inc"
+ 214              		.file 11 "Generated_Source\\PSoC5/core_cm3.h"
+ 215              		.file 12 "Generated_Source\\PSoC5/SEVEN_Select.h"
+ 216              		.file 13 "Generated_Source\\PSoC5/Seven_Segment_Register.h"
+ 217              		.file 14 "Generated_Source\\PSoC5/CyLib.h"
+ 218              		.section	.debug_info,"",%progbits
+ 219              	.Ldebug_info0:
+ 220 0000 C1030000 		.4byte	0x3c1
+ 221 0004 0400     		.2byte	0x4
+ 222 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 223 000a 04       		.byte	0x4
+ 224 000b 01       		.uleb128 0x1
+ 225 000c 37030000 		.4byte	.LASF70
+ 226 0010 0C       		.byte	0xc
+ 227 0011 B7040000 		.4byte	.LASF71
+ 228 0015 5A020000 		.4byte	.LASF72
+ 229 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 230 001d 00000000 		.4byte	0
+ 231 0021 00000000 		.4byte	.Ldebug_line0
+ 232 0025 02       		.uleb128 0x2
+ 233 0026 01       		.byte	0x1
+ 234 0027 06       		.byte	0x6
+ 235 0028 B9020000 		.4byte	.LASF0
+ 236 002c 03       		.uleb128 0x3
+ 237 002d FC010000 		.4byte	.LASF4
+ 238 0031 02       		.byte	0x2
+ 239 0032 1D       		.byte	0x1d
+ 240 0033 37000000 		.4byte	0x37
+ 241 0037 02       		.uleb128 0x2
+ 242 0038 01       		.byte	0x1
+ 243 0039 08       		.byte	0x8
+ 244 003a 4C020000 		.4byte	.LASF1
+ 245 003e 02       		.uleb128 0x2
+ 246 003f 02       		.byte	0x2
+ 247 0040 05       		.byte	0x5
+ 248 0041 32000000 		.4byte	.LASF2
+ 249 0045 02       		.uleb128 0x2
+ 250 0046 02       		.byte	0x2
+ 251 0047 07       		.byte	0x7
+ 252 0048 24030000 		.4byte	.LASF3
+ 253 004c 03       		.uleb128 0x3
+ 254 004d 80040000 		.4byte	.LASF5
+ 255 0051 02       		.byte	0x2
+ 256 0052 3F       		.byte	0x3f
+ 257 0053 57000000 		.4byte	0x57
+ 258 0057 02       		.uleb128 0x2
+ 259 0058 04       		.byte	0x4
+ 260 0059 05       		.byte	0x5
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 8
+
+
+ 261 005a D3010000 		.4byte	.LASF6
+ 262 005e 02       		.uleb128 0x2
+ 263 005f 04       		.byte	0x4
+ 264 0060 07       		.byte	0x7
+ 265 0061 39040000 		.4byte	.LASF7
+ 266 0065 02       		.uleb128 0x2
+ 267 0066 08       		.byte	0x8
+ 268 0067 05       		.byte	0x5
+ 269 0068 79010000 		.4byte	.LASF8
+ 270 006c 02       		.uleb128 0x2
+ 271 006d 08       		.byte	0x8
+ 272 006e 07       		.byte	0x7
+ 273 006f C5020000 		.4byte	.LASF9
+ 274 0073 04       		.uleb128 0x4
+ 275 0074 04       		.byte	0x4
+ 276 0075 05       		.byte	0x5
+ 277 0076 696E7400 		.ascii	"int\000"
+ 278 007a 02       		.uleb128 0x2
+ 279 007b 04       		.byte	0x4
+ 280 007c 07       		.byte	0x7
+ 281 007d DC020000 		.4byte	.LASF10
+ 282 0081 03       		.uleb128 0x3
+ 283 0082 E5000000 		.4byte	.LASF11
+ 284 0086 03       		.byte	0x3
+ 285 0087 18       		.byte	0x18
+ 286 0088 2C000000 		.4byte	0x2c
+ 287 008c 03       		.uleb128 0x3
+ 288 008d DF030000 		.4byte	.LASF12
+ 289 0091 03       		.byte	0x3
+ 290 0092 2C       		.byte	0x2c
+ 291 0093 4C000000 		.4byte	0x4c
+ 292 0097 02       		.uleb128 0x2
+ 293 0098 04       		.byte	0x4
+ 294 0099 04       		.byte	0x4
+ 295 009a 41010000 		.4byte	.LASF13
+ 296 009e 02       		.uleb128 0x2
+ 297 009f 08       		.byte	0x8
+ 298 00a0 04       		.byte	0x4
+ 299 00a1 4B040000 		.4byte	.LASF14
+ 300 00a5 02       		.uleb128 0x2
+ 301 00a6 01       		.byte	0x1
+ 302 00a7 08       		.byte	0x8
+ 303 00a8 C5030000 		.4byte	.LASF15
+ 304 00ac 02       		.uleb128 0x2
+ 305 00ad 08       		.byte	0x8
+ 306 00ae 04       		.byte	0x4
+ 307 00af 40020000 		.4byte	.LASF16
+ 308 00b3 03       		.uleb128 0x3
+ 309 00b4 1B030000 		.4byte	.LASF17
+ 310 00b8 04       		.byte	0x4
+ 311 00b9 53       		.byte	0x53
+ 312 00ba 73000000 		.4byte	0x73
+ 313 00be 03       		.uleb128 0x3
+ 314 00bf BE000000 		.4byte	.LASF18
+ 315 00c3 04       		.byte	0x4
+ 316 00c4 54       		.byte	0x54
+ 317 00c5 7A000000 		.4byte	0x7a
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 9
+
+
+ 318 00c9 03       		.uleb128 0x3
+ 319 00ca 64040000 		.4byte	.LASF19
+ 320 00ce 05       		.byte	0x5
+ 321 00cf 4D       		.byte	0x4d
+ 322 00d0 BE000000 		.4byte	0xbe
+ 323 00d4 03       		.uleb128 0x3
+ 324 00d5 8F000000 		.4byte	.LASF20
+ 325 00d9 05       		.byte	0x5
+ 326 00da 4F       		.byte	0x4f
+ 327 00db BE000000 		.4byte	0xbe
+ 328 00df 03       		.uleb128 0x3
+ 329 00e0 C8000000 		.4byte	.LASF21
+ 330 00e4 05       		.byte	0x5
+ 331 00e5 78       		.byte	0x78
+ 332 00e6 B3000000 		.4byte	0xb3
+ 333 00ea 02       		.uleb128 0x2
+ 334 00eb 04       		.byte	0x4
+ 335 00ec 07       		.byte	0x7
+ 336 00ed 9C040000 		.4byte	.LASF22
+ 337 00f1 05       		.uleb128 0x5
+ 338 00f2 01       		.byte	0x1
+ 339 00f3 25000000 		.4byte	0x25
+ 340 00f7 06       		.byte	0x6
+ 341 00f8 CF       		.byte	0xcf
+ 342 00f9 9A010000 		.4byte	0x19a
+ 343 00fd 06       		.uleb128 0x6
+ 344 00fe 13000000 		.4byte	.LASF23
+ 345 0102 00       		.byte	0
+ 346 0103 07       		.uleb128 0x7
+ 347 0104 FC040000 		.4byte	.LASF24
+ 348 0108 7F       		.sleb128 -1
+ 349 0109 07       		.uleb128 0x7
+ 350 010a F7020000 		.4byte	.LASF25
+ 351 010e 7E       		.sleb128 -2
+ 352 010f 07       		.uleb128 0x7
+ 353 0110 81000000 		.4byte	.LASF26
+ 354 0114 7D       		.sleb128 -3
+ 355 0115 07       		.uleb128 0x7
+ 356 0116 0D050000 		.4byte	.LASF27
+ 357 011a 7C       		.sleb128 -4
+ 358 011b 07       		.uleb128 0x7
+ 359 011c 32010000 		.4byte	.LASF28
+ 360 0120 7B       		.sleb128 -5
+ 361 0121 07       		.uleb128 0x7
+ 362 0122 3C000000 		.4byte	.LASF29
+ 363 0126 7A       		.sleb128 -6
+ 364 0127 07       		.uleb128 0x7
+ 365 0128 DC010000 		.4byte	.LASF30
+ 366 012c 79       		.sleb128 -7
+ 367 012d 07       		.uleb128 0x7
+ 368 012e CA030000 		.4byte	.LASF31
+ 369 0132 78       		.sleb128 -8
+ 370 0133 07       		.uleb128 0x7
+ 371 0134 05030000 		.4byte	.LASF32
+ 372 0138 77       		.sleb128 -9
+ 373 0139 07       		.uleb128 0x7
+ 374 013a EE010000 		.4byte	.LASF33
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 10
+
+
+ 375 013e 76       		.sleb128 -10
+ 376 013f 07       		.uleb128 0x7
+ 377 0140 3A050000 		.4byte	.LASF34
+ 378 0144 75       		.sleb128 -11
+ 379 0145 07       		.uleb128 0x7
+ 380 0146 E9020000 		.4byte	.LASF35
+ 381 014a 74       		.sleb128 -12
+ 382 014b 07       		.uleb128 0x7
+ 383 014c 52040000 		.4byte	.LASF36
+ 384 0150 73       		.sleb128 -13
+ 385 0151 07       		.uleb128 0x7
+ 386 0152 00000000 		.4byte	.LASF37
+ 387 0156 72       		.sleb128 -14
+ 388 0157 07       		.uleb128 0x7
+ 389 0158 1E000000 		.4byte	.LASF38
+ 390 015c 71       		.sleb128 -15
+ 391 015d 07       		.uleb128 0x7
+ 392 015e 06020000 		.4byte	.LASF39
+ 393 0162 70       		.sleb128 -16
+ 394 0163 07       		.uleb128 0x7
+ 395 0164 97000000 		.4byte	.LASF40
+ 396 0168 6F       		.sleb128 -17
+ 397 0169 07       		.uleb128 0x7
+ 398 016a 4D000000 		.4byte	.LASF41
+ 399 016e 6E       		.sleb128 -18
+ 400 016f 07       		.uleb128 0x7
+ 401 0170 AF010000 		.4byte	.LASF42
+ 402 0174 6D       		.sleb128 -19
+ 403 0175 07       		.uleb128 0x7
+ 404 0176 EE030000 		.4byte	.LASF43
+ 405 017a 6C       		.sleb128 -20
+ 406 017b 07       		.uleb128 0x7
+ 407 017c 17020000 		.4byte	.LASF44
+ 408 0180 6B       		.sleb128 -21
+ 409 0181 07       		.uleb128 0x7
+ 410 0182 A5040000 		.4byte	.LASF45
+ 411 0186 6A       		.sleb128 -22
+ 412 0187 07       		.uleb128 0x7
+ 413 0188 ED000000 		.4byte	.LASF46
+ 414 018c 69       		.sleb128 -23
+ 415 018d 07       		.uleb128 0x7
+ 416 018e C2010000 		.4byte	.LASF47
+ 417 0192 68       		.sleb128 -24
+ 418 0193 07       		.uleb128 0x7
+ 419 0194 60010000 		.4byte	.LASF48
+ 420 0198 67       		.sleb128 -25
+ 421 0199 00       		.byte	0
+ 422 019a 03       		.uleb128 0x3
+ 423 019b 35050000 		.4byte	.LASF49
+ 424 019f 06       		.byte	0x6
+ 425 01a0 EA       		.byte	0xea
+ 426 01a1 F1000000 		.4byte	0xf1
+ 427 01a5 08       		.uleb128 0x8
+ 428 01a6 E7030000 		.4byte	.LASF73
+ 429 01aa 01       		.byte	0x1
+ 430 01ab 37000000 		.4byte	0x37
+ 431 01af 07       		.byte	0x7
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 11
+
+
+ 432 01b0 5D       		.byte	0x5d
+ 433 01b1 C2010000 		.4byte	0x1c2
+ 434 01b5 06       		.uleb128 0x6
+ 435 01b6 01040000 		.4byte	.LASF50
+ 436 01ba 01       		.byte	0x1
+ 437 01bb 06       		.uleb128 0x6
+ 438 01bc 9B010000 		.4byte	.LASF51
+ 439 01c0 00       		.byte	0
+ 440 01c1 00       		.byte	0
+ 441 01c2 03       		.uleb128 0x3
+ 442 01c3 62000000 		.4byte	.LASF52
+ 443 01c7 07       		.byte	0x7
+ 444 01c8 61       		.byte	0x61
+ 445 01c9 A5010000 		.4byte	0x1a5
+ 446 01cd 09       		.uleb128 0x9
+ 447 01ce 14040000 		.4byte	.LASF53
+ 448 01d2 01       		.byte	0x1
+ 449 01d3 56       		.byte	0x56
+ 450 01d4 9A010000 		.4byte	0x19a
+ 451 01d8 00000000 		.4byte	.LFB111
+ 452 01dc 1C000000 		.4byte	.LFE111-.LFB111
+ 453 01e0 01       		.uleb128 0x1
+ 454 01e1 9C       		.byte	0x9c
+ 455 01e2 21020000 		.4byte	0x221
+ 456 01e6 0A       		.uleb128 0xa
+ 457 01e7 34020000 		.4byte	.LASF55
+ 458 01eb 01       		.byte	0x1
+ 459 01ec 56       		.byte	0x56
+ 460 01ed C2010000 		.4byte	0x1c2
+ 461 01f1 00000000 		.4byte	.LLST0
+ 462 01f5 0B       		.uleb128 0xb
+ 463 01f6 0A000000 		.4byte	.LVL1
+ 464 01fa A3030000 		.4byte	0x3a3
+ 465 01fe 0C       		.uleb128 0xc
+ 466 01ff 12000000 		.4byte	.LVL4
+ 467 0203 A3030000 		.4byte	0x3a3
+ 468 0207 11020000 		.4byte	0x211
+ 469 020b 0D       		.uleb128 0xd
+ 470 020c 01       		.uleb128 0x1
+ 471 020d 50       		.byte	0x50
+ 472 020e 01       		.uleb128 0x1
+ 473 020f 30       		.byte	0x30
+ 474 0210 00       		.byte	0
+ 475 0211 0E       		.uleb128 0xe
+ 476 0212 18000000 		.4byte	.LVL5
+ 477 0216 AE030000 		.4byte	0x3ae
+ 478 021a 0D       		.uleb128 0xd
+ 479 021b 01       		.uleb128 0x1
+ 480 021c 50       		.byte	0x50
+ 481 021d 01       		.uleb128 0x1
+ 482 021e 30       		.byte	0x30
+ 483 021f 00       		.byte	0
+ 484 0220 00       		.byte	0
+ 485 0221 0F       		.uleb128 0xf
+ 486 0222 8A040000 		.4byte	.LASF74
+ 487 0226 01       		.byte	0x1
+ 488 0227 4A       		.byte	0x4a
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 12
+
+
+ 489 0228 9A010000 		.4byte	0x19a
+ 490 022c 00000000 		.4byte	.LFB110
+ 491 0230 12000000 		.4byte	.LFE110-.LFB110
+ 492 0234 01       		.uleb128 0x1
+ 493 0235 9C       		.byte	0x9c
+ 494 0236 5D020000 		.4byte	0x25d
+ 495 023a 0C       		.uleb128 0xc
+ 496 023b 08000000 		.4byte	.LVL6
+ 497 023f CD010000 		.4byte	0x1cd
+ 498 0243 4D020000 		.4byte	0x24d
+ 499 0247 0D       		.uleb128 0xd
+ 500 0248 01       		.uleb128 0x1
+ 501 0249 50       		.byte	0x50
+ 502 024a 01       		.uleb128 0x1
+ 503 024b 31       		.byte	0x31
+ 504 024c 00       		.byte	0
+ 505 024d 0E       		.uleb128 0xe
+ 506 024e 0E000000 		.4byte	.LVL7
+ 507 0252 CD010000 		.4byte	0x1cd
+ 508 0256 0D       		.uleb128 0xd
+ 509 0257 01       		.uleb128 0x1
+ 510 0258 50       		.byte	0x50
+ 511 0259 01       		.uleb128 0x1
+ 512 025a 30       		.byte	0x30
+ 513 025b 00       		.byte	0
+ 514 025c 00       		.byte	0
+ 515 025d 09       		.uleb128 0x9
+ 516 025e 87010000 		.4byte	.LASF54
+ 517 0262 01       		.byte	0x1
+ 518 0263 6B       		.byte	0x6b
+ 519 0264 9A010000 		.4byte	0x19a
+ 520 0268 00000000 		.4byte	.LFB112
+ 521 026c 18000000 		.4byte	.LFE112-.LFB112
+ 522 0270 01       		.uleb128 0x1
+ 523 0271 9C       		.byte	0x9c
+ 524 0272 C5020000 		.4byte	0x2c5
+ 525 0276 0A       		.uleb128 0xa
+ 526 0277 29020000 		.4byte	.LASF56
+ 527 027b 01       		.byte	0x1
+ 528 027c 6B       		.byte	0x6b
+ 529 027d C2010000 		.4byte	0x1c2
+ 530 0281 3A000000 		.4byte	.LLST1
+ 531 0285 0A       		.uleb128 0xa
+ 532 0286 CF000000 		.4byte	.LASF57
+ 533 028a 01       		.byte	0x1
+ 534 028b 6B       		.byte	0x6b
+ 535 028c 81000000 		.4byte	0x81
+ 536 0290 5B000000 		.4byte	.LLST2
+ 537 0294 10       		.uleb128 0x10
+ 538 0295 D5000000 		.4byte	.LASF59
+ 539 0299 01       		.byte	0x1
+ 540 029a 6F       		.byte	0x6f
+ 541 029b 81000000 		.4byte	0x81
+ 542 029f 7C000000 		.4byte	.LLST3
+ 543 02a3 0B       		.uleb128 0xb
+ 544 02a4 08000000 		.4byte	.LVL9
+ 545 02a8 A3030000 		.4byte	0x3a3
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 13
+
+
+ 546 02ac 0E       		.uleb128 0xe
+ 547 02ad 10000000 		.4byte	.LVL10
+ 548 02b1 AE030000 		.4byte	0x3ae
+ 549 02b5 0D       		.uleb128 0xd
+ 550 02b6 01       		.uleb128 0x1
+ 551 02b7 50       		.byte	0x50
+ 552 02b8 0A       		.uleb128 0xa
+ 553 02b9 74       		.byte	0x74
+ 554 02ba 00       		.sleb128 0
+ 555 02bb 03       		.byte	0x3
+ 556 02bc 00000000 		.4byte	.LANCHOR0
+ 557 02c0 22       		.byte	0x22
+ 558 02c1 94       		.byte	0x94
+ 559 02c2 01       		.byte	0x1
+ 560 02c3 00       		.byte	0
+ 561 02c4 00       		.byte	0
+ 562 02c5 09       		.uleb128 0x9
+ 563 02c6 6C040000 		.4byte	.LASF58
+ 564 02ca 01       		.byte	0x1
+ 565 02cb 7C       		.byte	0x7c
+ 566 02cc 9A010000 		.4byte	0x19a
+ 567 02d0 00000000 		.4byte	.LFB113
+ 568 02d4 24000000 		.4byte	.LFE113-.LFB113
+ 569 02d8 01       		.uleb128 0x1
+ 570 02d9 9C       		.byte	0x9c
+ 571 02da 30030000 		.4byte	0x330
+ 572 02de 0A       		.uleb128 0xa
+ 573 02df 29020000 		.4byte	.LASF56
+ 574 02e3 01       		.byte	0x1
+ 575 02e4 7C       		.byte	0x7c
+ 576 02e5 C2010000 		.4byte	0x1c2
+ 577 02e9 96000000 		.4byte	.LLST4
+ 578 02ed 11       		.uleb128 0x11
+ 579 02ee 04000000 		.4byte	.LBB2
+ 580 02f2 1C000000 		.4byte	.LBE2-.LBB2
+ 581 02f6 12       		.uleb128 0x12
+ 582 02f7 6900     		.ascii	"i\000"
+ 583 02f9 01       		.byte	0x1
+ 584 02fa 7E       		.byte	0x7e
+ 585 02fb 81000000 		.4byte	0x81
+ 586 02ff B7000000 		.4byte	.LLST5
+ 587 0303 0C       		.uleb128 0xc
+ 588 0304 10000000 		.4byte	.LVL15
+ 589 0308 5D020000 		.4byte	0x25d
+ 590 030c 1D030000 		.4byte	0x31d
+ 591 0310 0D       		.uleb128 0xd
+ 592 0311 01       		.uleb128 0x1
+ 593 0312 50       		.byte	0x50
+ 594 0313 02       		.uleb128 0x2
+ 595 0314 75       		.byte	0x75
+ 596 0315 00       		.sleb128 0
+ 597 0316 0D       		.uleb128 0xd
+ 598 0317 01       		.uleb128 0x1
+ 599 0318 51       		.byte	0x51
+ 600 0319 02       		.uleb128 0x2
+ 601 031a 74       		.byte	0x74
+ 602 031b 00       		.sleb128 0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 14
+
+
+ 603 031c 00       		.byte	0
+ 604 031d 0E       		.uleb128 0xe
+ 605 031e 18000000 		.4byte	.LVL16
+ 606 0322 B9030000 		.4byte	0x3b9
+ 607 0326 0D       		.uleb128 0xd
+ 608 0327 01       		.uleb128 0x1
+ 609 0328 50       		.byte	0x50
+ 610 0329 03       		.uleb128 0x3
+ 611 032a 0A       		.byte	0xa
+ 612 032b E803     		.2byte	0x3e8
+ 613 032d 00       		.byte	0
+ 614 032e 00       		.byte	0
+ 615 032f 00       		.byte	0
+ 616 0330 13       		.uleb128 0x13
+ 617 0331 40030000 		.4byte	0x340
+ 618 0335 40030000 		.4byte	0x340
+ 619 0339 14       		.uleb128 0x14
+ 620 033a EA000000 		.4byte	0xea
+ 621 033e 0F       		.byte	0xf
+ 622 033f 00       		.byte	0
+ 623 0340 15       		.uleb128 0x15
+ 624 0341 81000000 		.4byte	0x81
+ 625 0345 16       		.uleb128 0x16
+ 626 0346 6C000000 		.4byte	.LASF60
+ 627 034a 01       		.byte	0x1
+ 628 034b 29       		.byte	0x29
+ 629 034c 56030000 		.4byte	0x356
+ 630 0350 05       		.uleb128 0x5
+ 631 0351 03       		.byte	0x3
+ 632 0352 00000000 		.4byte	Seven_Segment_Lookup
+ 633 0356 15       		.uleb128 0x15
+ 634 0357 30030000 		.4byte	0x330
+ 635 035b 17       		.uleb128 0x17
+ 636 035c 1D050000 		.4byte	.LASF61
+ 637 0360 08       		.byte	0x8
+ 638 0361 40       		.byte	0x40
+ 639 0362 C9000000 		.4byte	0xc9
+ 640 0366 17       		.uleb128 0x17
+ 641 0367 47010000 		.4byte	.LASF62
+ 642 036b 08       		.byte	0x8
+ 643 036c 47       		.byte	0x47
+ 644 036d D4000000 		.4byte	0xd4
+ 645 0371 17       		.uleb128 0x17
+ 646 0372 26040000 		.4byte	.LASF63
+ 647 0376 08       		.byte	0x8
+ 648 0377 4A       		.byte	0x4a
+ 649 0378 C9000000 		.4byte	0xc9
+ 650 037c 17       		.uleb128 0x17
+ 651 037d 19010000 		.4byte	.LASF64
+ 652 0381 09       		.byte	0x9
+ 653 0382 48       		.byte	0x48
+ 654 0383 DF000000 		.4byte	0xdf
+ 655 0387 17       		.uleb128 0x17
+ 656 0388 04010000 		.4byte	.LASF65
+ 657 038c 0A       		.byte	0xa
+ 658 038d 44       		.byte	0x44
+ 659 038e C9000000 		.4byte	0xc9
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 15
+
+
+ 660 0392 18       		.uleb128 0x18
+ 661 0393 EF040000 		.4byte	.LASF66
+ 662 0397 0B       		.byte	0xb
+ 663 0398 1207     		.2byte	0x712
+ 664 039a 9E030000 		.4byte	0x39e
+ 665 039e 19       		.uleb128 0x19
+ 666 039f 8C000000 		.4byte	0x8c
+ 667 03a3 1A       		.uleb128 0x1a
+ 668 03a4 AB000000 		.4byte	.LASF67
+ 669 03a8 AB000000 		.4byte	.LASF67
+ 670 03ac 0C       		.byte	0xc
+ 671 03ad 26       		.byte	0x26
+ 672 03ae 1A       		.uleb128 0x1a
+ 673 03af D2040000 		.4byte	.LASF68
+ 674 03b3 D2040000 		.4byte	.LASF68
+ 675 03b7 0D       		.byte	0xd
+ 676 03b8 2F       		.byte	0x2f
+ 677 03b9 1A       		.uleb128 0x1a
+ 678 03ba 05050000 		.4byte	.LASF69
+ 679 03be 05050000 		.4byte	.LASF69
+ 680 03c2 0E       		.byte	0xe
+ 681 03c3 76       		.byte	0x76
+ 682 03c4 00       		.byte	0
+ 683              		.section	.debug_abbrev,"",%progbits
+ 684              	.Ldebug_abbrev0:
+ 685 0000 01       		.uleb128 0x1
+ 686 0001 11       		.uleb128 0x11
+ 687 0002 01       		.byte	0x1
+ 688 0003 25       		.uleb128 0x25
+ 689 0004 0E       		.uleb128 0xe
+ 690 0005 13       		.uleb128 0x13
+ 691 0006 0B       		.uleb128 0xb
+ 692 0007 03       		.uleb128 0x3
+ 693 0008 0E       		.uleb128 0xe
+ 694 0009 1B       		.uleb128 0x1b
+ 695 000a 0E       		.uleb128 0xe
+ 696 000b 55       		.uleb128 0x55
+ 697 000c 17       		.uleb128 0x17
+ 698 000d 11       		.uleb128 0x11
+ 699 000e 01       		.uleb128 0x1
+ 700 000f 10       		.uleb128 0x10
+ 701 0010 17       		.uleb128 0x17
+ 702 0011 00       		.byte	0
+ 703 0012 00       		.byte	0
+ 704 0013 02       		.uleb128 0x2
+ 705 0014 24       		.uleb128 0x24
+ 706 0015 00       		.byte	0
+ 707 0016 0B       		.uleb128 0xb
+ 708 0017 0B       		.uleb128 0xb
+ 709 0018 3E       		.uleb128 0x3e
+ 710 0019 0B       		.uleb128 0xb
+ 711 001a 03       		.uleb128 0x3
+ 712 001b 0E       		.uleb128 0xe
+ 713 001c 00       		.byte	0
+ 714 001d 00       		.byte	0
+ 715 001e 03       		.uleb128 0x3
+ 716 001f 16       		.uleb128 0x16
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 16
+
+
+ 717 0020 00       		.byte	0
+ 718 0021 03       		.uleb128 0x3
+ 719 0022 0E       		.uleb128 0xe
+ 720 0023 3A       		.uleb128 0x3a
+ 721 0024 0B       		.uleb128 0xb
+ 722 0025 3B       		.uleb128 0x3b
+ 723 0026 0B       		.uleb128 0xb
+ 724 0027 49       		.uleb128 0x49
+ 725 0028 13       		.uleb128 0x13
+ 726 0029 00       		.byte	0
+ 727 002a 00       		.byte	0
+ 728 002b 04       		.uleb128 0x4
+ 729 002c 24       		.uleb128 0x24
+ 730 002d 00       		.byte	0
+ 731 002e 0B       		.uleb128 0xb
+ 732 002f 0B       		.uleb128 0xb
+ 733 0030 3E       		.uleb128 0x3e
+ 734 0031 0B       		.uleb128 0xb
+ 735 0032 03       		.uleb128 0x3
+ 736 0033 08       		.uleb128 0x8
+ 737 0034 00       		.byte	0
+ 738 0035 00       		.byte	0
+ 739 0036 05       		.uleb128 0x5
+ 740 0037 04       		.uleb128 0x4
+ 741 0038 01       		.byte	0x1
+ 742 0039 0B       		.uleb128 0xb
+ 743 003a 0B       		.uleb128 0xb
+ 744 003b 49       		.uleb128 0x49
+ 745 003c 13       		.uleb128 0x13
+ 746 003d 3A       		.uleb128 0x3a
+ 747 003e 0B       		.uleb128 0xb
+ 748 003f 3B       		.uleb128 0x3b
+ 749 0040 0B       		.uleb128 0xb
+ 750 0041 01       		.uleb128 0x1
+ 751 0042 13       		.uleb128 0x13
+ 752 0043 00       		.byte	0
+ 753 0044 00       		.byte	0
+ 754 0045 06       		.uleb128 0x6
+ 755 0046 28       		.uleb128 0x28
+ 756 0047 00       		.byte	0
+ 757 0048 03       		.uleb128 0x3
+ 758 0049 0E       		.uleb128 0xe
+ 759 004a 1C       		.uleb128 0x1c
+ 760 004b 0B       		.uleb128 0xb
+ 761 004c 00       		.byte	0
+ 762 004d 00       		.byte	0
+ 763 004e 07       		.uleb128 0x7
+ 764 004f 28       		.uleb128 0x28
+ 765 0050 00       		.byte	0
+ 766 0051 03       		.uleb128 0x3
+ 767 0052 0E       		.uleb128 0xe
+ 768 0053 1C       		.uleb128 0x1c
+ 769 0054 0D       		.uleb128 0xd
+ 770 0055 00       		.byte	0
+ 771 0056 00       		.byte	0
+ 772 0057 08       		.uleb128 0x8
+ 773 0058 04       		.uleb128 0x4
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 17
+
+
+ 774 0059 01       		.byte	0x1
+ 775 005a 03       		.uleb128 0x3
+ 776 005b 0E       		.uleb128 0xe
+ 777 005c 0B       		.uleb128 0xb
+ 778 005d 0B       		.uleb128 0xb
+ 779 005e 49       		.uleb128 0x49
+ 780 005f 13       		.uleb128 0x13
+ 781 0060 3A       		.uleb128 0x3a
+ 782 0061 0B       		.uleb128 0xb
+ 783 0062 3B       		.uleb128 0x3b
+ 784 0063 0B       		.uleb128 0xb
+ 785 0064 01       		.uleb128 0x1
+ 786 0065 13       		.uleb128 0x13
+ 787 0066 00       		.byte	0
+ 788 0067 00       		.byte	0
+ 789 0068 09       		.uleb128 0x9
+ 790 0069 2E       		.uleb128 0x2e
+ 791 006a 01       		.byte	0x1
+ 792 006b 3F       		.uleb128 0x3f
+ 793 006c 19       		.uleb128 0x19
+ 794 006d 03       		.uleb128 0x3
+ 795 006e 0E       		.uleb128 0xe
+ 796 006f 3A       		.uleb128 0x3a
+ 797 0070 0B       		.uleb128 0xb
+ 798 0071 3B       		.uleb128 0x3b
+ 799 0072 0B       		.uleb128 0xb
+ 800 0073 27       		.uleb128 0x27
+ 801 0074 19       		.uleb128 0x19
+ 802 0075 49       		.uleb128 0x49
+ 803 0076 13       		.uleb128 0x13
+ 804 0077 11       		.uleb128 0x11
+ 805 0078 01       		.uleb128 0x1
+ 806 0079 12       		.uleb128 0x12
+ 807 007a 06       		.uleb128 0x6
+ 808 007b 40       		.uleb128 0x40
+ 809 007c 18       		.uleb128 0x18
+ 810 007d 9742     		.uleb128 0x2117
+ 811 007f 19       		.uleb128 0x19
+ 812 0080 01       		.uleb128 0x1
+ 813 0081 13       		.uleb128 0x13
+ 814 0082 00       		.byte	0
+ 815 0083 00       		.byte	0
+ 816 0084 0A       		.uleb128 0xa
+ 817 0085 05       		.uleb128 0x5
+ 818 0086 00       		.byte	0
+ 819 0087 03       		.uleb128 0x3
+ 820 0088 0E       		.uleb128 0xe
+ 821 0089 3A       		.uleb128 0x3a
+ 822 008a 0B       		.uleb128 0xb
+ 823 008b 3B       		.uleb128 0x3b
+ 824 008c 0B       		.uleb128 0xb
+ 825 008d 49       		.uleb128 0x49
+ 826 008e 13       		.uleb128 0x13
+ 827 008f 02       		.uleb128 0x2
+ 828 0090 17       		.uleb128 0x17
+ 829 0091 00       		.byte	0
+ 830 0092 00       		.byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 18
+
+
+ 831 0093 0B       		.uleb128 0xb
+ 832 0094 898201   		.uleb128 0x4109
+ 833 0097 00       		.byte	0
+ 834 0098 11       		.uleb128 0x11
+ 835 0099 01       		.uleb128 0x1
+ 836 009a 31       		.uleb128 0x31
+ 837 009b 13       		.uleb128 0x13
+ 838 009c 00       		.byte	0
+ 839 009d 00       		.byte	0
+ 840 009e 0C       		.uleb128 0xc
+ 841 009f 898201   		.uleb128 0x4109
+ 842 00a2 01       		.byte	0x1
+ 843 00a3 11       		.uleb128 0x11
+ 844 00a4 01       		.uleb128 0x1
+ 845 00a5 31       		.uleb128 0x31
+ 846 00a6 13       		.uleb128 0x13
+ 847 00a7 01       		.uleb128 0x1
+ 848 00a8 13       		.uleb128 0x13
+ 849 00a9 00       		.byte	0
+ 850 00aa 00       		.byte	0
+ 851 00ab 0D       		.uleb128 0xd
+ 852 00ac 8A8201   		.uleb128 0x410a
+ 853 00af 00       		.byte	0
+ 854 00b0 02       		.uleb128 0x2
+ 855 00b1 18       		.uleb128 0x18
+ 856 00b2 9142     		.uleb128 0x2111
+ 857 00b4 18       		.uleb128 0x18
+ 858 00b5 00       		.byte	0
+ 859 00b6 00       		.byte	0
+ 860 00b7 0E       		.uleb128 0xe
+ 861 00b8 898201   		.uleb128 0x4109
+ 862 00bb 01       		.byte	0x1
+ 863 00bc 11       		.uleb128 0x11
+ 864 00bd 01       		.uleb128 0x1
+ 865 00be 31       		.uleb128 0x31
+ 866 00bf 13       		.uleb128 0x13
+ 867 00c0 00       		.byte	0
+ 868 00c1 00       		.byte	0
+ 869 00c2 0F       		.uleb128 0xf
+ 870 00c3 2E       		.uleb128 0x2e
+ 871 00c4 01       		.byte	0x1
+ 872 00c5 3F       		.uleb128 0x3f
+ 873 00c6 19       		.uleb128 0x19
+ 874 00c7 03       		.uleb128 0x3
+ 875 00c8 0E       		.uleb128 0xe
+ 876 00c9 3A       		.uleb128 0x3a
+ 877 00ca 0B       		.uleb128 0xb
+ 878 00cb 3B       		.uleb128 0x3b
+ 879 00cc 0B       		.uleb128 0xb
+ 880 00cd 49       		.uleb128 0x49
+ 881 00ce 13       		.uleb128 0x13
+ 882 00cf 11       		.uleb128 0x11
+ 883 00d0 01       		.uleb128 0x1
+ 884 00d1 12       		.uleb128 0x12
+ 885 00d2 06       		.uleb128 0x6
+ 886 00d3 40       		.uleb128 0x40
+ 887 00d4 18       		.uleb128 0x18
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 19
+
+
+ 888 00d5 9742     		.uleb128 0x2117
+ 889 00d7 19       		.uleb128 0x19
+ 890 00d8 01       		.uleb128 0x1
+ 891 00d9 13       		.uleb128 0x13
+ 892 00da 00       		.byte	0
+ 893 00db 00       		.byte	0
+ 894 00dc 10       		.uleb128 0x10
+ 895 00dd 34       		.uleb128 0x34
+ 896 00de 00       		.byte	0
+ 897 00df 03       		.uleb128 0x3
+ 898 00e0 0E       		.uleb128 0xe
+ 899 00e1 3A       		.uleb128 0x3a
+ 900 00e2 0B       		.uleb128 0xb
+ 901 00e3 3B       		.uleb128 0x3b
+ 902 00e4 0B       		.uleb128 0xb
+ 903 00e5 49       		.uleb128 0x49
+ 904 00e6 13       		.uleb128 0x13
+ 905 00e7 02       		.uleb128 0x2
+ 906 00e8 17       		.uleb128 0x17
+ 907 00e9 00       		.byte	0
+ 908 00ea 00       		.byte	0
+ 909 00eb 11       		.uleb128 0x11
+ 910 00ec 0B       		.uleb128 0xb
+ 911 00ed 01       		.byte	0x1
+ 912 00ee 11       		.uleb128 0x11
+ 913 00ef 01       		.uleb128 0x1
+ 914 00f0 12       		.uleb128 0x12
+ 915 00f1 06       		.uleb128 0x6
+ 916 00f2 00       		.byte	0
+ 917 00f3 00       		.byte	0
+ 918 00f4 12       		.uleb128 0x12
+ 919 00f5 34       		.uleb128 0x34
+ 920 00f6 00       		.byte	0
+ 921 00f7 03       		.uleb128 0x3
+ 922 00f8 08       		.uleb128 0x8
+ 923 00f9 3A       		.uleb128 0x3a
+ 924 00fa 0B       		.uleb128 0xb
+ 925 00fb 3B       		.uleb128 0x3b
+ 926 00fc 0B       		.uleb128 0xb
+ 927 00fd 49       		.uleb128 0x49
+ 928 00fe 13       		.uleb128 0x13
+ 929 00ff 02       		.uleb128 0x2
+ 930 0100 17       		.uleb128 0x17
+ 931 0101 00       		.byte	0
+ 932 0102 00       		.byte	0
+ 933 0103 13       		.uleb128 0x13
+ 934 0104 01       		.uleb128 0x1
+ 935 0105 01       		.byte	0x1
+ 936 0106 49       		.uleb128 0x49
+ 937 0107 13       		.uleb128 0x13
+ 938 0108 01       		.uleb128 0x1
+ 939 0109 13       		.uleb128 0x13
+ 940 010a 00       		.byte	0
+ 941 010b 00       		.byte	0
+ 942 010c 14       		.uleb128 0x14
+ 943 010d 21       		.uleb128 0x21
+ 944 010e 00       		.byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 20
+
+
+ 945 010f 49       		.uleb128 0x49
+ 946 0110 13       		.uleb128 0x13
+ 947 0111 2F       		.uleb128 0x2f
+ 948 0112 0B       		.uleb128 0xb
+ 949 0113 00       		.byte	0
+ 950 0114 00       		.byte	0
+ 951 0115 15       		.uleb128 0x15
+ 952 0116 26       		.uleb128 0x26
+ 953 0117 00       		.byte	0
+ 954 0118 49       		.uleb128 0x49
+ 955 0119 13       		.uleb128 0x13
+ 956 011a 00       		.byte	0
+ 957 011b 00       		.byte	0
+ 958 011c 16       		.uleb128 0x16
+ 959 011d 34       		.uleb128 0x34
+ 960 011e 00       		.byte	0
+ 961 011f 03       		.uleb128 0x3
+ 962 0120 0E       		.uleb128 0xe
+ 963 0121 3A       		.uleb128 0x3a
+ 964 0122 0B       		.uleb128 0xb
+ 965 0123 3B       		.uleb128 0x3b
+ 966 0124 0B       		.uleb128 0xb
+ 967 0125 49       		.uleb128 0x49
+ 968 0126 13       		.uleb128 0x13
+ 969 0127 02       		.uleb128 0x2
+ 970 0128 18       		.uleb128 0x18
+ 971 0129 00       		.byte	0
+ 972 012a 00       		.byte	0
+ 973 012b 17       		.uleb128 0x17
+ 974 012c 34       		.uleb128 0x34
+ 975 012d 00       		.byte	0
+ 976 012e 03       		.uleb128 0x3
+ 977 012f 0E       		.uleb128 0xe
+ 978 0130 3A       		.uleb128 0x3a
+ 979 0131 0B       		.uleb128 0xb
+ 980 0132 3B       		.uleb128 0x3b
+ 981 0133 0B       		.uleb128 0xb
+ 982 0134 49       		.uleb128 0x49
+ 983 0135 13       		.uleb128 0x13
+ 984 0136 3F       		.uleb128 0x3f
+ 985 0137 19       		.uleb128 0x19
+ 986 0138 3C       		.uleb128 0x3c
+ 987 0139 19       		.uleb128 0x19
+ 988 013a 00       		.byte	0
+ 989 013b 00       		.byte	0
+ 990 013c 18       		.uleb128 0x18
+ 991 013d 34       		.uleb128 0x34
+ 992 013e 00       		.byte	0
+ 993 013f 03       		.uleb128 0x3
+ 994 0140 0E       		.uleb128 0xe
+ 995 0141 3A       		.uleb128 0x3a
+ 996 0142 0B       		.uleb128 0xb
+ 997 0143 3B       		.uleb128 0x3b
+ 998 0144 05       		.uleb128 0x5
+ 999 0145 49       		.uleb128 0x49
+ 1000 0146 13       		.uleb128 0x13
+ 1001 0147 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 21
+
+
+ 1002 0148 19       		.uleb128 0x19
+ 1003 0149 3C       		.uleb128 0x3c
+ 1004 014a 19       		.uleb128 0x19
+ 1005 014b 00       		.byte	0
+ 1006 014c 00       		.byte	0
+ 1007 014d 19       		.uleb128 0x19
+ 1008 014e 35       		.uleb128 0x35
+ 1009 014f 00       		.byte	0
+ 1010 0150 49       		.uleb128 0x49
+ 1011 0151 13       		.uleb128 0x13
+ 1012 0152 00       		.byte	0
+ 1013 0153 00       		.byte	0
+ 1014 0154 1A       		.uleb128 0x1a
+ 1015 0155 2E       		.uleb128 0x2e
+ 1016 0156 00       		.byte	0
+ 1017 0157 3F       		.uleb128 0x3f
+ 1018 0158 19       		.uleb128 0x19
+ 1019 0159 3C       		.uleb128 0x3c
+ 1020 015a 19       		.uleb128 0x19
+ 1021 015b 6E       		.uleb128 0x6e
+ 1022 015c 0E       		.uleb128 0xe
+ 1023 015d 03       		.uleb128 0x3
+ 1024 015e 0E       		.uleb128 0xe
+ 1025 015f 3A       		.uleb128 0x3a
+ 1026 0160 0B       		.uleb128 0xb
+ 1027 0161 3B       		.uleb128 0x3b
+ 1028 0162 0B       		.uleb128 0xb
+ 1029 0163 00       		.byte	0
+ 1030 0164 00       		.byte	0
+ 1031 0165 00       		.byte	0
+ 1032              		.section	.debug_loc,"",%progbits
+ 1033              	.Ldebug_loc0:
+ 1034              	.LLST0:
+ 1035 0000 00000000 		.4byte	.LVL0
+ 1036 0004 09000000 		.4byte	.LVL1-1
+ 1037 0008 0100     		.2byte	0x1
+ 1038 000a 50       		.byte	0x50
+ 1039 000b 09000000 		.4byte	.LVL1-1
+ 1040 000f 0C000000 		.4byte	.LVL2
+ 1041 0013 0400     		.2byte	0x4
+ 1042 0015 F3       		.byte	0xf3
+ 1043 0016 01       		.uleb128 0x1
+ 1044 0017 50       		.byte	0x50
+ 1045 0018 9F       		.byte	0x9f
+ 1046 0019 0C000000 		.4byte	.LVL2
+ 1047 001d 0E000000 		.4byte	.LVL3
+ 1048 0021 0100     		.2byte	0x1
+ 1049 0023 50       		.byte	0x50
+ 1050 0024 0E000000 		.4byte	.LVL3
+ 1051 0028 1C000000 		.4byte	.LFE111
+ 1052 002c 0400     		.2byte	0x4
+ 1053 002e F3       		.byte	0xf3
+ 1054 002f 01       		.uleb128 0x1
+ 1055 0030 50       		.byte	0x50
+ 1056 0031 9F       		.byte	0x9f
+ 1057 0032 00000000 		.4byte	0
+ 1058 0036 00000000 		.4byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 22
+
+
+ 1059              	.LLST1:
+ 1060 003a 00000000 		.4byte	.LVL8
+ 1061 003e 07000000 		.4byte	.LVL9-1
+ 1062 0042 0100     		.2byte	0x1
+ 1063 0044 50       		.byte	0x50
+ 1064 0045 07000000 		.4byte	.LVL9-1
+ 1065 0049 18000000 		.4byte	.LFE112
+ 1066 004d 0400     		.2byte	0x4
+ 1067 004f F3       		.byte	0xf3
+ 1068 0050 01       		.uleb128 0x1
+ 1069 0051 50       		.byte	0x50
+ 1070 0052 9F       		.byte	0x9f
+ 1071 0053 00000000 		.4byte	0
+ 1072 0057 00000000 		.4byte	0
+ 1073              	.LLST2:
+ 1074 005b 00000000 		.4byte	.LVL8
+ 1075 005f 07000000 		.4byte	.LVL9-1
+ 1076 0063 0100     		.2byte	0x1
+ 1077 0065 51       		.byte	0x51
+ 1078 0066 07000000 		.4byte	.LVL9-1
+ 1079 006a 18000000 		.4byte	.LFE112
+ 1080 006e 0400     		.2byte	0x4
+ 1081 0070 F3       		.byte	0xf3
+ 1082 0071 01       		.uleb128 0x1
+ 1083 0072 51       		.byte	0x51
+ 1084 0073 9F       		.byte	0x9f
+ 1085 0074 00000000 		.4byte	0
+ 1086 0078 00000000 		.4byte	0
+ 1087              	.LLST3:
+ 1088 007c 08000000 		.4byte	.LVL9
+ 1089 0080 14000000 		.4byte	.LVL11
+ 1090 0084 0800     		.2byte	0x8
+ 1091 0086 74       		.byte	0x74
+ 1092 0087 00       		.sleb128 0
+ 1093 0088 03       		.byte	0x3
+ 1094 0089 00000000 		.4byte	.LANCHOR0
+ 1095 008d 22       		.byte	0x22
+ 1096 008e 00000000 		.4byte	0
+ 1097 0092 00000000 		.4byte	0
+ 1098              	.LLST4:
+ 1099 0096 00000000 		.4byte	.LVL12
+ 1100 009a 08000000 		.4byte	.LVL14
+ 1101 009e 0100     		.2byte	0x1
+ 1102 00a0 50       		.byte	0x50
+ 1103 00a1 08000000 		.4byte	.LVL14
+ 1104 00a5 24000000 		.4byte	.LFE113
+ 1105 00a9 0400     		.2byte	0x4
+ 1106 00ab F3       		.byte	0xf3
+ 1107 00ac 01       		.uleb128 0x1
+ 1108 00ad 50       		.byte	0x50
+ 1109 00ae 9F       		.byte	0x9f
+ 1110 00af 00000000 		.4byte	0
+ 1111 00b3 00000000 		.4byte	0
+ 1112              	.LLST5:
+ 1113 00b7 04000000 		.4byte	.LVL13
+ 1114 00bb 08000000 		.4byte	.LVL14
+ 1115 00bf 0200     		.2byte	0x2
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 23
+
+
+ 1116 00c1 30       		.byte	0x30
+ 1117 00c2 9F       		.byte	0x9f
+ 1118 00c3 08000000 		.4byte	.LVL14
+ 1119 00c7 1A000000 		.4byte	.LVL17
+ 1120 00cb 0100     		.2byte	0x1
+ 1121 00cd 54       		.byte	0x54
+ 1122 00ce 1C000000 		.4byte	.LVL18
+ 1123 00d2 24000000 		.4byte	.LFE113
+ 1124 00d6 0100     		.2byte	0x1
+ 1125 00d8 54       		.byte	0x54
+ 1126 00d9 00000000 		.4byte	0
+ 1127 00dd 00000000 		.4byte	0
+ 1128              		.section	.debug_aranges,"",%progbits
+ 1129 0000 34000000 		.4byte	0x34
+ 1130 0004 0200     		.2byte	0x2
+ 1131 0006 00000000 		.4byte	.Ldebug_info0
+ 1132 000a 04       		.byte	0x4
+ 1133 000b 00       		.byte	0
+ 1134 000c 0000     		.2byte	0
+ 1135 000e 0000     		.2byte	0
+ 1136 0010 00000000 		.4byte	.LFB111
+ 1137 0014 1C000000 		.4byte	.LFE111-.LFB111
+ 1138 0018 00000000 		.4byte	.LFB110
+ 1139 001c 12000000 		.4byte	.LFE110-.LFB110
+ 1140 0020 00000000 		.4byte	.LFB112
+ 1141 0024 18000000 		.4byte	.LFE112-.LFB112
+ 1142 0028 00000000 		.4byte	.LFB113
+ 1143 002c 24000000 		.4byte	.LFE113-.LFB113
+ 1144 0030 00000000 		.4byte	0
+ 1145 0034 00000000 		.4byte	0
+ 1146              		.section	.debug_ranges,"",%progbits
+ 1147              	.Ldebug_ranges0:
+ 1148 0000 00000000 		.4byte	.LFB111
+ 1149 0004 1C000000 		.4byte	.LFE111
+ 1150 0008 00000000 		.4byte	.LFB110
+ 1151 000c 12000000 		.4byte	.LFE110
+ 1152 0010 00000000 		.4byte	.LFB112
+ 1153 0014 18000000 		.4byte	.LFE112
+ 1154 0018 00000000 		.4byte	.LFB113
+ 1155 001c 24000000 		.4byte	.LFE113
+ 1156 0020 00000000 		.4byte	0
+ 1157 0024 00000000 		.4byte	0
+ 1158              		.section	.debug_line,"",%progbits
+ 1159              	.Ldebug_line0:
+ 1160 0000 C2020000 		.section	.debug_str,"MS",%progbits,1
+ 1160      02005902 
+ 1160      00000201 
+ 1160      FB0E0D00 
+ 1160      01010101 
+ 1161              	.LASF37:
+ 1162 0000 52435F45 		.ascii	"RC_ERROR_READ_ONLY\000"
+ 1162      52524F52 
+ 1162      5F524541 
+ 1162      445F4F4E 
+ 1162      4C5900
+ 1163              	.LASF23:
+ 1164 0013 52435F53 		.ascii	"RC_SUCCESS\000"
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 24
+
+
+ 1164      55434345 
+ 1164      535300
+ 1165              	.LASF38:
+ 1166 001e 52435F45 		.ascii	"RC_ERROR_WRITE_ONLY\000"
+ 1166      52524F52 
+ 1166      5F575249 
+ 1166      54455F4F 
+ 1166      4E4C5900 
+ 1167              	.LASF2:
+ 1168 0032 73686F72 		.ascii	"short int\000"
+ 1168      7420696E 
+ 1168      7400
+ 1169              	.LASF29:
+ 1170 003c 52435F45 		.ascii	"RC_ERROR_OVERRUN\000"
+ 1170      52524F52 
+ 1170      5F4F5645 
+ 1170      5252554E 
+ 1170      00
+ 1171              	.LASF41:
+ 1172 004d 52435F45 		.ascii	"RC_ERROR_WRITE_FAILS\000"
+ 1172      52524F52 
+ 1172      5F575249 
+ 1172      54455F46 
+ 1172      41494C53 
+ 1173              	.LASF52:
+ 1174 0062 6D795365 		.ascii	"mySeven_t\000"
+ 1174      76656E5F 
+ 1174      7400
+ 1175              	.LASF60:
+ 1176 006c 53657665 		.ascii	"Seven_Segment_Lookup\000"
+ 1176      6E5F5365 
+ 1176      676D656E 
+ 1176      745F4C6F 
+ 1176      6F6B7570 
+ 1177              	.LASF26:
+ 1178 0081 52435F45 		.ascii	"RC_ERROR_ZERO\000"
+ 1178      52524F52 
+ 1178      5F5A4552 
+ 1178      4F00
+ 1179              	.LASF20:
+ 1180 008f 45455F46 		.ascii	"EE_FREG\000"
+ 1180      52454700 
+ 1181              	.LASF40:
+ 1182 0097 52435F45 		.ascii	"RC_ERROR_READ_FAILS\000"
+ 1182      52524F52 
+ 1182      5F524541 
+ 1182      445F4641 
+ 1182      494C5300 
+ 1183              	.LASF67:
+ 1184 00ab 53455645 		.ascii	"SEVEN_Select_Write\000"
+ 1184      4E5F5365 
+ 1184      6C656374 
+ 1184      5F577269 
+ 1184      746500
+ 1185              	.LASF18:
+ 1186 00be 45455F55 		.ascii	"EE_UINT32\000"
+ 1186      494E5433 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 25
+
+
+ 1186      3200
+ 1187              	.LASF21:
+ 1188 00c8 45455F54 		.ascii	"EE_TID\000"
+ 1188      494400
+ 1189              	.LASF57:
+ 1190 00cf 76616C75 		.ascii	"value\000"
+ 1190      6500
+ 1191              	.LASF59:
+ 1192 00d5 4C657474 		.ascii	"Letter_to_print\000"
+ 1192      65725F74 
+ 1192      6F5F7072 
+ 1192      696E7400 
+ 1193              	.LASF11:
+ 1194 00e5 75696E74 		.ascii	"uint8_t\000"
+ 1194      385F7400 
+ 1195              	.LASF46:
+ 1196 00ed 52435F45 		.ascii	"RC_ERROR_INVALID_STATE\000"
+ 1196      52524F52 
+ 1196      5F494E56 
+ 1196      414C4944 
+ 1196      5F535441 
+ 1197              	.LASF65:
+ 1198 0104 45455F49 		.ascii	"EE_IRQ_nesting_level\000"
+ 1198      52515F6E 
+ 1198      65737469 
+ 1198      6E675F6C 
+ 1198      6576656C 
+ 1199              	.LASF64:
+ 1200 0119 45455F73 		.ascii	"EE_std_endcycle_next_tid\000"
+ 1200      74645F65 
+ 1200      6E646379 
+ 1200      636C655F 
+ 1200      6E657874 
+ 1201              	.LASF28:
+ 1202 0132 52435F45 		.ascii	"RC_ERROR_RANGE\000"
+ 1202      52524F52 
+ 1202      5F52414E 
+ 1202      474500
+ 1203              	.LASF13:
+ 1204 0141 666C6F61 		.ascii	"float\000"
+ 1204      7400
+ 1205              	.LASF62:
+ 1206 0147 45455F6F 		.ascii	"EE_oo_IRQ_suspend_status\000"
+ 1206      6F5F4952 
+ 1206      515F7375 
+ 1206      7370656E 
+ 1206      645F7374 
+ 1207              	.LASF48:
+ 1208 0160 52435F45 		.ascii	"RC_ERROR_NOT_IMPLEMENTED\000"
+ 1208      52524F52 
+ 1208      5F4E4F54 
+ 1208      5F494D50 
+ 1208      4C454D45 
+ 1209              	.LASF8:
+ 1210 0179 6C6F6E67 		.ascii	"long long int\000"
+ 1210      206C6F6E 
+ 1210      6720696E 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 26
+
+
+ 1210      7400
+ 1211              	.LASF54:
+ 1212 0187 53657665 		.ascii	"Seven_Segment_Write\000"
+ 1212      6E5F5365 
+ 1212      676D656E 
+ 1212      745F5772 
+ 1212      69746500 
+ 1213              	.LASF51:
+ 1214 019b 53657665 		.ascii	"Seven_Segment_Right\000"
+ 1214      6E5F5365 
+ 1214      676D656E 
+ 1214      745F5269 
+ 1214      67687400 
+ 1215              	.LASF42:
+ 1216 01af 52435F45 		.ascii	"RC_ERROR_NOT_MATCH\000"
+ 1216      52524F52 
+ 1216      5F4E4F54 
+ 1216      5F4D4154 
+ 1216      434800
+ 1217              	.LASF47:
+ 1218 01c2 52435F45 		.ascii	"RC_ERROR_UNKNOWN\000"
+ 1218      52524F52 
+ 1218      5F554E4B 
+ 1218      4E4F574E 
+ 1218      00
+ 1219              	.LASF6:
+ 1220 01d3 6C6F6E67 		.ascii	"long int\000"
+ 1220      20696E74 
+ 1220      00
+ 1221              	.LASF30:
+ 1222 01dc 52435F45 		.ascii	"RC_ERROR_UNDERRUN\000"
+ 1222      52524F52 
+ 1222      5F554E44 
+ 1222      45525255 
+ 1222      4E00
+ 1223              	.LASF33:
+ 1224 01ee 52435F45 		.ascii	"RC_ERROR_BUSY\000"
+ 1224      52524F52 
+ 1224      5F425553 
+ 1224      5900
+ 1225              	.LASF4:
+ 1226 01fc 5F5F7569 		.ascii	"__uint8_t\000"
+ 1226      6E74385F 
+ 1226      7400
+ 1227              	.LASF39:
+ 1228 0206 52435F45 		.ascii	"RC_ERROR_INVALID\000"
+ 1228      52524F52 
+ 1228      5F494E56 
+ 1228      414C4944 
+ 1228      00
+ 1229              	.LASF44:
+ 1230 0217 52435F45 		.ascii	"RC_ERROR_BAD_DATA\000"
+ 1230      52524F52 
+ 1230      5F424144 
+ 1230      5F444154 
+ 1230      4100
+ 1231              	.LASF56:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 27
+
+
+ 1232 0229 5365676D 		.ascii	"Segment_ID\000"
+ 1232      656E745F 
+ 1232      494400
+ 1233              	.LASF55:
+ 1234 0234 53656765 		.ascii	"Segement_ID\000"
+ 1234      6D656E74 
+ 1234      5F494400 
+ 1235              	.LASF16:
+ 1236 0240 6C6F6E67 		.ascii	"long double\000"
+ 1236      20646F75 
+ 1236      626C6500 
+ 1237              	.LASF1:
+ 1238 024c 756E7369 		.ascii	"unsigned char\000"
+ 1238      676E6564 
+ 1238      20636861 
+ 1238      7200
+ 1239              	.LASF72:
+ 1240 025a 433A5C55 		.ascii	"C:\\Users\\giris\\OneDrive\\Documents\\PSoC Creator"
+ 1240      73657273 
+ 1240      5C676972 
+ 1240      69735C4F 
+ 1240      6E654472 
+ 1241 0288 5C457269 		.ascii	"\\Erika_OS_ReactionGame\\Erika_Reaction_Game.cydsn\000"
+ 1241      6B615F4F 
+ 1241      535F5265 
+ 1241      61637469 
+ 1241      6F6E4761 
+ 1242              	.LASF0:
+ 1243 02b9 7369676E 		.ascii	"signed char\000"
+ 1243      65642063 
+ 1243      68617200 
+ 1244              	.LASF9:
+ 1245 02c5 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1245      206C6F6E 
+ 1245      6720756E 
+ 1245      7369676E 
+ 1245      65642069 
+ 1246              	.LASF10:
+ 1247 02dc 756E7369 		.ascii	"unsigned int\000"
+ 1247      676E6564 
+ 1247      20696E74 
+ 1247      00
+ 1248              	.LASF35:
+ 1249 02e9 52435F45 		.ascii	"RC_ERROR_OPEN\000"
+ 1249      52524F52 
+ 1249      5F4F5045 
+ 1249      4E00
+ 1250              	.LASF25:
+ 1251 02f7 52435F45 		.ascii	"RC_ERROR_NULL\000"
+ 1251      52524F52 
+ 1251      5F4E554C 
+ 1251      4C00
+ 1252              	.LASF32:
+ 1253 0305 52435F45 		.ascii	"RC_ERROR_BUFFER_EMTPY\000"
+ 1253      52524F52 
+ 1253      5F425546 
+ 1253      4645525F 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 28
+
+
+ 1253      454D5450 
+ 1254              	.LASF17:
+ 1255 031b 45455F49 		.ascii	"EE_INT32\000"
+ 1255      4E543332 
+ 1255      00
+ 1256              	.LASF3:
+ 1257 0324 73686F72 		.ascii	"short unsigned int\000"
+ 1257      7420756E 
+ 1257      7369676E 
+ 1257      65642069 
+ 1257      6E7400
+ 1258              	.LASF70:
+ 1259 0337 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1259      43313120 
+ 1259      352E342E 
+ 1259      31203230 
+ 1259      31363036 
+ 1260 036a 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1260      20726576 
+ 1260      6973696F 
+ 1260      6E203233 
+ 1260      37373135 
+ 1261 039d 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1261      66756E63 
+ 1261      74696F6E 
+ 1261      2D736563 
+ 1261      74696F6E 
+ 1262              	.LASF15:
+ 1263 03c5 63686172 		.ascii	"char\000"
+ 1263      00
+ 1264              	.LASF31:
+ 1265 03ca 52435F45 		.ascii	"RC_ERROR_BUFFER_FULL\000"
+ 1265      52524F52 
+ 1265      5F425546 
+ 1265      4645525F 
+ 1265      46554C4C 
+ 1266              	.LASF12:
+ 1267 03df 696E7433 		.ascii	"int32_t\000"
+ 1267      325F7400 
+ 1268              	.LASF73:
+ 1269 03e7 65536576 		.ascii	"eSeven\000"
+ 1269      656E00
+ 1270              	.LASF43:
+ 1271 03ee 52435F45 		.ascii	"RC_ERROR_BAD_PARAM\000"
+ 1271      52524F52 
+ 1271      5F424144 
+ 1271      5F504152 
+ 1271      414D00
+ 1272              	.LASF50:
+ 1273 0401 53657665 		.ascii	"Seven_Segment_Left\000"
+ 1273      6E5F5365 
+ 1273      676D656E 
+ 1273      745F4C65 
+ 1273      667400
+ 1274              	.LASF53:
+ 1275 0414 53657665 		.ascii	"SevenSegmentClear\000"
+ 1275      6E536567 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 29
+
+
+ 1275      6D656E74 
+ 1275      436C6561 
+ 1275      7200
+ 1276              	.LASF63:
+ 1277 0426 45455F41 		.ascii	"EE_ApplicationMode\000"
+ 1277      70706C69 
+ 1277      63617469 
+ 1277      6F6E4D6F 
+ 1277      646500
+ 1278              	.LASF7:
+ 1279 0439 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1279      20756E73 
+ 1279      69676E65 
+ 1279      6420696E 
+ 1279      7400
+ 1280              	.LASF14:
+ 1281 044b 646F7562 		.ascii	"double\000"
+ 1281      6C6500
+ 1282              	.LASF36:
+ 1283 0452 52435F45 		.ascii	"RC_ERROR_CHECKSUM\000"
+ 1283      52524F52 
+ 1283      5F434845 
+ 1283      434B5355 
+ 1283      4D00
+ 1284              	.LASF19:
+ 1285 0464 45455F55 		.ascii	"EE_UREG\000"
+ 1285      52454700 
+ 1286              	.LASF58:
+ 1287 046c 53657665 		.ascii	"Seven_Segment_Print\000"
+ 1287      6E5F5365 
+ 1287      676D656E 
+ 1287      745F5072 
+ 1287      696E7400 
+ 1288              	.LASF5:
+ 1289 0480 5F5F696E 		.ascii	"__int32_t\000"
+ 1289      7433325F 
+ 1289      7400
+ 1290              	.LASF74:
+ 1291 048a 53657665 		.ascii	"SevenSegment_init\000"
+ 1291      6E536567 
+ 1291      6D656E74 
+ 1291      5F696E69 
+ 1291      7400
+ 1292              	.LASF22:
+ 1293 049c 73697A65 		.ascii	"sizetype\000"
+ 1293      74797065 
+ 1293      00
+ 1294              	.LASF45:
+ 1295 04a5 52435F45 		.ascii	"RC_ERROR_CANCELED\000"
+ 1295      52524F52 
+ 1295      5F43414E 
+ 1295      43454C45 
+ 1295      4400
+ 1296              	.LASF71:
+ 1297 04b7 736F7572 		.ascii	"source\\bsw\\seven_segment.c\000"
+ 1297      63655C62 
+ 1297      73775C73 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\cce12aUf.s 			page 30
+
+
+ 1297      6576656E 
+ 1297      5F736567 
+ 1298              	.LASF68:
+ 1299 04d2 53657665 		.ascii	"Seven_Segment_Register_Write\000"
+ 1299      6E5F5365 
+ 1299      676D656E 
+ 1299      745F5265 
+ 1299      67697374 
+ 1300              	.LASF66:
+ 1301 04ef 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1301      52784275 
+ 1301      66666572 
+ 1301      00
+ 1302              	.LASF24:
+ 1303 04fc 52435F45 		.ascii	"RC_ERROR\000"
+ 1303      52524F52 
+ 1303      00
+ 1304              	.LASF69:
+ 1305 0505 43794465 		.ascii	"CyDelay\000"
+ 1305      6C617900 
+ 1306              	.LASF27:
+ 1307 050d 52435F45 		.ascii	"RC_ERROR_MEMORY\000"
+ 1307      52524F52 
+ 1307      5F4D454D 
+ 1307      4F525900 
+ 1308              	.LASF61:
+ 1309 051d 45455F6F 		.ascii	"EE_oo_IRQ_disable_count\000"
+ 1309      6F5F4952 
+ 1309      515F6469 
+ 1309      7361626C 
+ 1309      655F636F 
+ 1310              	.LASF49:
+ 1311 0535 52435F74 		.ascii	"RC_t\000"
+ 1311      00
+ 1312              	.LASF34:
+ 1313 053a 52435F45 		.ascii	"RC_ERROR_TIME_OUT\000"
+ 1313      52524F52 
+ 1313      5F54494D 
+ 1313      455F4F55 
+ 1313      5400
+ 1314              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,3268 @@
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"game.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.GAME__StartRandomTimer,"ax",%progbits
+  20              		.align	2
+  21              		.global	GAME__StartRandomTimer
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	GAME__StartRandomTimer, %function
+  25              	GAME__StartRandomTimer:
+  26              	.LFB111:
+  27              		.file 1 "source\\asw\\game.c"
+   1:source\asw/game.c **** /**
+   2:source\asw/game.c **** * \file <filename>
+   3:source\asw/game.c **** * \author <author-name>
+   4:source\asw/game.c **** * \date <date>
+   5:source\asw/game.c **** *
+   6:source\asw/game.c **** * \brief <Symbolic File name>
+   7:source\asw/game.c **** *
+   8:source\asw/game.c **** * \copyright Copyright ©2016
+   9:source\asw/game.c **** * Department of electrical engineering and information technology, Hochschule Darmstadt - Universit
+  10:source\asw/game.c **** * Permission to use, copy, modify, and distribute this software and its documentation for education
+  11:source\asw/game.c **** * (unless permitted by h_da) and official h_da projects, is hereby granted for enrolled students of
+  12:source\asw/game.c **** * this paragraph and the following paragraph appear in all copies, modifications, and distributions
+  13:source\asw/game.c **** * Contact Prof.Dr.-Ing. Peter Fromm, peter.fromm@h-da.de, Birkenweg 8 64295 Darmstadt - GERMANY for
+  14:source\asw/game.c **** *
+  15:source\asw/game.c **** * \warning This software is a PROTOTYPE version and is not designed or intended for use in producti
+  16:source\asw/game.c **** * The user represents and warrants that it will NOT use or redistribute the Software for such purpo
+  17:source\asw/game.c **** * This prototype is for research purposes only. This software is provided "AS IS," without a warran
+  18:source\asw/game.c **** */
+  19:source\asw/game.c **** 
+  20:source\asw/game.c **** /*****************************************************************************/
+  21:source\asw/game.c **** /* Include files                                                             */
+  22:source\asw/game.c **** /*****************************************************************************/
+  23:source\asw/game.c **** #include "seven_segment.h"
+  24:source\asw/game.c **** #include "game.h"
+  25:source\asw/game.c **** 
+  26:source\asw/game.c **** #include <stdio.h>
+  27:source\asw/game.c **** #include <stdlib.h>
+  28:source\asw/game.c **** #include <time.h>
+  29:source\asw/game.c **** /*****************************************************************************/
+  30:source\asw/game.c **** /* Local pre-processor symbols/macros ('#define')                            */
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 2
+
+
+  31:source\asw/game.c **** /*****************************************************************************/
+  32:source\asw/game.c **** 
+  33:source\asw/game.c **** /*****************************************************************************/
+  34:source\asw/game.c **** /* Global variable definitions (declared in header file with 'extern')       */
+  35:source\asw/game.c **** /*****************************************************************************/
+  36:source\asw/game.c **** 
+  37:source\asw/game.c **** /*****************************************************************************/
+  38:source\asw/game.c **** /* Local type definitions ('typedef')                                        */
+  39:source\asw/game.c **** /*****************************************************************************/
+  40:source\asw/game.c **** 
+  41:source\asw/game.c **** typedef enum
+  42:source\asw/game.c **** {
+  43:source\asw/game.c ****     GAME__ISIDLE,                   /**< Waiting for Button press to start the game. */
+  44:source\asw/game.c ****     GAME__ISWAITINGRANDOMTIME,      /**< Waiting for Random time. */
+  45:source\asw/game.c ****     GAME__ISWAITINGBUTTON           /**< Waiting for User Button(1/2) press. */
+  46:source\asw/game.c **** } GAME__State_t;
+  47:source\asw/game.c ****     
+  48:source\asw/game.c **** 
+  49:source\asw/game.c **** /*****************************************************************************/
+  50:source\asw/game.c **** /* Local variable definitions ('static')                                     */
+  51:source\asw/game.c **** /*****************************************************************************/
+  52:source\asw/game.c **** 
+  53:source\asw/game.c **** static GAME__State_t GAME__State = GAME__ISIDLE;
+  54:source\asw/game.c **** 
+  55:source\asw/game.c **** static uint16_t random_7segment_value = 0;
+  56:source\asw/game.c **** 
+  57:source\asw/game.c **** char buffer[32];
+  58:source\asw/game.c **** 
+  59:source\asw/game.c **** /*****************************************************************************/
+  60:source\asw/game.c **** /* Local function prototypes ('static')                                      */
+  61:source\asw/game.c **** /*****************************************************************************/
+  62:source\asw/game.c **** 
+  63:source\asw/game.c **** //All state machine action are static functions
+  64:source\asw/game.c **** //e.g. GAME__StartRandomTimer
+  65:source\asw/game.c **** 
+  66:source\asw/game.c **** /*****************************************************************************/
+  67:source\asw/game.c **** /* Function implementation - global ('extern') and local ('static')          */
+  68:source\asw/game.c **** /*****************************************************************************/
+  69:source\asw/game.c **** 
+  70:source\asw/game.c **** RC_t GAME__StartRandomTimer(uint16 mintimeInms, uint16 maxtimeInms)
+  71:source\asw/game.c **** {
+  28              		.loc 1 71 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 38B5     		push	{r3, r4, r5, lr}
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 3, -16
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  39 0002 0546     		mov	r5, r0
+  40 0004 0C46     		mov	r4, r1
+  72:source\asw/game.c ****     //First get a random number
+  73:source\asw/game.c ****     uint32 randomTime = rand() % (maxtimeInms - mintimeInms) + mintimeInms;
+  41              		.loc 1 73 0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 3
+
+
+  42 0006 FFF7FEFF 		bl	rand
+  43              	.LVL1:
+  44 000a 611B     		subs	r1, r4, r5
+  45 000c 90FBF1F3 		sdiv	r3, r0, r1
+  46 0010 01FB1300 		mls	r0, r1, r3, r0
+  47 0014 2844     		add	r0, r0, r5
+  48              	.LVL2:
+  74:source\asw/game.c **** //    UART_LOG_PutString("Random time: ");
+  75:source\asw/game.c **** //    itoa(randomTime,buffer,10);
+  76:source\asw/game.c **** //    UART_LOG_PutString(buffer);
+  77:source\asw/game.c **** //    UART_LOG_PutString("\n");
+  78:source\asw/game.c ****     //Then set the timout using cydelay
+  79:source\asw/game.c ****     //CyDelay(randomTime * 1000);
+  80:source\asw/game.c ****     
+  81:source\asw/game.c ****     //This alarm fires an event timeout after waiting randomly from 1s-3s. This alarm is called onl
+  82:source\asw/game.c ****     SetRelAlarm(alarm_wait3s, randomTime*1000, 0);
+  49              		.loc 1 82 0
+  50 0016 0022     		movs	r2, #0
+  51 0018 4FF47A71 		mov	r1, #1000
+  52 001c 01FB00F1 		mul	r1, r1, r0
+  53 0020 0220     		movs	r0, #2
+  54              	.LVL3:
+  55 0022 FFF7FEFF 		bl	EE_oo_SetRelAlarm
+  56              	.LVL4:
+  83:source\asw/game.c ****     
+  84:source\asw/game.c ****     return RC_SUCCESS;
+  85:source\asw/game.c **** }
+  57              		.loc 1 85 0
+  58 0026 0020     		movs	r0, #0
+  59 0028 38BD     		pop	{r3, r4, r5, pc}
+  60              		.cfi_endproc
+  61              	.LFE111:
+  62              		.size	GAME__StartRandomTimer, .-GAME__StartRandomTimer
+  63 002a 00BF     		.section	.text.GAME__ShowRandom7SegmentValue,"ax",%progbits
+  64              		.align	2
+  65              		.global	GAME__ShowRandom7SegmentValue
+  66              		.thumb
+  67              		.thumb_func
+  68              		.type	GAME__ShowRandom7SegmentValue, %function
+  69              	GAME__ShowRandom7SegmentValue:
+  70              	.LFB112:
+  86:source\asw/game.c **** 
+  87:source\asw/game.c **** RC_t GAME__ShowRandom7SegmentValue()
+  88:source\asw/game.c **** {
+  71              		.loc 1 88 0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75 0000 10B5     		push	{r4, lr}
+  76              		.cfi_def_cfa_offset 8
+  77              		.cfi_offset 4, -8
+  78              		.cfi_offset 14, -4
+  89:source\asw/game.c ****     random_7segment_value = rand()%2;
+  79              		.loc 1 89 0
+  80 0002 FFF7FEFF 		bl	rand
+  81              	.LVL5:
+  82 0006 0B49     		ldr	r1, .L6
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 4
+
+
+  83 0008 0840     		ands	r0, r0, r1
+  84 000a 03D5     		bpl	.L4
+  85 000c 0138     		subs	r0, r0, #1
+  86 000e 60F00100 		orn	r0, r0, #1
+  87 0012 0130     		adds	r0, r0, #1
+  88              	.L4:
+  89 0014 80B2     		uxth	r0, r0
+  90 0016 084C     		ldr	r4, .L6+4
+  91 0018 2080     		strh	r0, [r4]	@ movhi
+  90:source\asw/game.c ****     
+  91:source\asw/game.c ****     Seven_Segment_Write(Seven_Segment_Left, (random_7segment_value+1));
+  92              		.loc 1 91 0
+  93 001a 411C     		adds	r1, r0, #1
+  94 001c C9B2     		uxtb	r1, r1
+  95 001e 0120     		movs	r0, #1
+  96 0020 FFF7FEFF 		bl	Seven_Segment_Write
+  97              	.LVL6:
+  92:source\asw/game.c ****     Seven_Segment_Write(Seven_Segment_Right, (random_7segment_value+1));
+  98              		.loc 1 92 0
+  99 0024 2178     		ldrb	r1, [r4]	@ zero_extendqisi2
+ 100 0026 0131     		adds	r1, r1, #1
+ 101 0028 C9B2     		uxtb	r1, r1
+ 102 002a 0020     		movs	r0, #0
+ 103 002c FFF7FEFF 		bl	Seven_Segment_Write
+ 104              	.LVL7:
+  93:source\asw/game.c ****     
+  94:source\asw/game.c ****     return RC_SUCCESS;
+  95:source\asw/game.c **** }
+ 105              		.loc 1 95 0
+ 106 0030 0020     		movs	r0, #0
+ 107 0032 10BD     		pop	{r4, pc}
+ 108              	.L7:
+ 109              		.align	2
+ 110              	.L6:
+ 111 0034 01000080 		.word	-2147483647
+ 112 0038 00000000 		.word	.LANCHOR0
+ 113              		.cfi_endproc
+ 114              	.LFE112:
+ 115              		.size	GAME__ShowRandom7SegmentValue, .-GAME__ShowRandom7SegmentValue
+ 116              		.section	.text.GAME__CorrectButton,"ax",%progbits
+ 117              		.align	2
+ 118              		.global	GAME__CorrectButton
+ 119              		.thumb
+ 120              		.thumb_func
+ 121              		.type	GAME__CorrectButton, %function
+ 122              	GAME__CorrectButton:
+ 123              	.LFB113:
+  96:source\asw/game.c **** 
+  97:source\asw/game.c **** boolean_t GAME__CorrectButton(EventMaskType event_state)
+  98:source\asw/game.c **** { 
+ 124              		.loc 1 98 0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              		@ link register save eliminated.
+ 129              	.LVL8:
+  99:source\asw/game.c ****     if((random_7segment_value+1) == 2 && event_state & ev_Button1)
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 5
+
+
+ 130              		.loc 1 99 0
+ 131 0000 094B     		ldr	r3, .L14
+ 132 0002 1B88     		ldrh	r3, [r3]
+ 133 0004 012B     		cmp	r3, #1
+ 134 0006 02D1     		bne	.L9
+ 135              		.loc 1 99 0 is_stmt 0 discriminator 1
+ 136 0008 10F0010F 		tst	r0, #1
+ 137 000c 05D1     		bne	.L11
+ 138              	.L9:
+ 100:source\asw/game.c ****         return TRUE;
+ 101:source\asw/game.c ****     else if((random_7segment_value+1) == 1 && event_state & ev_Button2)
+ 139              		.loc 1 101 0 is_stmt 1
+ 140 000e 33B9     		cbnz	r3, .L12
+ 141              		.loc 1 101 0 is_stmt 0 discriminator 1
+ 142 0010 10F0020F 		tst	r0, #2
+ 143 0014 05D1     		bne	.L13
+ 102:source\asw/game.c ****         return TRUE;
+ 103:source\asw/game.c ****     else
+ 104:source\asw/game.c ****         return FALSE;
+ 144              		.loc 1 104 0 is_stmt 1
+ 145 0016 0020     		movs	r0, #0
+ 146              	.LVL9:
+ 147 0018 7047     		bx	lr
+ 148              	.LVL10:
+ 149              	.L11:
+ 100:source\asw/game.c ****         return TRUE;
+ 150              		.loc 1 100 0
+ 151 001a 0120     		movs	r0, #1
+ 152              	.LVL11:
+ 153 001c 7047     		bx	lr
+ 154              	.LVL12:
+ 155              	.L12:
+ 156              		.loc 1 104 0
+ 157 001e 0020     		movs	r0, #0
+ 158              	.LVL13:
+ 159 0020 7047     		bx	lr
+ 160              	.LVL14:
+ 161              	.L13:
+ 102:source\asw/game.c ****         return TRUE;
+ 162              		.loc 1 102 0
+ 163 0022 0120     		movs	r0, #1
+ 164              	.LVL15:
+ 105:source\asw/game.c **** }
+ 165              		.loc 1 105 0
+ 166 0024 7047     		bx	lr
+ 167              	.L15:
+ 168 0026 00BF     		.align	2
+ 169              	.L14:
+ 170 0028 00000000 		.word	.LANCHOR0
+ 171              		.cfi_endproc
+ 172              	.LFE113:
+ 173              		.size	GAME__CorrectButton, .-GAME__CorrectButton
+ 174              		.section	.text.GAME__Show,"ax",%progbits
+ 175              		.align	2
+ 176              		.global	GAME__Show
+ 177              		.thumb
+ 178              		.thumb_func
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 6
+
+
+ 179              		.type	GAME__Show, %function
+ 180              	GAME__Show:
+ 181              	.LFB117:
+ 106:source\asw/game.c **** 
+ 107:source\asw/game.c **** RC_t GAME__Play(GAME_event_t Game, EventMaskType ev_State)
+ 108:source\asw/game.c **** {
+ 109:source\asw/game.c ****     switch (GAME__State)
+ 110:source\asw/game.c ****     {
+ 111:source\asw/game.c ****         case GAME__ISIDLE :
+ 112:source\asw/game.c ****             if (Game == GAME_BUTTON)
+ 113:source\asw/game.c ****             {
+ 114:source\asw/game.c ****                 // If the event received is Button, we need to generate random wait time (1s - 3s)
+ 115:source\asw/game.c ****                 // then set the game state to wait for random time.
+ 116:source\asw/game.c ****                 GAME__StartRandomTimer(1,3);
+ 117:source\asw/game.c ****                 GAME__State = GAME__ISWAITINGRANDOMTIME; 
+ 118:source\asw/game.c ****                 //SetEvent(task_control, ev_Timeout);
+ 119:source\asw/game.c ****             }
+ 120:source\asw/game.c ****             break;
+ 121:source\asw/game.c ****             
+ 122:source\asw/game.c ****         case GAME__ISWAITINGRANDOMTIME:
+ 123:source\asw/game.c ****             if (Game == GAME_TIMEOUT)
+ 124:source\asw/game.c ****             {
+ 125:source\asw/game.c ****                 // If the game is waiting for randomtime, then we need to show random 7segment valu
+ 126:source\asw/game.c ****                 // and set the game to user button wait state
+ 127:source\asw/game.c ****                 CancelAlarm(alarm_wait3s);
+ 128:source\asw/game.c ****                 GAME__ShowRandom7SegmentValue();
+ 129:source\asw/game.c ****                 GAME__State = GAME__ISWAITINGBUTTON; 
+ 130:source\asw/game.c ****                 SetRelAlarm(alarm_wait1s,1000,0);
+ 131:source\asw/game.c ****                 
+ 132:source\asw/game.c ****                   temp1 = sys_tick_count;
+ 133:source\asw/game.c **** //                GAME__Show("temp1 value: ");
+ 134:source\asw/game.c **** //                itoa(temp1,buffer,10);
+ 135:source\asw/game.c **** //                UART_LOG_PutString(buffer);
+ 136:source\asw/game.c **** //                GAME__Show("\n");
+ 137:source\asw/game.c **** //                
+ 138:source\asw/game.c **** //                GAME__Show(" sys tick count@7: ");
+ 139:source\asw/game.c **** //                itoa(sys_tick_count,buffer,10);
+ 140:source\asw/game.c **** //                UART_LOG_PutString(buffer);
+ 141:source\asw/game.c **** //                GAME__Show("\n");
+ 142:source\asw/game.c ****             }
+ 143:source\asw/game.c ****             break;
+ 144:source\asw/game.c ****             
+ 145:source\asw/game.c ****         case GAME__ISWAITINGBUTTON:
+ 146:source\asw/game.c ****             if (Game == GAME_BUTTON)
+ 147:source\asw/game.c ****             {
+ 148:source\asw/game.c ****                 if (GAME__CorrectButton(ev_State))
+ 149:source\asw/game.c ****                 {
+ 150:source\asw/game.c ****                     GAME__Show("\nGreat!! - Correct Button Pressed\n");
+ 151:source\asw/game.c ****                     correct_button_pressed++;
+ 152:source\asw/game.c ****                     
+ 153:source\asw/game.c ****                       temp2 = sys_tick_count;
+ 154:source\asw/game.c **** //                    GAME__Show("temp2 value: ");
+ 155:source\asw/game.c **** //                    itoa(temp2,buffer,10);
+ 156:source\asw/game.c **** //                    UART_LOG_PutString(buffer);
+ 157:source\asw/game.c **** //                    GAME__Show("\n");
+ 158:source\asw/game.c **** //                    
+ 159:source\asw/game.c **** //                    GAME__Show(" sys tick count@CB: ");
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 7
+
+
+ 160:source\asw/game.c **** //                    itoa(sys_tick_count,buffer,10);
+ 161:source\asw/game.c **** //                    UART_LOG_PutString(buffer);
+ 162:source\asw/game.c **** //                    GAME__Show("\n");
+ 163:source\asw/game.c ****                     
+ 164:source\asw/game.c ****                     reaction_time = temp2 - temp1;
+ 165:source\asw/game.c ****                     GAME__Show("Reaction time(ms): ");
+ 166:source\asw/game.c ****                     itoa(reaction_time,buffer,10);
+ 167:source\asw/game.c ****                     UART_LOG_PutString(buffer);
+ 168:source\asw/game.c ****                     GAME__Show("\n");
+ 169:source\asw/game.c ****                 }
+ 170:source\asw/game.c ****                 else
+ 171:source\asw/game.c ****                 {
+ 172:source\asw/game.c ****                     GAME__Show("\nOopss!! - Wrong Button Pressed\n");
+ 173:source\asw/game.c ****                 }
+ 174:source\asw/game.c ****                 GAME__State = GAME__ISIDLE;
+ 175:source\asw/game.c ****                 CancelAlarm(alarm_wait1s);
+ 176:source\asw/game.c ****                 
+ 177:source\asw/game.c ****                 SevenSegmentClear(Seven_Segment_Left);
+ 178:source\asw/game.c ****                 SevenSegmentClear(Seven_Segment_Right);
+ 179:source\asw/game.c ****                 
+ 180:source\asw/game.c ****                 GAME__DisplayResult();
+ 181:source\asw/game.c ****             }   
+ 182:source\asw/game.c ****     }
+ 183:source\asw/game.c ****     return RC_SUCCESS;
+ 184:source\asw/game.c **** }
+ 185:source\asw/game.c **** void GAME__DisplayTime()
+ 186:source\asw/game.c **** {
+ 187:source\asw/game.c ****     GAME__Show("\n\nEND OF THE GAME\n");
+ 188:source\asw/game.c ****     GAME__Show("\nBelow are your Reaction Game Results.....\n");
+ 189:source\asw/game.c ****     GAME__Show("\nFINAL SCORE - Correct number of button pressed is: ");
+ 190:source\asw/game.c ****     itoa(correct_button_pressed,buffer,10);
+ 191:source\asw/game.c ****     UART_LOG_PutString(buffer);
+ 192:source\asw/game.c ****     UART_LOG_PutString("\n");
+ 193:source\asw/game.c ****     
+ 194:source\asw/game.c ****     GAME__Show("Total Reaction time of the Game(ms): ");
+ 195:source\asw/game.c ****     itoa(sys_tick_count,buffer,10);
+ 196:source\asw/game.c ****     UART_LOG_PutString(buffer);
+ 197:source\asw/game.c ****     GAME__Show("\n");
+ 198:source\asw/game.c ****     
+ 199:source\asw/game.c ****     GAME__Show("Average Reaction time of the Game(ms): ");
+ 200:source\asw/game.c ****     average_game_time = sys_tick_count/GAME_ROUNDS;
+ 201:source\asw/game.c ****     itoa(average_game_time,buffer,10);
+ 202:source\asw/game.c ****     UART_LOG_PutString(buffer);
+ 203:source\asw/game.c ****     GAME__Show("\n");
+ 204:source\asw/game.c **** }
+ 205:source\asw/game.c **** 
+ 206:source\asw/game.c **** void GAME__DisplayResult()
+ 207:source\asw/game.c **** {
+ 208:source\asw/game.c ****     game_rounds++;
+ 209:source\asw/game.c ****     if(game_rounds <= GAME_ROUNDS)
+ 210:source\asw/game.c ****     {
+ 211:source\asw/game.c ****         GAME__Show("\nReaction test program ROUND ");
+ 212:source\asw/game.c ****         itoa(game_rounds,buffer,10);
+ 213:source\asw/game.c ****         UART_LOG_PutString(buffer);
+ 214:source\asw/game.c ****         UART_LOG_PutString("\n");
+ 215:source\asw/game.c ****         GAME__Show("Press one of the two buttons to start the round...\n");
+ 216:source\asw/game.c ****     }
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 8
+
+
+ 217:source\asw/game.c **** }
+ 218:source\asw/game.c **** void GAME__Show(char str [])
+ 219:source\asw/game.c **** {
+ 182              		.loc 1 219 0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 0
+ 185              		@ frame_needed = 0, uses_anonymous_args = 0
+ 186              	.LVL16:
+ 187 0000 08B5     		push	{r3, lr}
+ 188              		.cfi_def_cfa_offset 8
+ 189              		.cfi_offset 3, -8
+ 190              		.cfi_offset 14, -4
+ 220:source\asw/game.c ****     UART_LOG_PutString(str);
+ 191              		.loc 1 220 0
+ 192 0002 FFF7FEFF 		bl	UART_LOG_PutString
+ 193              	.LVL17:
+ 194 0006 08BD     		pop	{r3, pc}
+ 195              		.cfi_endproc
+ 196              	.LFE117:
+ 197              		.size	GAME__Show, .-GAME__Show
+ 198              		.section	.text.GAME__DisplayTime,"ax",%progbits
+ 199              		.align	2
+ 200              		.global	GAME__DisplayTime
+ 201              		.thumb
+ 202              		.thumb_func
+ 203              		.type	GAME__DisplayTime, %function
+ 204              	GAME__DisplayTime:
+ 205              	.LFB115:
+ 186:source\asw/game.c ****     GAME__Show("\n\nEND OF THE GAME\n");
+ 206              		.loc 1 186 0
+ 207              		.cfi_startproc
+ 208              		@ args = 0, pretend = 0, frame = 0
+ 209              		@ frame_needed = 0, uses_anonymous_args = 0
+ 210 0000 70B5     		push	{r4, r5, r6, lr}
+ 211              		.cfi_def_cfa_offset 16
+ 212              		.cfi_offset 4, -16
+ 213              		.cfi_offset 5, -12
+ 214              		.cfi_offset 6, -8
+ 215              		.cfi_offset 14, -4
+ 187:source\asw/game.c ****     GAME__Show("\nBelow are your Reaction Game Results.....\n");
+ 216              		.loc 1 187 0
+ 217 0002 2048     		ldr	r0, .L20
+ 218 0004 FFF7FEFF 		bl	GAME__Show
+ 219              	.LVL18:
+ 188:source\asw/game.c ****     GAME__Show("\nFINAL SCORE - Correct number of button pressed is: ");
+ 220              		.loc 1 188 0
+ 221 0008 1F48     		ldr	r0, .L20+4
+ 222 000a FFF7FEFF 		bl	GAME__Show
+ 223              	.LVL19:
+ 189:source\asw/game.c ****     itoa(correct_button_pressed,buffer,10);
+ 224              		.loc 1 189 0
+ 225 000e 1F48     		ldr	r0, .L20+8
+ 226 0010 FFF7FEFF 		bl	GAME__Show
+ 227              	.LVL20:
+ 190:source\asw/game.c ****     UART_LOG_PutString(buffer);
+ 228              		.loc 1 190 0
+ 229 0014 1E4B     		ldr	r3, .L20+12
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 9
+
+
+ 230 0016 1888     		ldrh	r0, [r3]
+ 231 0018 1E4C     		ldr	r4, .L20+16
+ 232 001a 0A22     		movs	r2, #10
+ 233 001c 2146     		mov	r1, r4
+ 234 001e 80B2     		uxth	r0, r0
+ 235 0020 FFF7FEFF 		bl	itoa
+ 236              	.LVL21:
+ 191:source\asw/game.c ****     UART_LOG_PutString("\n");
+ 237              		.loc 1 191 0
+ 238 0024 2046     		mov	r0, r4
+ 239 0026 FFF7FEFF 		bl	UART_LOG_PutString
+ 240              	.LVL22:
+ 192:source\asw/game.c ****     
+ 241              		.loc 1 192 0
+ 242 002a 1B4D     		ldr	r5, .L20+20
+ 243 002c 2846     		mov	r0, r5
+ 244 002e FFF7FEFF 		bl	UART_LOG_PutString
+ 245              	.LVL23:
+ 194:source\asw/game.c ****     itoa(sys_tick_count,buffer,10);
+ 246              		.loc 1 194 0
+ 247 0032 1A48     		ldr	r0, .L20+24
+ 248 0034 FFF7FEFF 		bl	GAME__Show
+ 249              	.LVL24:
+ 195:source\asw/game.c ****     UART_LOG_PutString(buffer);
+ 250              		.loc 1 195 0
+ 251 0038 194E     		ldr	r6, .L20+28
+ 252 003a 3088     		ldrh	r0, [r6]
+ 253 003c 0A22     		movs	r2, #10
+ 254 003e 2146     		mov	r1, r4
+ 255 0040 80B2     		uxth	r0, r0
+ 256 0042 FFF7FEFF 		bl	itoa
+ 257              	.LVL25:
+ 196:source\asw/game.c ****     GAME__Show("\n");
+ 258              		.loc 1 196 0
+ 259 0046 2046     		mov	r0, r4
+ 260 0048 FFF7FEFF 		bl	UART_LOG_PutString
+ 261              	.LVL26:
+ 197:source\asw/game.c ****     
+ 262              		.loc 1 197 0
+ 263 004c 2846     		mov	r0, r5
+ 264 004e FFF7FEFF 		bl	GAME__Show
+ 265              	.LVL27:
+ 199:source\asw/game.c ****     average_game_time = sys_tick_count/GAME_ROUNDS;
+ 266              		.loc 1 199 0
+ 267 0052 1448     		ldr	r0, .L20+32
+ 268 0054 FFF7FEFF 		bl	GAME__Show
+ 269              	.LVL28:
+ 200:source\asw/game.c ****     itoa(average_game_time,buffer,10);
+ 270              		.loc 1 200 0
+ 271 0058 3388     		ldrh	r3, [r6]
+ 272 005a 9BB2     		uxth	r3, r3
+ 273 005c 124A     		ldr	r2, .L20+36
+ 274 005e A2FB0323 		umull	r2, r3, r2, r3
+ 275 0062 DB08     		lsrs	r3, r3, #3
+ 276 0064 114A     		ldr	r2, .L20+40
+ 277 0066 1380     		strh	r3, [r2]	@ movhi
+ 201:source\asw/game.c ****     UART_LOG_PutString(buffer);
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 10
+
+
+ 278              		.loc 1 201 0
+ 279 0068 1088     		ldrh	r0, [r2]
+ 280 006a 0A22     		movs	r2, #10
+ 281 006c 2146     		mov	r1, r4
+ 282 006e 80B2     		uxth	r0, r0
+ 283 0070 FFF7FEFF 		bl	itoa
+ 284              	.LVL29:
+ 202:source\asw/game.c ****     GAME__Show("\n");
+ 285              		.loc 1 202 0
+ 286 0074 2046     		mov	r0, r4
+ 287 0076 FFF7FEFF 		bl	UART_LOG_PutString
+ 288              	.LVL30:
+ 203:source\asw/game.c **** }
+ 289              		.loc 1 203 0
+ 290 007a 2846     		mov	r0, r5
+ 291 007c FFF7FEFF 		bl	GAME__Show
+ 292              	.LVL31:
+ 293 0080 70BD     		pop	{r4, r5, r6, pc}
+ 294              	.L21:
+ 295 0082 00BF     		.align	2
+ 296              	.L20:
+ 297 0084 00000000 		.word	.LC0
+ 298 0088 14000000 		.word	.LC1
+ 299 008c 40000000 		.word	.LC2
+ 300 0090 00000000 		.word	correct_button_pressed
+ 301 0094 00000000 		.word	buffer
+ 302 0098 78000000 		.word	.LC3
+ 303 009c 7C000000 		.word	.LC4
+ 304 00a0 00000000 		.word	sys_tick_count
+ 305 00a4 A4000000 		.word	.LC5
+ 306 00a8 CDCCCCCC 		.word	-858993459
+ 307 00ac 00000000 		.word	average_game_time
+ 308              		.cfi_endproc
+ 309              	.LFE115:
+ 310              		.size	GAME__DisplayTime, .-GAME__DisplayTime
+ 311              		.section	.text.GAME__DisplayResult,"ax",%progbits
+ 312              		.align	2
+ 313              		.global	GAME__DisplayResult
+ 314              		.thumb
+ 315              		.thumb_func
+ 316              		.type	GAME__DisplayResult, %function
+ 317              	GAME__DisplayResult:
+ 318              	.LFB116:
+ 207:source\asw/game.c ****     game_rounds++;
+ 319              		.loc 1 207 0
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 0
+ 322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 208:source\asw/game.c ****     if(game_rounds <= GAME_ROUNDS)
+ 323              		.loc 1 208 0
+ 324 0000 104A     		ldr	r2, .L26
+ 325 0002 1388     		ldrh	r3, [r2]
+ 326 0004 9BB2     		uxth	r3, r3
+ 327 0006 0133     		adds	r3, r3, #1
+ 328 0008 9BB2     		uxth	r3, r3
+ 329 000a 1380     		strh	r3, [r2]	@ movhi
+ 209:source\asw/game.c ****     {
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 11
+
+
+ 330              		.loc 1 209 0
+ 331 000c 1388     		ldrh	r3, [r2]
+ 332 000e 9BB2     		uxth	r3, r3
+ 333 0010 0A2B     		cmp	r3, #10
+ 334 0012 15D8     		bhi	.L25
+ 207:source\asw/game.c ****     game_rounds++;
+ 335              		.loc 1 207 0
+ 336 0014 10B5     		push	{r4, lr}
+ 337              		.cfi_def_cfa_offset 8
+ 338              		.cfi_offset 4, -8
+ 339              		.cfi_offset 14, -4
+ 211:source\asw/game.c ****         itoa(game_rounds,buffer,10);
+ 340              		.loc 1 211 0
+ 341 0016 0C48     		ldr	r0, .L26+4
+ 342 0018 FFF7FEFF 		bl	GAME__Show
+ 343              	.LVL32:
+ 212:source\asw/game.c ****         UART_LOG_PutString(buffer);
+ 344              		.loc 1 212 0
+ 345 001c 094B     		ldr	r3, .L26
+ 346 001e 1888     		ldrh	r0, [r3]
+ 347 0020 0A4C     		ldr	r4, .L26+8
+ 348 0022 0A22     		movs	r2, #10
+ 349 0024 2146     		mov	r1, r4
+ 350 0026 80B2     		uxth	r0, r0
+ 351 0028 FFF7FEFF 		bl	itoa
+ 352              	.LVL33:
+ 213:source\asw/game.c ****         UART_LOG_PutString("\n");
+ 353              		.loc 1 213 0
+ 354 002c 2046     		mov	r0, r4
+ 355 002e FFF7FEFF 		bl	UART_LOG_PutString
+ 356              	.LVL34:
+ 214:source\asw/game.c ****         GAME__Show("Press one of the two buttons to start the round...\n");
+ 357              		.loc 1 214 0
+ 358 0032 0748     		ldr	r0, .L26+12
+ 359 0034 FFF7FEFF 		bl	UART_LOG_PutString
+ 360              	.LVL35:
+ 215:source\asw/game.c ****     }
+ 361              		.loc 1 215 0
+ 362 0038 0648     		ldr	r0, .L26+16
+ 363 003a FFF7FEFF 		bl	GAME__Show
+ 364              	.LVL36:
+ 365 003e 10BD     		pop	{r4, pc}
+ 366              	.L25:
+ 367              		.cfi_def_cfa_offset 0
+ 368              		.cfi_restore 4
+ 369              		.cfi_restore 14
+ 370 0040 7047     		bx	lr
+ 371              	.L27:
+ 372 0042 00BF     		.align	2
+ 373              	.L26:
+ 374 0044 00000000 		.word	game_rounds
+ 375 0048 CC000000 		.word	.LC6
+ 376 004c 00000000 		.word	buffer
+ 377 0050 78000000 		.word	.LC3
+ 378 0054 EC000000 		.word	.LC7
+ 379              		.cfi_endproc
+ 380              	.LFE116:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 12
+
+
+ 381              		.size	GAME__DisplayResult, .-GAME__DisplayResult
+ 382              		.section	.text.GAME__Play,"ax",%progbits
+ 383              		.align	2
+ 384              		.global	GAME__Play
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.type	GAME__Play, %function
+ 388              	GAME__Play:
+ 389              	.LFB114:
+ 108:source\asw/game.c ****     switch (GAME__State)
+ 390              		.loc 1 108 0
+ 391              		.cfi_startproc
+ 392              		@ args = 0, pretend = 0, frame = 0
+ 393              		@ frame_needed = 0, uses_anonymous_args = 0
+ 394              	.LVL37:
+ 395 0000 10B5     		push	{r4, lr}
+ 396              		.cfi_def_cfa_offset 8
+ 397              		.cfi_offset 4, -8
+ 398              		.cfi_offset 14, -4
+ 109:source\asw/game.c ****     {
+ 399              		.loc 1 109 0
+ 400 0002 334B     		ldr	r3, .L36
+ 401 0004 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 402 0006 012B     		cmp	r3, #1
+ 403 0008 0CD0     		beq	.L30
+ 404 000a 13B1     		cbz	r3, .L31
+ 405 000c 022B     		cmp	r3, #2
+ 406 000e 1ED0     		beq	.L32
+ 407 0010 5CE0     		b	.L29
+ 408              	.L31:
+ 112:source\asw/game.c ****             {
+ 409              		.loc 1 112 0
+ 410 0012 0128     		cmp	r0, #1
+ 411 0014 5AD1     		bne	.L29
+ 116:source\asw/game.c ****                 GAME__State = GAME__ISWAITINGRANDOMTIME; 
+ 412              		.loc 1 116 0
+ 413 0016 0321     		movs	r1, #3
+ 414              	.LVL38:
+ 415 0018 FFF7FEFF 		bl	GAME__StartRandomTimer
+ 416              	.LVL39:
+ 117:source\asw/game.c ****                 //SetEvent(task_control, ev_Timeout);
+ 417              		.loc 1 117 0
+ 418 001c 0122     		movs	r2, #1
+ 419 001e 2C4B     		ldr	r3, .L36
+ 420 0020 9A70     		strb	r2, [r3, #2]
+ 421 0022 53E0     		b	.L29
+ 422              	.LVL40:
+ 423              	.L30:
+ 123:source\asw/game.c ****             {
+ 424              		.loc 1 123 0
+ 425 0024 0228     		cmp	r0, #2
+ 426 0026 51D1     		bne	.L29
+ 127:source\asw/game.c ****                 GAME__ShowRandom7SegmentValue();
+ 427              		.loc 1 127 0
+ 428 0028 FFF7FEFF 		bl	EE_oo_CancelAlarm
+ 429              	.LVL41:
+ 128:source\asw/game.c ****                 GAME__State = GAME__ISWAITINGBUTTON; 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 13
+
+
+ 430              		.loc 1 128 0
+ 431 002c FFF7FEFF 		bl	GAME__ShowRandom7SegmentValue
+ 432              	.LVL42:
+ 129:source\asw/game.c ****                 SetRelAlarm(alarm_wait1s,1000,0);
+ 433              		.loc 1 129 0
+ 434 0030 0222     		movs	r2, #2
+ 435 0032 274B     		ldr	r3, .L36
+ 436 0034 9A70     		strb	r2, [r3, #2]
+ 130:source\asw/game.c ****                 
+ 437              		.loc 1 130 0
+ 438 0036 0022     		movs	r2, #0
+ 439 0038 4FF47A71 		mov	r1, #1000
+ 440 003c 0120     		movs	r0, #1
+ 441 003e FFF7FEFF 		bl	EE_oo_SetRelAlarm
+ 442              	.LVL43:
+ 132:source\asw/game.c **** //                GAME__Show("temp1 value: ");
+ 443              		.loc 1 132 0
+ 444 0042 244B     		ldr	r3, .L36+4
+ 445 0044 1B88     		ldrh	r3, [r3]
+ 446 0046 9BB2     		uxth	r3, r3
+ 447 0048 234A     		ldr	r2, .L36+8
+ 448 004a 1380     		strh	r3, [r2]	@ movhi
+ 449 004c 3EE0     		b	.L29
+ 450              	.LVL44:
+ 451              	.L32:
+ 146:source\asw/game.c ****             {
+ 452              		.loc 1 146 0
+ 453 004e 0128     		cmp	r0, #1
+ 454 0050 3CD1     		bne	.L29
+ 148:source\asw/game.c ****                 {
+ 455              		.loc 1 148 0
+ 456 0052 0846     		mov	r0, r1
+ 457              	.LVL45:
+ 458 0054 FFF7FEFF 		bl	GAME__CorrectButton
+ 459              	.LVL46:
+ 460 0058 38B3     		cbz	r0, .L33
+ 150:source\asw/game.c ****                     correct_button_pressed++;
+ 461              		.loc 1 150 0
+ 462 005a 2048     		ldr	r0, .L36+12
+ 463 005c FFF7FEFF 		bl	GAME__Show
+ 464              	.LVL47:
+ 151:source\asw/game.c ****                     
+ 465              		.loc 1 151 0
+ 466 0060 1F4A     		ldr	r2, .L36+16
+ 467 0062 1388     		ldrh	r3, [r2]
+ 468 0064 9BB2     		uxth	r3, r3
+ 469 0066 0133     		adds	r3, r3, #1
+ 470 0068 9BB2     		uxth	r3, r3
+ 471 006a 1380     		strh	r3, [r2]	@ movhi
+ 153:source\asw/game.c **** //                    GAME__Show("temp2 value: ");
+ 472              		.loc 1 153 0
+ 473 006c 194B     		ldr	r3, .L36+4
+ 474 006e 1B88     		ldrh	r3, [r3]
+ 475 0070 9BB2     		uxth	r3, r3
+ 476 0072 1C4A     		ldr	r2, .L36+20
+ 477 0074 1380     		strh	r3, [r2]	@ movhi
+ 164:source\asw/game.c ****                     GAME__Show("Reaction time(ms): ");
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 14
+
+
+ 478              		.loc 1 164 0
+ 479 0076 1388     		ldrh	r3, [r2]
+ 480 0078 9AB2     		uxth	r2, r3
+ 481 007a 174B     		ldr	r3, .L36+8
+ 482 007c 1B88     		ldrh	r3, [r3]
+ 483 007e 9BB2     		uxth	r3, r3
+ 484 0080 D31A     		subs	r3, r2, r3
+ 485 0082 9BB2     		uxth	r3, r3
+ 486 0084 184C     		ldr	r4, .L36+24
+ 487 0086 2380     		strh	r3, [r4]	@ movhi
+ 165:source\asw/game.c ****                     itoa(reaction_time,buffer,10);
+ 488              		.loc 1 165 0
+ 489 0088 1848     		ldr	r0, .L36+28
+ 490 008a FFF7FEFF 		bl	GAME__Show
+ 491              	.LVL48:
+ 166:source\asw/game.c ****                     UART_LOG_PutString(buffer);
+ 492              		.loc 1 166 0
+ 493 008e 2088     		ldrh	r0, [r4]
+ 494 0090 174C     		ldr	r4, .L36+32
+ 495 0092 0A22     		movs	r2, #10
+ 496 0094 2146     		mov	r1, r4
+ 497 0096 80B2     		uxth	r0, r0
+ 498 0098 FFF7FEFF 		bl	itoa
+ 499              	.LVL49:
+ 167:source\asw/game.c ****                     GAME__Show("\n");
+ 500              		.loc 1 167 0
+ 501 009c 2046     		mov	r0, r4
+ 502 009e FFF7FEFF 		bl	UART_LOG_PutString
+ 503              	.LVL50:
+ 168:source\asw/game.c ****                 }
+ 504              		.loc 1 168 0
+ 505 00a2 1448     		ldr	r0, .L36+36
+ 506 00a4 FFF7FEFF 		bl	GAME__Show
+ 507              	.LVL51:
+ 508 00a8 02E0     		b	.L34
+ 509              	.L33:
+ 172:source\asw/game.c ****                 }
+ 510              		.loc 1 172 0
+ 511 00aa 1348     		ldr	r0, .L36+40
+ 512 00ac FFF7FEFF 		bl	GAME__Show
+ 513              	.LVL52:
+ 514              	.L34:
+ 174:source\asw/game.c ****                 CancelAlarm(alarm_wait1s);
+ 515              		.loc 1 174 0
+ 516 00b0 0024     		movs	r4, #0
+ 517 00b2 074B     		ldr	r3, .L36
+ 518 00b4 9C70     		strb	r4, [r3, #2]
+ 175:source\asw/game.c ****                 
+ 519              		.loc 1 175 0
+ 520 00b6 0120     		movs	r0, #1
+ 521 00b8 FFF7FEFF 		bl	EE_oo_CancelAlarm
+ 522              	.LVL53:
+ 177:source\asw/game.c ****                 SevenSegmentClear(Seven_Segment_Right);
+ 523              		.loc 1 177 0
+ 524 00bc 0120     		movs	r0, #1
+ 525 00be FFF7FEFF 		bl	SevenSegmentClear
+ 526              	.LVL54:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 15
+
+
+ 178:source\asw/game.c ****                 
+ 527              		.loc 1 178 0
+ 528 00c2 2046     		mov	r0, r4
+ 529 00c4 FFF7FEFF 		bl	SevenSegmentClear
+ 530              	.LVL55:
+ 180:source\asw/game.c ****             }   
+ 531              		.loc 1 180 0
+ 532 00c8 FFF7FEFF 		bl	GAME__DisplayResult
+ 533              	.LVL56:
+ 534              	.L29:
+ 184:source\asw/game.c **** void GAME__DisplayTime()
+ 535              		.loc 1 184 0
+ 536 00cc 0020     		movs	r0, #0
+ 537 00ce 10BD     		pop	{r4, pc}
+ 538              	.L37:
+ 539              		.align	2
+ 540              	.L36:
+ 541 00d0 00000000 		.word	.LANCHOR0
+ 542 00d4 00000000 		.word	sys_tick_count
+ 543 00d8 00000000 		.word	temp1
+ 544 00dc 20010000 		.word	.LC8
+ 545 00e0 00000000 		.word	correct_button_pressed
+ 546 00e4 00000000 		.word	temp2
+ 547 00e8 00000000 		.word	reaction_time
+ 548 00ec 44010000 		.word	.LC9
+ 549 00f0 00000000 		.word	buffer
+ 550 00f4 78000000 		.word	.LC3
+ 551 00f8 58010000 		.word	.LC10
+ 552              		.cfi_endproc
+ 553              	.LFE114:
+ 554              		.size	GAME__Play, .-GAME__Play
+ 555              		.comm	buffer,32,4
+ 556              		.comm	reaction_time,2,2
+ 557              		.comm	temp2,2,2
+ 558              		.comm	temp1,2,2
+ 559              		.comm	average_game_time,2,2
+ 560              		.comm	sys_tick_count,2,2
+ 561              		.comm	correct_button_pressed,2,2
+ 562              		.comm	game_rounds,2,2
+ 563              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 564              		.align	2
+ 565              	.LC0:
+ 566 0000 0A0A454E 		.ascii	"\012\012END OF THE GAME\012\000"
+ 566      44204F46 
+ 566      20544845 
+ 566      2047414D 
+ 566      450A00
+ 567 0013 00       		.space	1
+ 568              	.LC1:
+ 569 0014 0A42656C 		.ascii	"\012Below are your Reaction Game Results.....\012\000"
+ 569      6F772061 
+ 569      72652079 
+ 569      6F757220 
+ 569      52656163 
+ 570              	.LC2:
+ 571 0040 0A46494E 		.ascii	"\012FINAL SCORE - Correct number of button pressed "
+ 571      414C2053 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 16
+
+
+ 571      434F5245 
+ 571      202D2043 
+ 571      6F727265 
+ 572 0070 69733A20 		.ascii	"is: \000"
+ 572      00
+ 573 0075 000000   		.space	3
+ 574              	.LC3:
+ 575 0078 0A00     		.ascii	"\012\000"
+ 576 007a 0000     		.space	2
+ 577              	.LC4:
+ 578 007c 546F7461 		.ascii	"Total Reaction time of the Game(ms): \000"
+ 578      6C205265 
+ 578      61637469 
+ 578      6F6E2074 
+ 578      696D6520 
+ 579 00a2 0000     		.space	2
+ 580              	.LC5:
+ 581 00a4 41766572 		.ascii	"Average Reaction time of the Game(ms): \000"
+ 581      61676520 
+ 581      52656163 
+ 581      74696F6E 
+ 581      2074696D 
+ 582              	.LC6:
+ 583 00cc 0A526561 		.ascii	"\012Reaction test program ROUND \000"
+ 583      6374696F 
+ 583      6E207465 
+ 583      73742070 
+ 583      726F6772 
+ 584 00ea 0000     		.space	2
+ 585              	.LC7:
+ 586 00ec 50726573 		.ascii	"Press one of the two buttons to start the round...\012"
+ 586      73206F6E 
+ 586      65206F66 
+ 586      20746865 
+ 586      2074776F 
+ 587 011f 00       		.ascii	"\000"
+ 588              	.LC8:
+ 589 0120 0A477265 		.ascii	"\012Great!! - Correct Button Pressed\012\000"
+ 589      61742121 
+ 589      202D2043 
+ 589      6F727265 
+ 589      63742042 
+ 590 0143 00       		.space	1
+ 591              	.LC9:
+ 592 0144 52656163 		.ascii	"Reaction time(ms): \000"
+ 592      74696F6E 
+ 592      2074696D 
+ 592      65286D73 
+ 592      293A2000 
+ 593              	.LC10:
+ 594 0158 0A4F6F70 		.ascii	"\012Oopss!! - Wrong Button Pressed\012\000"
+ 594      73732121 
+ 594      202D2057 
+ 594      726F6E67 
+ 594      20427574 
+ 595              		.bss
+ 596              		.align	1
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 17
+
+
+ 597              		.set	.LANCHOR0,. + 0
+ 598              		.type	random_7segment_value, %object
+ 599              		.size	random_7segment_value, 2
+ 600              	random_7segment_value:
+ 601 0000 0000     		.space	2
+ 602              		.type	GAME__State, %object
+ 603              		.size	GAME__State, 1
+ 604              	GAME__State:
+ 605 0002 00       		.space	1
+ 606              		.text
+ 607              	.Letext0:
+ 608              		.file 2 ".\\source\\bsw/global.h"
+ 609              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 610              		.file 4 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 611              		.file 5 "Generated_Source\\PSoC5/cytypes.h"
+ 612              		.file 6 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_types.inc"
+ 613              		.file 7 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_cpu.inc"
+ 614              		.file 8 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_common.inc"
+ 615              		.file 9 "source\\asw\\game.h"
+ 616              		.file 10 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_intfunc.inc"
+ 617              		.file 11 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_context.inc"
+ 618              		.file 12 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_primitives.inc"
+ 619              		.file 13 "Generated_Source\\PSoC5/core_cm3.h"
+ 620              		.file 14 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4
+ 621              		.file 15 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_kernel.inc"
+ 622              		.file 16 ".\\source\\bsw/seven_segment.h"
+ 623              		.file 17 "Generated_Source\\PSoC5/UART_LOG.h"
+ 624              		.section	.debug_info,"",%progbits
+ 625              	.Ldebug_info0:
+ 626 0000 C4070000 		.4byte	0x7c4
+ 627 0004 0400     		.2byte	0x4
+ 628 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 629 000a 04       		.byte	0x4
+ 630 000b 01       		.uleb128 0x1
+ 631 000c CE050000 		.4byte	.LASF99
+ 632 0010 0C       		.byte	0xc
+ 633 0011 79050000 		.4byte	.LASF100
+ 634 0015 19030000 		.4byte	.LASF101
+ 635 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 636 001d 00000000 		.4byte	0
+ 637 0021 00000000 		.4byte	.Ldebug_line0
+ 638 0025 02       		.uleb128 0x2
+ 639 0026 01       		.byte	0x1
+ 640 0027 06       		.byte	0x6
+ 641 0028 82030000 		.4byte	.LASF0
+ 642 002c 02       		.uleb128 0x2
+ 643 002d 01       		.byte	0x1
+ 644 002e 08       		.byte	0x8
+ 645 002f 0B030000 		.4byte	.LASF1
+ 646 0033 02       		.uleb128 0x2
+ 647 0034 02       		.byte	0x2
+ 648 0035 05       		.byte	0x5
+ 649 0036 5F000000 		.4byte	.LASF2
+ 650 003a 03       		.uleb128 0x3
+ 651 003b F5030000 		.4byte	.LASF10
+ 652 003f 02       		.byte	0x2
+ 653 0040 93       		.byte	0x93
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 18
+
+
+ 654 0041 45000000 		.4byte	0x45
+ 655 0045 02       		.uleb128 0x2
+ 656 0046 02       		.byte	0x2
+ 657 0047 07       		.byte	0x7
+ 658 0048 3A040000 		.4byte	.LASF3
+ 659 004c 02       		.uleb128 0x2
+ 660 004d 04       		.byte	0x4
+ 661 004e 05       		.byte	0x5
+ 662 004f 38020000 		.4byte	.LASF4
+ 663 0053 02       		.uleb128 0x2
+ 664 0054 04       		.byte	0x4
+ 665 0055 07       		.byte	0x7
+ 666 0056 ED040000 		.4byte	.LASF5
+ 667 005a 02       		.uleb128 0x2
+ 668 005b 04       		.byte	0x4
+ 669 005c 04       		.byte	0x4
+ 670 005d 7B010000 		.4byte	.LASF6
+ 671 0061 02       		.uleb128 0x2
+ 672 0062 08       		.byte	0x8
+ 673 0063 04       		.byte	0x4
+ 674 0064 BA050000 		.4byte	.LASF7
+ 675 0068 02       		.uleb128 0x2
+ 676 0069 08       		.byte	0x8
+ 677 006a 05       		.byte	0x5
+ 678 006b BB010000 		.4byte	.LASF8
+ 679 006f 02       		.uleb128 0x2
+ 680 0070 08       		.byte	0x8
+ 681 0071 07       		.byte	0x7
+ 682 0072 8E030000 		.4byte	.LASF9
+ 683 0076 03       		.uleb128 0x3
+ 684 0077 96020000 		.4byte	.LASF11
+ 685 007b 02       		.byte	0x2
+ 686 007c 9C       		.byte	0x9c
+ 687 007d 2C000000 		.4byte	0x2c
+ 688 0081 02       		.uleb128 0x2
+ 689 0082 01       		.byte	0x1
+ 690 0083 08       		.byte	0x8
+ 691 0084 4D040000 		.4byte	.LASF12
+ 692 0088 04       		.uleb128 0x4
+ 693 0089 01       		.byte	0x1
+ 694 008a 25000000 		.4byte	0x25
+ 695 008e 02       		.byte	0x2
+ 696 008f CF       		.byte	0xcf
+ 697 0090 31010000 		.4byte	0x131
+ 698 0094 05       		.uleb128 0x5
+ 699 0095 1D000000 		.4byte	.LASF13
+ 700 0099 00       		.byte	0
+ 701 009a 06       		.uleb128 0x6
+ 702 009b 8B040000 		.4byte	.LASF14
+ 703 009f 7F       		.sleb128 -1
+ 704 00a0 06       		.uleb128 0x6
+ 705 00a1 0A040000 		.4byte	.LASF15
+ 706 00a5 7E       		.sleb128 -2
+ 707 00a6 06       		.uleb128 0x6
+ 708 00a7 A6000000 		.4byte	.LASF16
+ 709 00ab 7D       		.sleb128 -3
+ 710 00ac 06       		.uleb128 0x6
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 19
+
+
+ 711 00ad 69060000 		.4byte	.LASF17
+ 712 00b1 7C       		.sleb128 -4
+ 713 00b2 06       		.uleb128 0x6
+ 714 00b3 5D010000 		.4byte	.LASF18
+ 715 00b7 7B       		.sleb128 -5
+ 716 00b8 06       		.uleb128 0x6
+ 717 00b9 69000000 		.4byte	.LASF19
+ 718 00bd 7A       		.sleb128 -6
+ 719 00be 06       		.uleb128 0x6
+ 720 00bf 41020000 		.4byte	.LASF20
+ 721 00c3 79       		.sleb128 -7
+ 722 00c4 06       		.uleb128 0x6
+ 723 00c5 00000000 		.4byte	.LASF21
+ 724 00c9 78       		.sleb128 -8
+ 725 00ca 06       		.uleb128 0x6
+ 726 00cb 91060000 		.4byte	.LASF22
+ 727 00cf 77       		.sleb128 -9
+ 728 00d0 06       		.uleb128 0x6
+ 729 00d1 53020000 		.4byte	.LASF23
+ 730 00d5 76       		.sleb128 -10
+ 731 00d6 06       		.uleb128 0x6
+ 732 00d7 AC060000 		.4byte	.LASF24
+ 733 00db 75       		.sleb128 -11
+ 734 00dc 06       		.uleb128 0x6
+ 735 00dd E7030000 		.4byte	.LASF25
+ 736 00e1 74       		.sleb128 -12
+ 737 00e2 06       		.uleb128 0x6
+ 738 00e3 42050000 		.4byte	.LASF26
+ 739 00e7 73       		.sleb128 -13
+ 740 00e8 06       		.uleb128 0x6
+ 741 00e9 A0020000 		.4byte	.LASF27
+ 742 00ed 72       		.sleb128 -14
+ 743 00ee 06       		.uleb128 0x6
+ 744 00ef 81010000 		.4byte	.LASF28
+ 745 00f3 71       		.sleb128 -15
+ 746 00f4 06       		.uleb128 0x6
+ 747 00f5 73020000 		.4byte	.LASF29
+ 748 00f9 70       		.sleb128 -16
+ 749 00fa 06       		.uleb128 0x6
+ 750 00fb BC000000 		.4byte	.LASF30
+ 751 00ff 6F       		.sleb128 -17
+ 752 0100 06       		.uleb128 0x6
+ 753 0101 7A000000 		.4byte	.LASF31
+ 754 0105 6E       		.sleb128 -18
+ 755 0106 06       		.uleb128 0x6
+ 756 0107 0F020000 		.4byte	.LASF32
+ 757 010b 6D       		.sleb128 -19
+ 758 010c 06       		.uleb128 0x6
+ 759 010d 78040000 		.4byte	.LASF33
+ 760 0111 6C       		.sleb128 -20
+ 761 0112 06       		.uleb128 0x6
+ 762 0113 84020000 		.4byte	.LASF34
+ 763 0117 6B       		.sleb128 -21
+ 764 0118 06       		.uleb128 0x6
+ 765 0119 A2050000 		.4byte	.LASF35
+ 766 011d 6A       		.sleb128 -22
+ 767 011e 06       		.uleb128 0x6
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 20
+
+
+ 768 011f 8B050000 		.4byte	.LASF36
+ 769 0123 69       		.sleb128 -23
+ 770 0124 06       		.uleb128 0x6
+ 771 0125 4C010000 		.4byte	.LASF37
+ 772 0129 68       		.sleb128 -24
+ 773 012a 06       		.uleb128 0x6
+ 774 012b A2010000 		.4byte	.LASF38
+ 775 012f 67       		.sleb128 -25
+ 776 0130 00       		.byte	0
+ 777 0131 03       		.uleb128 0x3
+ 778 0132 A7060000 		.4byte	.LASF39
+ 779 0136 02       		.byte	0x2
+ 780 0137 EA       		.byte	0xea
+ 781 0138 88000000 		.4byte	0x88
+ 782 013c 07       		.uleb128 0x7
+ 783 013d 71040000 		.4byte	.LASF102
+ 784 0141 01       		.byte	0x1
+ 785 0142 2C000000 		.4byte	0x2c
+ 786 0146 10       		.byte	0x10
+ 787 0147 5D       		.byte	0x5d
+ 788 0148 59010000 		.4byte	0x159
+ 789 014c 05       		.uleb128 0x5
+ 790 014d 94040000 		.4byte	.LASF40
+ 791 0151 01       		.byte	0x1
+ 792 0152 05       		.uleb128 0x5
+ 793 0153 FB010000 		.4byte	.LASF41
+ 794 0157 00       		.byte	0
+ 795 0158 00       		.byte	0
+ 796 0159 03       		.uleb128 0x3
+ 797 015a 54050000 		.4byte	.LASF42
+ 798 015e 03       		.byte	0x3
+ 799 015f 3F       		.byte	0x3f
+ 800 0160 4C000000 		.4byte	0x4c
+ 801 0164 08       		.uleb128 0x8
+ 802 0165 04       		.byte	0x4
+ 803 0166 05       		.byte	0x5
+ 804 0167 696E7400 		.ascii	"int\000"
+ 805 016b 02       		.uleb128 0x2
+ 806 016c 04       		.byte	0x4
+ 807 016d 07       		.byte	0x7
+ 808 016e DA030000 		.4byte	.LASF43
+ 809 0172 03       		.uleb128 0x3
+ 810 0173 69040000 		.4byte	.LASF44
+ 811 0177 04       		.byte	0x4
+ 812 0178 2C       		.byte	0x2c
+ 813 0179 59010000 		.4byte	0x159
+ 814 017d 09       		.uleb128 0x9
+ 815 017e 13010000 		.4byte	.LASF45
+ 816 0182 05       		.byte	0x5
+ 817 0183 E901     		.2byte	0x1e9
+ 818 0185 45000000 		.4byte	0x45
+ 819 0189 09       		.uleb128 0x9
+ 820 018a D3040000 		.4byte	.LASF46
+ 821 018e 05       		.byte	0x5
+ 822 018f EA01     		.2byte	0x1ea
+ 823 0191 53000000 		.4byte	0x53
+ 824 0195 02       		.uleb128 0x2
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 21
+
+
+ 825 0196 08       		.byte	0x8
+ 826 0197 04       		.byte	0x4
+ 827 0198 DC020000 		.4byte	.LASF47
+ 828 019c 03       		.uleb128 0x3
+ 829 019d 31040000 		.4byte	.LASF48
+ 830 01a1 06       		.byte	0x6
+ 831 01a2 53       		.byte	0x53
+ 832 01a3 64010000 		.4byte	0x164
+ 833 01a7 03       		.uleb128 0x3
+ 834 01a8 78030000 		.4byte	.LASF49
+ 835 01ac 06       		.byte	0x6
+ 836 01ad 54       		.byte	0x54
+ 837 01ae 6B010000 		.4byte	0x16b
+ 838 01b2 03       		.uleb128 0x3
+ 839 01b3 15000000 		.4byte	.LASF50
+ 840 01b7 07       		.byte	0x7
+ 841 01b8 4D       		.byte	0x4d
+ 842 01b9 A7010000 		.4byte	0x1a7
+ 843 01bd 03       		.uleb128 0x3
+ 844 01be B4000000 		.4byte	.LASF51
+ 845 01c2 07       		.byte	0x7
+ 846 01c3 4F       		.byte	0x4f
+ 847 01c4 A7010000 		.4byte	0x1a7
+ 848 01c8 03       		.uleb128 0x3
+ 849 01c9 F4000000 		.4byte	.LASF52
+ 850 01cd 07       		.byte	0x7
+ 851 01ce 78       		.byte	0x78
+ 852 01cf 9C010000 		.4byte	0x19c
+ 853 01d3 09       		.uleb128 0x9
+ 854 01d4 45000000 		.4byte	.LASF53
+ 855 01d8 08       		.byte	0x8
+ 856 01d9 2C02     		.2byte	0x22c
+ 857 01db B2010000 		.4byte	0x1b2
+ 858 01df 02       		.uleb128 0x2
+ 859 01e0 04       		.byte	0x4
+ 860 01e1 07       		.byte	0x7
+ 861 01e2 8F000000 		.4byte	.LASF54
+ 862 01e6 0A       		.uleb128 0xa
+ 863 01e7 04       		.byte	0x4
+ 864 01e8 81000000 		.4byte	0x81
+ 865 01ec 0B       		.uleb128 0xb
+ 866 01ed 3A000000 		.4byte	0x3a
+ 867 01f1 04       		.uleb128 0x4
+ 868 01f2 01       		.byte	0x1
+ 869 01f3 2C000000 		.4byte	0x2c
+ 870 01f7 09       		.byte	0x9
+ 871 01f8 5D       		.byte	0x5d
+ 872 01f9 10020000 		.4byte	0x210
+ 873 01fd 05       		.uleb128 0x5
+ 874 01fe 5C060000 		.4byte	.LASF55
+ 875 0202 00       		.byte	0
+ 876 0203 05       		.uleb128 0x5
+ 877 0204 FB000000 		.4byte	.LASF56
+ 878 0208 01       		.byte	0x1
+ 879 0209 05       		.uleb128 0x5
+ 880 020a 6C050000 		.4byte	.LASF57
+ 881 020e 02       		.byte	0x2
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 22
+
+
+ 882 020f 00       		.byte	0
+ 883 0210 03       		.uleb128 0x3
+ 884 0211 95010000 		.4byte	.LASF58
+ 885 0215 09       		.byte	0x9
+ 886 0216 61       		.byte	0x61
+ 887 0217 F1010000 		.4byte	0x1f1
+ 888 021b 04       		.uleb128 0x4
+ 889 021c 01       		.byte	0x1
+ 890 021d 2C000000 		.4byte	0x2c
+ 891 0221 01       		.byte	0x1
+ 892 0222 2A       		.byte	0x2a
+ 893 0223 3A020000 		.4byte	0x23a
+ 894 0227 05       		.uleb128 0x5
+ 895 0228 FF040000 		.4byte	.LASF59
+ 896 022c 00       		.byte	0
+ 897 022d 05       		.uleb128 0x5
+ 898 022e A7040000 		.4byte	.LASF60
+ 899 0232 01       		.byte	0x1
+ 900 0233 05       		.uleb128 0x5
+ 901 0234 B3020000 		.4byte	.LASF61
+ 902 0238 02       		.byte	0x2
+ 903 0239 00       		.byte	0
+ 904 023a 03       		.uleb128 0x3
+ 905 023b 98000000 		.4byte	.LASF62
+ 906 023f 01       		.byte	0x1
+ 907 0240 2E       		.byte	0x2e
+ 908 0241 1B020000 		.4byte	0x21b
+ 909 0245 0C       		.uleb128 0xc
+ 910 0246 17050000 		.4byte	.LASF65
+ 911 024a 01       		.byte	0x1
+ 912 024b 46       		.byte	0x46
+ 913 024c 31010000 		.4byte	0x131
+ 914 0250 00000000 		.4byte	.LFB111
+ 915 0254 2A000000 		.4byte	.LFE111-.LFB111
+ 916 0258 01       		.uleb128 0x1
+ 917 0259 9C       		.byte	0x9c
+ 918 025a A9020000 		.4byte	0x2a9
+ 919 025e 0D       		.uleb128 0xd
+ 920 025f 53000000 		.4byte	.LASF63
+ 921 0263 01       		.byte	0x1
+ 922 0264 46       		.byte	0x46
+ 923 0265 7D010000 		.4byte	0x17d
+ 924 0269 00000000 		.4byte	.LLST0
+ 925 026d 0D       		.uleb128 0xd
+ 926 026e 52040000 		.4byte	.LASF64
+ 927 0272 01       		.byte	0x1
+ 928 0273 46       		.byte	0x46
+ 929 0274 7D010000 		.4byte	0x17d
+ 930 0278 21000000 		.4byte	.LLST1
+ 931 027c 0E       		.uleb128 0xe
+ 932 027d 5E040000 		.4byte	.LASF75
+ 933 0281 01       		.byte	0x1
+ 934 0282 49       		.byte	0x49
+ 935 0283 89010000 		.4byte	0x189
+ 936 0287 42000000 		.4byte	.LLST2
+ 937 028b 0F       		.uleb128 0xf
+ 938 028c 0A000000 		.4byte	.LVL1
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 23
+
+
+ 939 0290 78070000 		.4byte	0x778
+ 940 0294 10       		.uleb128 0x10
+ 941 0295 26000000 		.4byte	.LVL4
+ 942 0299 83070000 		.4byte	0x783
+ 943 029d 11       		.uleb128 0x11
+ 944 029e 01       		.uleb128 0x1
+ 945 029f 50       		.byte	0x50
+ 946 02a0 01       		.uleb128 0x1
+ 947 02a1 32       		.byte	0x32
+ 948 02a2 11       		.uleb128 0x11
+ 949 02a3 01       		.uleb128 0x1
+ 950 02a4 52       		.byte	0x52
+ 951 02a5 01       		.uleb128 0x1
+ 952 02a6 30       		.byte	0x30
+ 953 02a7 00       		.byte	0
+ 954 02a8 00       		.byte	0
+ 955 02a9 12       		.uleb128 0x12
+ 956 02aa ED020000 		.4byte	.LASF68
+ 957 02ae 01       		.byte	0x1
+ 958 02af 57       		.byte	0x57
+ 959 02b0 31010000 		.4byte	0x131
+ 960 02b4 00000000 		.4byte	.LFB112
+ 961 02b8 3C000000 		.4byte	.LFE112-.LFB112
+ 962 02bc 01       		.uleb128 0x1
+ 963 02bd 9C       		.byte	0x9c
+ 964 02be EE020000 		.4byte	0x2ee
+ 965 02c2 0F       		.uleb128 0xf
+ 966 02c3 06000000 		.4byte	.LVL5
+ 967 02c7 78070000 		.4byte	0x778
+ 968 02cb 13       		.uleb128 0x13
+ 969 02cc 24000000 		.4byte	.LVL6
+ 970 02d0 8F070000 		.4byte	0x78f
+ 971 02d4 DE020000 		.4byte	0x2de
+ 972 02d8 11       		.uleb128 0x11
+ 973 02d9 01       		.uleb128 0x1
+ 974 02da 50       		.byte	0x50
+ 975 02db 01       		.uleb128 0x1
+ 976 02dc 31       		.byte	0x31
+ 977 02dd 00       		.byte	0
+ 978 02de 10       		.uleb128 0x10
+ 979 02df 30000000 		.4byte	.LVL7
+ 980 02e3 8F070000 		.4byte	0x78f
+ 981 02e7 11       		.uleb128 0x11
+ 982 02e8 01       		.uleb128 0x1
+ 983 02e9 50       		.byte	0x50
+ 984 02ea 01       		.uleb128 0x1
+ 985 02eb 30       		.byte	0x30
+ 986 02ec 00       		.byte	0
+ 987 02ed 00       		.byte	0
+ 988 02ee 0C       		.uleb128 0xc
+ 989 02ef 28000000 		.4byte	.LASF66
+ 990 02f3 01       		.byte	0x1
+ 991 02f4 61       		.byte	0x61
+ 992 02f5 76000000 		.4byte	0x76
+ 993 02f9 00000000 		.4byte	.LFB113
+ 994 02fd 2C000000 		.4byte	.LFE113-.LFB113
+ 995 0301 01       		.uleb128 0x1
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 24
+
+
+ 996 0302 9C       		.byte	0x9c
+ 997 0303 17030000 		.4byte	0x317
+ 998 0307 0D       		.uleb128 0xd
+ 999 0308 A5030000 		.4byte	.LASF67
+ 1000 030c 01       		.byte	0x1
+ 1001 030d 61       		.byte	0x61
+ 1002 030e D3010000 		.4byte	0x1d3
+ 1003 0312 55000000 		.4byte	.LLST3
+ 1004 0316 00       		.byte	0
+ 1005 0317 14       		.uleb128 0x14
+ 1006 0318 C8040000 		.4byte	.LASF69
+ 1007 031c 01       		.byte	0x1
+ 1008 031d DA       		.byte	0xda
+ 1009 031e 00000000 		.4byte	.LFB117
+ 1010 0322 08000000 		.4byte	.LFE117-.LFB117
+ 1011 0326 01       		.uleb128 0x1
+ 1012 0327 9C       		.byte	0x9c
+ 1013 0328 4D030000 		.4byte	0x34d
+ 1014 032c 15       		.uleb128 0x15
+ 1015 032d 73747200 		.ascii	"str\000"
+ 1016 0331 01       		.byte	0x1
+ 1017 0332 DA       		.byte	0xda
+ 1018 0333 E6010000 		.4byte	0x1e6
+ 1019 0337 C1000000 		.4byte	.LLST4
+ 1020 033b 10       		.uleb128 0x10
+ 1021 033c 06000000 		.4byte	.LVL17
+ 1022 0340 9A070000 		.4byte	0x79a
+ 1023 0344 11       		.uleb128 0x11
+ 1024 0345 01       		.uleb128 0x1
+ 1025 0346 50       		.byte	0x50
+ 1026 0347 03       		.uleb128 0x3
+ 1027 0348 F3       		.byte	0xf3
+ 1028 0349 01       		.uleb128 0x1
+ 1029 034a 50       		.byte	0x50
+ 1030 034b 00       		.byte	0
+ 1031 034c 00       		.byte	0
+ 1032 034d 16       		.uleb128 0x16
+ 1033 034e C8030000 		.4byte	.LASF70
+ 1034 0352 01       		.byte	0x1
+ 1035 0353 B9       		.byte	0xb9
+ 1036 0354 00000000 		.4byte	.LFB115
+ 1037 0358 B0000000 		.4byte	.LFE115-.LFB115
+ 1038 035c 01       		.uleb128 0x1
+ 1039 035d 9C       		.byte	0x9c
+ 1040 035e 95040000 		.4byte	0x495
+ 1041 0362 13       		.uleb128 0x13
+ 1042 0363 08000000 		.4byte	.LVL18
+ 1043 0367 17030000 		.4byte	0x317
+ 1044 036b 79030000 		.4byte	0x379
+ 1045 036f 11       		.uleb128 0x11
+ 1046 0370 01       		.uleb128 0x1
+ 1047 0371 50       		.byte	0x50
+ 1048 0372 05       		.uleb128 0x5
+ 1049 0373 03       		.byte	0x3
+ 1050 0374 00000000 		.4byte	.LC0
+ 1051 0378 00       		.byte	0
+ 1052 0379 13       		.uleb128 0x13
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 25
+
+
+ 1053 037a 0E000000 		.4byte	.LVL19
+ 1054 037e 17030000 		.4byte	0x317
+ 1055 0382 90030000 		.4byte	0x390
+ 1056 0386 11       		.uleb128 0x11
+ 1057 0387 01       		.uleb128 0x1
+ 1058 0388 50       		.byte	0x50
+ 1059 0389 05       		.uleb128 0x5
+ 1060 038a 03       		.byte	0x3
+ 1061 038b 14000000 		.4byte	.LC1
+ 1062 038f 00       		.byte	0
+ 1063 0390 13       		.uleb128 0x13
+ 1064 0391 14000000 		.4byte	.LVL20
+ 1065 0395 17030000 		.4byte	0x317
+ 1066 0399 A7030000 		.4byte	0x3a7
+ 1067 039d 11       		.uleb128 0x11
+ 1068 039e 01       		.uleb128 0x1
+ 1069 039f 50       		.byte	0x50
+ 1070 03a0 05       		.uleb128 0x5
+ 1071 03a1 03       		.byte	0x3
+ 1072 03a2 40000000 		.4byte	.LC2
+ 1073 03a6 00       		.byte	0
+ 1074 03a7 13       		.uleb128 0x13
+ 1075 03a8 24000000 		.4byte	.LVL21
+ 1076 03ac A5070000 		.4byte	0x7a5
+ 1077 03b0 C0030000 		.4byte	0x3c0
+ 1078 03b4 11       		.uleb128 0x11
+ 1079 03b5 01       		.uleb128 0x1
+ 1080 03b6 51       		.byte	0x51
+ 1081 03b7 02       		.uleb128 0x2
+ 1082 03b8 74       		.byte	0x74
+ 1083 03b9 00       		.sleb128 0
+ 1084 03ba 11       		.uleb128 0x11
+ 1085 03bb 01       		.uleb128 0x1
+ 1086 03bc 52       		.byte	0x52
+ 1087 03bd 01       		.uleb128 0x1
+ 1088 03be 3A       		.byte	0x3a
+ 1089 03bf 00       		.byte	0
+ 1090 03c0 13       		.uleb128 0x13
+ 1091 03c1 2A000000 		.4byte	.LVL22
+ 1092 03c5 9A070000 		.4byte	0x79a
+ 1093 03c9 D4030000 		.4byte	0x3d4
+ 1094 03cd 11       		.uleb128 0x11
+ 1095 03ce 01       		.uleb128 0x1
+ 1096 03cf 50       		.byte	0x50
+ 1097 03d0 02       		.uleb128 0x2
+ 1098 03d1 74       		.byte	0x74
+ 1099 03d2 00       		.sleb128 0
+ 1100 03d3 00       		.byte	0
+ 1101 03d4 13       		.uleb128 0x13
+ 1102 03d5 32000000 		.4byte	.LVL23
+ 1103 03d9 9A070000 		.4byte	0x79a
+ 1104 03dd E8030000 		.4byte	0x3e8
+ 1105 03e1 11       		.uleb128 0x11
+ 1106 03e2 01       		.uleb128 0x1
+ 1107 03e3 50       		.byte	0x50
+ 1108 03e4 02       		.uleb128 0x2
+ 1109 03e5 75       		.byte	0x75
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 26
+
+
+ 1110 03e6 00       		.sleb128 0
+ 1111 03e7 00       		.byte	0
+ 1112 03e8 13       		.uleb128 0x13
+ 1113 03e9 38000000 		.4byte	.LVL24
+ 1114 03ed 17030000 		.4byte	0x317
+ 1115 03f1 FF030000 		.4byte	0x3ff
+ 1116 03f5 11       		.uleb128 0x11
+ 1117 03f6 01       		.uleb128 0x1
+ 1118 03f7 50       		.byte	0x50
+ 1119 03f8 05       		.uleb128 0x5
+ 1120 03f9 03       		.byte	0x3
+ 1121 03fa 7C000000 		.4byte	.LC4
+ 1122 03fe 00       		.byte	0
+ 1123 03ff 13       		.uleb128 0x13
+ 1124 0400 46000000 		.4byte	.LVL25
+ 1125 0404 A5070000 		.4byte	0x7a5
+ 1126 0408 18040000 		.4byte	0x418
+ 1127 040c 11       		.uleb128 0x11
+ 1128 040d 01       		.uleb128 0x1
+ 1129 040e 51       		.byte	0x51
+ 1130 040f 02       		.uleb128 0x2
+ 1131 0410 74       		.byte	0x74
+ 1132 0411 00       		.sleb128 0
+ 1133 0412 11       		.uleb128 0x11
+ 1134 0413 01       		.uleb128 0x1
+ 1135 0414 52       		.byte	0x52
+ 1136 0415 01       		.uleb128 0x1
+ 1137 0416 3A       		.byte	0x3a
+ 1138 0417 00       		.byte	0
+ 1139 0418 13       		.uleb128 0x13
+ 1140 0419 4C000000 		.4byte	.LVL26
+ 1141 041d 9A070000 		.4byte	0x79a
+ 1142 0421 2C040000 		.4byte	0x42c
+ 1143 0425 11       		.uleb128 0x11
+ 1144 0426 01       		.uleb128 0x1
+ 1145 0427 50       		.byte	0x50
+ 1146 0428 02       		.uleb128 0x2
+ 1147 0429 74       		.byte	0x74
+ 1148 042a 00       		.sleb128 0
+ 1149 042b 00       		.byte	0
+ 1150 042c 13       		.uleb128 0x13
+ 1151 042d 52000000 		.4byte	.LVL27
+ 1152 0431 17030000 		.4byte	0x317
+ 1153 0435 40040000 		.4byte	0x440
+ 1154 0439 11       		.uleb128 0x11
+ 1155 043a 01       		.uleb128 0x1
+ 1156 043b 50       		.byte	0x50
+ 1157 043c 02       		.uleb128 0x2
+ 1158 043d 75       		.byte	0x75
+ 1159 043e 00       		.sleb128 0
+ 1160 043f 00       		.byte	0
+ 1161 0440 13       		.uleb128 0x13
+ 1162 0441 58000000 		.4byte	.LVL28
+ 1163 0445 17030000 		.4byte	0x317
+ 1164 0449 57040000 		.4byte	0x457
+ 1165 044d 11       		.uleb128 0x11
+ 1166 044e 01       		.uleb128 0x1
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 27
+
+
+ 1167 044f 50       		.byte	0x50
+ 1168 0450 05       		.uleb128 0x5
+ 1169 0451 03       		.byte	0x3
+ 1170 0452 A4000000 		.4byte	.LC5
+ 1171 0456 00       		.byte	0
+ 1172 0457 13       		.uleb128 0x13
+ 1173 0458 74000000 		.4byte	.LVL29
+ 1174 045c A5070000 		.4byte	0x7a5
+ 1175 0460 70040000 		.4byte	0x470
+ 1176 0464 11       		.uleb128 0x11
+ 1177 0465 01       		.uleb128 0x1
+ 1178 0466 51       		.byte	0x51
+ 1179 0467 02       		.uleb128 0x2
+ 1180 0468 74       		.byte	0x74
+ 1181 0469 00       		.sleb128 0
+ 1182 046a 11       		.uleb128 0x11
+ 1183 046b 01       		.uleb128 0x1
+ 1184 046c 52       		.byte	0x52
+ 1185 046d 01       		.uleb128 0x1
+ 1186 046e 3A       		.byte	0x3a
+ 1187 046f 00       		.byte	0
+ 1188 0470 13       		.uleb128 0x13
+ 1189 0471 7A000000 		.4byte	.LVL30
+ 1190 0475 9A070000 		.4byte	0x79a
+ 1191 0479 84040000 		.4byte	0x484
+ 1192 047d 11       		.uleb128 0x11
+ 1193 047e 01       		.uleb128 0x1
+ 1194 047f 50       		.byte	0x50
+ 1195 0480 02       		.uleb128 0x2
+ 1196 0481 74       		.byte	0x74
+ 1197 0482 00       		.sleb128 0
+ 1198 0483 00       		.byte	0
+ 1199 0484 10       		.uleb128 0x10
+ 1200 0485 80000000 		.4byte	.LVL31
+ 1201 0489 17030000 		.4byte	0x317
+ 1202 048d 11       		.uleb128 0x11
+ 1203 048e 01       		.uleb128 0x1
+ 1204 048f 50       		.byte	0x50
+ 1205 0490 02       		.uleb128 0x2
+ 1206 0491 75       		.byte	0x75
+ 1207 0492 00       		.sleb128 0
+ 1208 0493 00       		.byte	0
+ 1209 0494 00       		.byte	0
+ 1210 0495 16       		.uleb128 0x16
+ 1211 0496 2E050000 		.4byte	.LASF71
+ 1212 049a 01       		.byte	0x1
+ 1213 049b CE       		.byte	0xce
+ 1214 049c 00000000 		.4byte	.LFB116
+ 1215 04a0 58000000 		.4byte	.LFE116-.LFB116
+ 1216 04a4 01       		.uleb128 0x1
+ 1217 04a5 9C       		.byte	0x9c
+ 1218 04a6 19050000 		.4byte	0x519
+ 1219 04aa 13       		.uleb128 0x13
+ 1220 04ab 1C000000 		.4byte	.LVL32
+ 1221 04af 17030000 		.4byte	0x317
+ 1222 04b3 C1040000 		.4byte	0x4c1
+ 1223 04b7 11       		.uleb128 0x11
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 28
+
+
+ 1224 04b8 01       		.uleb128 0x1
+ 1225 04b9 50       		.byte	0x50
+ 1226 04ba 05       		.uleb128 0x5
+ 1227 04bb 03       		.byte	0x3
+ 1228 04bc CC000000 		.4byte	.LC6
+ 1229 04c0 00       		.byte	0
+ 1230 04c1 13       		.uleb128 0x13
+ 1231 04c2 2C000000 		.4byte	.LVL33
+ 1232 04c6 A5070000 		.4byte	0x7a5
+ 1233 04ca DA040000 		.4byte	0x4da
+ 1234 04ce 11       		.uleb128 0x11
+ 1235 04cf 01       		.uleb128 0x1
+ 1236 04d0 51       		.byte	0x51
+ 1237 04d1 02       		.uleb128 0x2
+ 1238 04d2 74       		.byte	0x74
+ 1239 04d3 00       		.sleb128 0
+ 1240 04d4 11       		.uleb128 0x11
+ 1241 04d5 01       		.uleb128 0x1
+ 1242 04d6 52       		.byte	0x52
+ 1243 04d7 01       		.uleb128 0x1
+ 1244 04d8 3A       		.byte	0x3a
+ 1245 04d9 00       		.byte	0
+ 1246 04da 13       		.uleb128 0x13
+ 1247 04db 32000000 		.4byte	.LVL34
+ 1248 04df 9A070000 		.4byte	0x79a
+ 1249 04e3 EE040000 		.4byte	0x4ee
+ 1250 04e7 11       		.uleb128 0x11
+ 1251 04e8 01       		.uleb128 0x1
+ 1252 04e9 50       		.byte	0x50
+ 1253 04ea 02       		.uleb128 0x2
+ 1254 04eb 74       		.byte	0x74
+ 1255 04ec 00       		.sleb128 0
+ 1256 04ed 00       		.byte	0
+ 1257 04ee 13       		.uleb128 0x13
+ 1258 04ef 38000000 		.4byte	.LVL35
+ 1259 04f3 9A070000 		.4byte	0x79a
+ 1260 04f7 05050000 		.4byte	0x505
+ 1261 04fb 11       		.uleb128 0x11
+ 1262 04fc 01       		.uleb128 0x1
+ 1263 04fd 50       		.byte	0x50
+ 1264 04fe 05       		.uleb128 0x5
+ 1265 04ff 03       		.byte	0x3
+ 1266 0500 78000000 		.4byte	.LC3
+ 1267 0504 00       		.byte	0
+ 1268 0505 10       		.uleb128 0x10
+ 1269 0506 3E000000 		.4byte	.LVL36
+ 1270 050a 17030000 		.4byte	0x317
+ 1271 050e 11       		.uleb128 0x11
+ 1272 050f 01       		.uleb128 0x1
+ 1273 0510 50       		.byte	0x50
+ 1274 0511 05       		.uleb128 0x5
+ 1275 0512 03       		.byte	0x3
+ 1276 0513 EC000000 		.4byte	.LC7
+ 1277 0517 00       		.byte	0
+ 1278 0518 00       		.byte	0
+ 1279 0519 0C       		.uleb128 0xc
+ 1280 051a 0C050000 		.4byte	.LASF72
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 29
+
+
+ 1281 051e 01       		.byte	0x1
+ 1282 051f 6B       		.byte	0x6b
+ 1283 0520 31010000 		.4byte	0x131
+ 1284 0524 00000000 		.4byte	.LFB114
+ 1285 0528 FC000000 		.4byte	.LFE114-.LFB114
+ 1286 052c 01       		.uleb128 0x1
+ 1287 052d 9C       		.byte	0x9c
+ 1288 052e 76060000 		.4byte	0x676
+ 1289 0532 0D       		.uleb128 0xd
+ 1290 0533 F6010000 		.4byte	.LASF73
+ 1291 0537 01       		.byte	0x1
+ 1292 0538 6B       		.byte	0x6b
+ 1293 0539 10020000 		.4byte	0x210
+ 1294 053d E2000000 		.4byte	.LLST5
+ 1295 0541 0D       		.uleb128 0xd
+ 1296 0542 3C000000 		.4byte	.LASF74
+ 1297 0546 01       		.byte	0x1
+ 1298 0547 6B       		.byte	0x6b
+ 1299 0548 D3010000 		.4byte	0x1d3
+ 1300 054c 35010000 		.4byte	.LLST6
+ 1301 0550 13       		.uleb128 0x13
+ 1302 0551 1C000000 		.4byte	.LVL39
+ 1303 0555 45020000 		.4byte	0x245
+ 1304 0559 63050000 		.4byte	0x563
+ 1305 055d 11       		.uleb128 0x11
+ 1306 055e 01       		.uleb128 0x1
+ 1307 055f 51       		.byte	0x51
+ 1308 0560 01       		.uleb128 0x1
+ 1309 0561 33       		.byte	0x33
+ 1310 0562 00       		.byte	0
+ 1311 0563 0F       		.uleb128 0xf
+ 1312 0564 2C000000 		.4byte	.LVL41
+ 1313 0568 B0070000 		.4byte	0x7b0
+ 1314 056c 0F       		.uleb128 0xf
+ 1315 056d 30000000 		.4byte	.LVL42
+ 1316 0571 A9020000 		.4byte	0x2a9
+ 1317 0575 13       		.uleb128 0x13
+ 1318 0576 42000000 		.4byte	.LVL43
+ 1319 057a 83070000 		.4byte	0x783
+ 1320 057e 94050000 		.4byte	0x594
+ 1321 0582 11       		.uleb128 0x11
+ 1322 0583 01       		.uleb128 0x1
+ 1323 0584 50       		.byte	0x50
+ 1324 0585 01       		.uleb128 0x1
+ 1325 0586 31       		.byte	0x31
+ 1326 0587 11       		.uleb128 0x11
+ 1327 0588 01       		.uleb128 0x1
+ 1328 0589 51       		.byte	0x51
+ 1329 058a 03       		.uleb128 0x3
+ 1330 058b 0A       		.byte	0xa
+ 1331 058c E803     		.2byte	0x3e8
+ 1332 058e 11       		.uleb128 0x11
+ 1333 058f 01       		.uleb128 0x1
+ 1334 0590 52       		.byte	0x52
+ 1335 0591 01       		.uleb128 0x1
+ 1336 0592 30       		.byte	0x30
+ 1337 0593 00       		.byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 30
+
+
+ 1338 0594 13       		.uleb128 0x13
+ 1339 0595 58000000 		.4byte	.LVL46
+ 1340 0599 EE020000 		.4byte	0x2ee
+ 1341 059d A9050000 		.4byte	0x5a9
+ 1342 05a1 11       		.uleb128 0x11
+ 1343 05a2 01       		.uleb128 0x1
+ 1344 05a3 50       		.byte	0x50
+ 1345 05a4 03       		.uleb128 0x3
+ 1346 05a5 F3       		.byte	0xf3
+ 1347 05a6 01       		.uleb128 0x1
+ 1348 05a7 51       		.byte	0x51
+ 1349 05a8 00       		.byte	0
+ 1350 05a9 13       		.uleb128 0x13
+ 1351 05aa 60000000 		.4byte	.LVL47
+ 1352 05ae 17030000 		.4byte	0x317
+ 1353 05b2 C0050000 		.4byte	0x5c0
+ 1354 05b6 11       		.uleb128 0x11
+ 1355 05b7 01       		.uleb128 0x1
+ 1356 05b8 50       		.byte	0x50
+ 1357 05b9 05       		.uleb128 0x5
+ 1358 05ba 03       		.byte	0x3
+ 1359 05bb 20010000 		.4byte	.LC8
+ 1360 05bf 00       		.byte	0
+ 1361 05c0 13       		.uleb128 0x13
+ 1362 05c1 8E000000 		.4byte	.LVL48
+ 1363 05c5 17030000 		.4byte	0x317
+ 1364 05c9 D7050000 		.4byte	0x5d7
+ 1365 05cd 11       		.uleb128 0x11
+ 1366 05ce 01       		.uleb128 0x1
+ 1367 05cf 50       		.byte	0x50
+ 1368 05d0 05       		.uleb128 0x5
+ 1369 05d1 03       		.byte	0x3
+ 1370 05d2 44010000 		.4byte	.LC9
+ 1371 05d6 00       		.byte	0
+ 1372 05d7 13       		.uleb128 0x13
+ 1373 05d8 9C000000 		.4byte	.LVL49
+ 1374 05dc A5070000 		.4byte	0x7a5
+ 1375 05e0 F0050000 		.4byte	0x5f0
+ 1376 05e4 11       		.uleb128 0x11
+ 1377 05e5 01       		.uleb128 0x1
+ 1378 05e6 51       		.byte	0x51
+ 1379 05e7 02       		.uleb128 0x2
+ 1380 05e8 74       		.byte	0x74
+ 1381 05e9 00       		.sleb128 0
+ 1382 05ea 11       		.uleb128 0x11
+ 1383 05eb 01       		.uleb128 0x1
+ 1384 05ec 52       		.byte	0x52
+ 1385 05ed 01       		.uleb128 0x1
+ 1386 05ee 3A       		.byte	0x3a
+ 1387 05ef 00       		.byte	0
+ 1388 05f0 13       		.uleb128 0x13
+ 1389 05f1 A2000000 		.4byte	.LVL50
+ 1390 05f5 9A070000 		.4byte	0x79a
+ 1391 05f9 04060000 		.4byte	0x604
+ 1392 05fd 11       		.uleb128 0x11
+ 1393 05fe 01       		.uleb128 0x1
+ 1394 05ff 50       		.byte	0x50
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 31
+
+
+ 1395 0600 02       		.uleb128 0x2
+ 1396 0601 74       		.byte	0x74
+ 1397 0602 00       		.sleb128 0
+ 1398 0603 00       		.byte	0
+ 1399 0604 13       		.uleb128 0x13
+ 1400 0605 A8000000 		.4byte	.LVL51
+ 1401 0609 17030000 		.4byte	0x317
+ 1402 060d 1B060000 		.4byte	0x61b
+ 1403 0611 11       		.uleb128 0x11
+ 1404 0612 01       		.uleb128 0x1
+ 1405 0613 50       		.byte	0x50
+ 1406 0614 05       		.uleb128 0x5
+ 1407 0615 03       		.byte	0x3
+ 1408 0616 78000000 		.4byte	.LC3
+ 1409 061a 00       		.byte	0
+ 1410 061b 13       		.uleb128 0x13
+ 1411 061c B0000000 		.4byte	.LVL52
+ 1412 0620 17030000 		.4byte	0x317
+ 1413 0624 32060000 		.4byte	0x632
+ 1414 0628 11       		.uleb128 0x11
+ 1415 0629 01       		.uleb128 0x1
+ 1416 062a 50       		.byte	0x50
+ 1417 062b 05       		.uleb128 0x5
+ 1418 062c 03       		.byte	0x3
+ 1419 062d 58010000 		.4byte	.LC10
+ 1420 0631 00       		.byte	0
+ 1421 0632 13       		.uleb128 0x13
+ 1422 0633 BC000000 		.4byte	.LVL53
+ 1423 0637 B0070000 		.4byte	0x7b0
+ 1424 063b 45060000 		.4byte	0x645
+ 1425 063f 11       		.uleb128 0x11
+ 1426 0640 01       		.uleb128 0x1
+ 1427 0641 50       		.byte	0x50
+ 1428 0642 01       		.uleb128 0x1
+ 1429 0643 31       		.byte	0x31
+ 1430 0644 00       		.byte	0
+ 1431 0645 13       		.uleb128 0x13
+ 1432 0646 C2000000 		.4byte	.LVL54
+ 1433 064a BC070000 		.4byte	0x7bc
+ 1434 064e 58060000 		.4byte	0x658
+ 1435 0652 11       		.uleb128 0x11
+ 1436 0653 01       		.uleb128 0x1
+ 1437 0654 50       		.byte	0x50
+ 1438 0655 01       		.uleb128 0x1
+ 1439 0656 31       		.byte	0x31
+ 1440 0657 00       		.byte	0
+ 1441 0658 13       		.uleb128 0x13
+ 1442 0659 C8000000 		.4byte	.LVL55
+ 1443 065d BC070000 		.4byte	0x7bc
+ 1444 0661 6C060000 		.4byte	0x66c
+ 1445 0665 11       		.uleb128 0x11
+ 1446 0666 01       		.uleb128 0x1
+ 1447 0667 50       		.byte	0x50
+ 1448 0668 02       		.uleb128 0x2
+ 1449 0669 74       		.byte	0x74
+ 1450 066a 00       		.sleb128 0
+ 1451 066b 00       		.byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 32
+
+
+ 1452 066c 0F       		.uleb128 0xf
+ 1453 066d CC000000 		.4byte	.LVL56
+ 1454 0671 95040000 		.4byte	0x495
+ 1455 0675 00       		.byte	0
+ 1456 0676 17       		.uleb128 0x17
+ 1457 0677 FE030000 		.4byte	.LASF76
+ 1458 067b 01       		.byte	0x1
+ 1459 067c 35       		.byte	0x35
+ 1460 067d 3A020000 		.4byte	0x23a
+ 1461 0681 05       		.uleb128 0x5
+ 1462 0682 03       		.byte	0x3
+ 1463 0683 02000000 		.4byte	GAME__State
+ 1464 0687 17       		.uleb128 0x17
+ 1465 0688 22020000 		.4byte	.LASF77
+ 1466 068c 01       		.byte	0x1
+ 1467 068d 37       		.byte	0x37
+ 1468 068e 3A000000 		.4byte	0x3a
+ 1469 0692 05       		.uleb128 0x5
+ 1470 0693 03       		.byte	0x3
+ 1471 0694 00000000 		.4byte	random_7segment_value
+ 1472 0698 18       		.uleb128 0x18
+ 1473 0699 79060000 		.4byte	.LASF78
+ 1474 069d 0A       		.byte	0xa
+ 1475 069e 40       		.byte	0x40
+ 1476 069f B2010000 		.4byte	0x1b2
+ 1477 06a3 18       		.uleb128 0x18
+ 1478 06a4 DD010000 		.4byte	.LASF79
+ 1479 06a8 0A       		.byte	0xa
+ 1480 06a9 47       		.byte	0x47
+ 1481 06aa BD010000 		.4byte	0x1bd
+ 1482 06ae 18       		.uleb128 0x18
+ 1483 06af DA040000 		.4byte	.LASF80
+ 1484 06b3 0A       		.byte	0xa
+ 1485 06b4 4A       		.byte	0x4a
+ 1486 06b5 B2010000 		.4byte	0x1b2
+ 1487 06b9 18       		.uleb128 0x18
+ 1488 06ba 18040000 		.4byte	.LASF81
+ 1489 06be 0B       		.byte	0xb
+ 1490 06bf 48       		.byte	0x48
+ 1491 06c0 C8010000 		.4byte	0x1c8
+ 1492 06c4 18       		.uleb128 0x18
+ 1493 06c5 37010000 		.4byte	.LASF82
+ 1494 06c9 0C       		.byte	0xc
+ 1495 06ca 44       		.byte	0x44
+ 1496 06cb B2010000 		.4byte	0x1b2
+ 1497 06cf 19       		.uleb128 0x19
+ 1498 06d0 C1050000 		.4byte	.LASF83
+ 1499 06d4 0D       		.byte	0xd
+ 1500 06d5 1207     		.2byte	0x712
+ 1501 06d7 DB060000 		.4byte	0x6db
+ 1502 06db 0B       		.uleb128 0xb
+ 1503 06dc 72010000 		.4byte	0x172
+ 1504 06e0 1A       		.uleb128 0x1a
+ 1505 06e1 07010000 		.4byte	.LASF84
+ 1506 06e5 09       		.byte	0x9
+ 1507 06e6 53       		.byte	0x53
+ 1508 06e7 EC010000 		.4byte	0x1ec
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 33
+
+
+ 1509 06eb 05       		.uleb128 0x5
+ 1510 06ec 03       		.byte	0x3
+ 1511 06ed 00000000 		.4byte	game_rounds
+ 1512 06f1 1A       		.uleb128 0x1a
+ 1513 06f2 B1030000 		.4byte	.LASF85
+ 1514 06f6 09       		.byte	0x9
+ 1515 06f7 54       		.byte	0x54
+ 1516 06f8 EC010000 		.4byte	0x1ec
+ 1517 06fc 05       		.uleb128 0x5
+ 1518 06fd 03       		.byte	0x3
+ 1519 06fe 00000000 		.4byte	correct_button_pressed
+ 1520 0702 1A       		.uleb128 0x1a
+ 1521 0703 6C010000 		.4byte	.LASF86
+ 1522 0707 09       		.byte	0x9
+ 1523 0708 55       		.byte	0x55
+ 1524 0709 EC010000 		.4byte	0x1ec
+ 1525 070d 05       		.uleb128 0x5
+ 1526 070e 03       		.byte	0x3
+ 1527 070f 00000000 		.4byte	sys_tick_count
+ 1528 0713 1A       		.uleb128 0x1a
+ 1529 0714 E2000000 		.4byte	.LASF87
+ 1530 0718 09       		.byte	0x9
+ 1531 0719 56       		.byte	0x56
+ 1532 071a EC010000 		.4byte	0x1ec
+ 1533 071e 05       		.uleb128 0x5
+ 1534 071f 03       		.byte	0x3
+ 1535 0720 00000000 		.4byte	average_game_time
+ 1536 0724 1A       		.uleb128 0x1a
+ 1537 0725 1A010000 		.4byte	.LASF88
+ 1538 0729 09       		.byte	0x9
+ 1539 072a 57       		.byte	0x57
+ 1540 072b EC010000 		.4byte	0x1ec
+ 1541 072f 05       		.uleb128 0x5
+ 1542 0730 03       		.byte	0x3
+ 1543 0731 00000000 		.4byte	temp1
+ 1544 0735 1A       		.uleb128 0x1a
+ 1545 0736 B4050000 		.4byte	.LASF89
+ 1546 073a 09       		.byte	0x9
+ 1547 073b 58       		.byte	0x58
+ 1548 073c EC010000 		.4byte	0x1ec
+ 1549 0740 05       		.uleb128 0x5
+ 1550 0741 03       		.byte	0x3
+ 1551 0742 00000000 		.4byte	temp2
+ 1552 0746 1A       		.uleb128 0x1a
+ 1553 0747 5E050000 		.4byte	.LASF90
+ 1554 074b 09       		.byte	0x9
+ 1555 074c 59       		.byte	0x59
+ 1556 074d EC010000 		.4byte	0x1ec
+ 1557 0751 05       		.uleb128 0x5
+ 1558 0752 03       		.byte	0x3
+ 1559 0753 00000000 		.4byte	reaction_time
+ 1560 0757 1B       		.uleb128 0x1b
+ 1561 0758 81000000 		.4byte	0x81
+ 1562 075c 67070000 		.4byte	0x767
+ 1563 0760 1C       		.uleb128 0x1c
+ 1564 0761 DF010000 		.4byte	0x1df
+ 1565 0765 1F       		.byte	0x1f
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 34
+
+
+ 1566 0766 00       		.byte	0
+ 1567 0767 1A       		.uleb128 0x1a
+ 1568 0768 C1040000 		.4byte	.LASF91
+ 1569 076c 01       		.byte	0x1
+ 1570 076d 39       		.byte	0x39
+ 1571 076e 57070000 		.4byte	0x757
+ 1572 0772 05       		.uleb128 0x5
+ 1573 0773 03       		.byte	0x3
+ 1574 0774 00000000 		.4byte	buffer
+ 1575 0778 1D       		.uleb128 0x1d
+ 1576 0779 32010000 		.4byte	.LASF92
+ 1577 077d 32010000 		.4byte	.LASF92
+ 1578 0781 0E       		.byte	0xe
+ 1579 0782 88       		.byte	0x88
+ 1580 0783 1E       		.uleb128 0x1e
+ 1581 0784 D0000000 		.4byte	.LASF93
+ 1582 0788 D0000000 		.4byte	.LASF93
+ 1583 078c 0F       		.byte	0xf
+ 1584 078d EF01     		.2byte	0x1ef
+ 1585 078f 1D       		.uleb128 0x1d
+ 1586 0790 C9010000 		.4byte	.LASF94
+ 1587 0794 C9010000 		.4byte	.LASF94
+ 1588 0798 10       		.byte	0x10
+ 1589 0799 81       		.byte	0x81
+ 1590 079a 1D       		.uleb128 0x1d
+ 1591 079b C9020000 		.4byte	.LASF95
+ 1592 079f C9020000 		.4byte	.LASF95
+ 1593 07a3 11       		.byte	0x11
+ 1594 07a4 8B       		.byte	0x8b
+ 1595 07a5 1D       		.uleb128 0x1d
+ 1596 07a6 E8020000 		.4byte	.LASF96
+ 1597 07aa E8020000 		.4byte	.LASF96
+ 1598 07ae 0E       		.byte	0xe
+ 1599 07af CB       		.byte	0xcb
+ 1600 07b0 1E       		.uleb128 0x1e
+ 1601 07b1 20010000 		.4byte	.LASF97
+ 1602 07b5 20010000 		.4byte	.LASF97
+ 1603 07b9 0F       		.byte	0xf
+ 1604 07ba F901     		.2byte	0x1f9
+ 1605 07bc 1D       		.uleb128 0x1d
+ 1606 07bd 61020000 		.4byte	.LASF98
+ 1607 07c1 61020000 		.4byte	.LASF98
+ 1608 07c5 10       		.byte	0x10
+ 1609 07c6 79       		.byte	0x79
+ 1610 07c7 00       		.byte	0
+ 1611              		.section	.debug_abbrev,"",%progbits
+ 1612              	.Ldebug_abbrev0:
+ 1613 0000 01       		.uleb128 0x1
+ 1614 0001 11       		.uleb128 0x11
+ 1615 0002 01       		.byte	0x1
+ 1616 0003 25       		.uleb128 0x25
+ 1617 0004 0E       		.uleb128 0xe
+ 1618 0005 13       		.uleb128 0x13
+ 1619 0006 0B       		.uleb128 0xb
+ 1620 0007 03       		.uleb128 0x3
+ 1621 0008 0E       		.uleb128 0xe
+ 1622 0009 1B       		.uleb128 0x1b
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 35
+
+
+ 1623 000a 0E       		.uleb128 0xe
+ 1624 000b 55       		.uleb128 0x55
+ 1625 000c 17       		.uleb128 0x17
+ 1626 000d 11       		.uleb128 0x11
+ 1627 000e 01       		.uleb128 0x1
+ 1628 000f 10       		.uleb128 0x10
+ 1629 0010 17       		.uleb128 0x17
+ 1630 0011 00       		.byte	0
+ 1631 0012 00       		.byte	0
+ 1632 0013 02       		.uleb128 0x2
+ 1633 0014 24       		.uleb128 0x24
+ 1634 0015 00       		.byte	0
+ 1635 0016 0B       		.uleb128 0xb
+ 1636 0017 0B       		.uleb128 0xb
+ 1637 0018 3E       		.uleb128 0x3e
+ 1638 0019 0B       		.uleb128 0xb
+ 1639 001a 03       		.uleb128 0x3
+ 1640 001b 0E       		.uleb128 0xe
+ 1641 001c 00       		.byte	0
+ 1642 001d 00       		.byte	0
+ 1643 001e 03       		.uleb128 0x3
+ 1644 001f 16       		.uleb128 0x16
+ 1645 0020 00       		.byte	0
+ 1646 0021 03       		.uleb128 0x3
+ 1647 0022 0E       		.uleb128 0xe
+ 1648 0023 3A       		.uleb128 0x3a
+ 1649 0024 0B       		.uleb128 0xb
+ 1650 0025 3B       		.uleb128 0x3b
+ 1651 0026 0B       		.uleb128 0xb
+ 1652 0027 49       		.uleb128 0x49
+ 1653 0028 13       		.uleb128 0x13
+ 1654 0029 00       		.byte	0
+ 1655 002a 00       		.byte	0
+ 1656 002b 04       		.uleb128 0x4
+ 1657 002c 04       		.uleb128 0x4
+ 1658 002d 01       		.byte	0x1
+ 1659 002e 0B       		.uleb128 0xb
+ 1660 002f 0B       		.uleb128 0xb
+ 1661 0030 49       		.uleb128 0x49
+ 1662 0031 13       		.uleb128 0x13
+ 1663 0032 3A       		.uleb128 0x3a
+ 1664 0033 0B       		.uleb128 0xb
+ 1665 0034 3B       		.uleb128 0x3b
+ 1666 0035 0B       		.uleb128 0xb
+ 1667 0036 01       		.uleb128 0x1
+ 1668 0037 13       		.uleb128 0x13
+ 1669 0038 00       		.byte	0
+ 1670 0039 00       		.byte	0
+ 1671 003a 05       		.uleb128 0x5
+ 1672 003b 28       		.uleb128 0x28
+ 1673 003c 00       		.byte	0
+ 1674 003d 03       		.uleb128 0x3
+ 1675 003e 0E       		.uleb128 0xe
+ 1676 003f 1C       		.uleb128 0x1c
+ 1677 0040 0B       		.uleb128 0xb
+ 1678 0041 00       		.byte	0
+ 1679 0042 00       		.byte	0
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 36
+
+
+ 1680 0043 06       		.uleb128 0x6
+ 1681 0044 28       		.uleb128 0x28
+ 1682 0045 00       		.byte	0
+ 1683 0046 03       		.uleb128 0x3
+ 1684 0047 0E       		.uleb128 0xe
+ 1685 0048 1C       		.uleb128 0x1c
+ 1686 0049 0D       		.uleb128 0xd
+ 1687 004a 00       		.byte	0
+ 1688 004b 00       		.byte	0
+ 1689 004c 07       		.uleb128 0x7
+ 1690 004d 04       		.uleb128 0x4
+ 1691 004e 01       		.byte	0x1
+ 1692 004f 03       		.uleb128 0x3
+ 1693 0050 0E       		.uleb128 0xe
+ 1694 0051 0B       		.uleb128 0xb
+ 1695 0052 0B       		.uleb128 0xb
+ 1696 0053 49       		.uleb128 0x49
+ 1697 0054 13       		.uleb128 0x13
+ 1698 0055 3A       		.uleb128 0x3a
+ 1699 0056 0B       		.uleb128 0xb
+ 1700 0057 3B       		.uleb128 0x3b
+ 1701 0058 0B       		.uleb128 0xb
+ 1702 0059 01       		.uleb128 0x1
+ 1703 005a 13       		.uleb128 0x13
+ 1704 005b 00       		.byte	0
+ 1705 005c 00       		.byte	0
+ 1706 005d 08       		.uleb128 0x8
+ 1707 005e 24       		.uleb128 0x24
+ 1708 005f 00       		.byte	0
+ 1709 0060 0B       		.uleb128 0xb
+ 1710 0061 0B       		.uleb128 0xb
+ 1711 0062 3E       		.uleb128 0x3e
+ 1712 0063 0B       		.uleb128 0xb
+ 1713 0064 03       		.uleb128 0x3
+ 1714 0065 08       		.uleb128 0x8
+ 1715 0066 00       		.byte	0
+ 1716 0067 00       		.byte	0
+ 1717 0068 09       		.uleb128 0x9
+ 1718 0069 16       		.uleb128 0x16
+ 1719 006a 00       		.byte	0
+ 1720 006b 03       		.uleb128 0x3
+ 1721 006c 0E       		.uleb128 0xe
+ 1722 006d 3A       		.uleb128 0x3a
+ 1723 006e 0B       		.uleb128 0xb
+ 1724 006f 3B       		.uleb128 0x3b
+ 1725 0070 05       		.uleb128 0x5
+ 1726 0071 49       		.uleb128 0x49
+ 1727 0072 13       		.uleb128 0x13
+ 1728 0073 00       		.byte	0
+ 1729 0074 00       		.byte	0
+ 1730 0075 0A       		.uleb128 0xa
+ 1731 0076 0F       		.uleb128 0xf
+ 1732 0077 00       		.byte	0
+ 1733 0078 0B       		.uleb128 0xb
+ 1734 0079 0B       		.uleb128 0xb
+ 1735 007a 49       		.uleb128 0x49
+ 1736 007b 13       		.uleb128 0x13
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 37
+
+
+ 1737 007c 00       		.byte	0
+ 1738 007d 00       		.byte	0
+ 1739 007e 0B       		.uleb128 0xb
+ 1740 007f 35       		.uleb128 0x35
+ 1741 0080 00       		.byte	0
+ 1742 0081 49       		.uleb128 0x49
+ 1743 0082 13       		.uleb128 0x13
+ 1744 0083 00       		.byte	0
+ 1745 0084 00       		.byte	0
+ 1746 0085 0C       		.uleb128 0xc
+ 1747 0086 2E       		.uleb128 0x2e
+ 1748 0087 01       		.byte	0x1
+ 1749 0088 3F       		.uleb128 0x3f
+ 1750 0089 19       		.uleb128 0x19
+ 1751 008a 03       		.uleb128 0x3
+ 1752 008b 0E       		.uleb128 0xe
+ 1753 008c 3A       		.uleb128 0x3a
+ 1754 008d 0B       		.uleb128 0xb
+ 1755 008e 3B       		.uleb128 0x3b
+ 1756 008f 0B       		.uleb128 0xb
+ 1757 0090 27       		.uleb128 0x27
+ 1758 0091 19       		.uleb128 0x19
+ 1759 0092 49       		.uleb128 0x49
+ 1760 0093 13       		.uleb128 0x13
+ 1761 0094 11       		.uleb128 0x11
+ 1762 0095 01       		.uleb128 0x1
+ 1763 0096 12       		.uleb128 0x12
+ 1764 0097 06       		.uleb128 0x6
+ 1765 0098 40       		.uleb128 0x40
+ 1766 0099 18       		.uleb128 0x18
+ 1767 009a 9742     		.uleb128 0x2117
+ 1768 009c 19       		.uleb128 0x19
+ 1769 009d 01       		.uleb128 0x1
+ 1770 009e 13       		.uleb128 0x13
+ 1771 009f 00       		.byte	0
+ 1772 00a0 00       		.byte	0
+ 1773 00a1 0D       		.uleb128 0xd
+ 1774 00a2 05       		.uleb128 0x5
+ 1775 00a3 00       		.byte	0
+ 1776 00a4 03       		.uleb128 0x3
+ 1777 00a5 0E       		.uleb128 0xe
+ 1778 00a6 3A       		.uleb128 0x3a
+ 1779 00a7 0B       		.uleb128 0xb
+ 1780 00a8 3B       		.uleb128 0x3b
+ 1781 00a9 0B       		.uleb128 0xb
+ 1782 00aa 49       		.uleb128 0x49
+ 1783 00ab 13       		.uleb128 0x13
+ 1784 00ac 02       		.uleb128 0x2
+ 1785 00ad 17       		.uleb128 0x17
+ 1786 00ae 00       		.byte	0
+ 1787 00af 00       		.byte	0
+ 1788 00b0 0E       		.uleb128 0xe
+ 1789 00b1 34       		.uleb128 0x34
+ 1790 00b2 00       		.byte	0
+ 1791 00b3 03       		.uleb128 0x3
+ 1792 00b4 0E       		.uleb128 0xe
+ 1793 00b5 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 38
+
+
+ 1794 00b6 0B       		.uleb128 0xb
+ 1795 00b7 3B       		.uleb128 0x3b
+ 1796 00b8 0B       		.uleb128 0xb
+ 1797 00b9 49       		.uleb128 0x49
+ 1798 00ba 13       		.uleb128 0x13
+ 1799 00bb 02       		.uleb128 0x2
+ 1800 00bc 17       		.uleb128 0x17
+ 1801 00bd 00       		.byte	0
+ 1802 00be 00       		.byte	0
+ 1803 00bf 0F       		.uleb128 0xf
+ 1804 00c0 898201   		.uleb128 0x4109
+ 1805 00c3 00       		.byte	0
+ 1806 00c4 11       		.uleb128 0x11
+ 1807 00c5 01       		.uleb128 0x1
+ 1808 00c6 31       		.uleb128 0x31
+ 1809 00c7 13       		.uleb128 0x13
+ 1810 00c8 00       		.byte	0
+ 1811 00c9 00       		.byte	0
+ 1812 00ca 10       		.uleb128 0x10
+ 1813 00cb 898201   		.uleb128 0x4109
+ 1814 00ce 01       		.byte	0x1
+ 1815 00cf 11       		.uleb128 0x11
+ 1816 00d0 01       		.uleb128 0x1
+ 1817 00d1 31       		.uleb128 0x31
+ 1818 00d2 13       		.uleb128 0x13
+ 1819 00d3 00       		.byte	0
+ 1820 00d4 00       		.byte	0
+ 1821 00d5 11       		.uleb128 0x11
+ 1822 00d6 8A8201   		.uleb128 0x410a
+ 1823 00d9 00       		.byte	0
+ 1824 00da 02       		.uleb128 0x2
+ 1825 00db 18       		.uleb128 0x18
+ 1826 00dc 9142     		.uleb128 0x2111
+ 1827 00de 18       		.uleb128 0x18
+ 1828 00df 00       		.byte	0
+ 1829 00e0 00       		.byte	0
+ 1830 00e1 12       		.uleb128 0x12
+ 1831 00e2 2E       		.uleb128 0x2e
+ 1832 00e3 01       		.byte	0x1
+ 1833 00e4 3F       		.uleb128 0x3f
+ 1834 00e5 19       		.uleb128 0x19
+ 1835 00e6 03       		.uleb128 0x3
+ 1836 00e7 0E       		.uleb128 0xe
+ 1837 00e8 3A       		.uleb128 0x3a
+ 1838 00e9 0B       		.uleb128 0xb
+ 1839 00ea 3B       		.uleb128 0x3b
+ 1840 00eb 0B       		.uleb128 0xb
+ 1841 00ec 49       		.uleb128 0x49
+ 1842 00ed 13       		.uleb128 0x13
+ 1843 00ee 11       		.uleb128 0x11
+ 1844 00ef 01       		.uleb128 0x1
+ 1845 00f0 12       		.uleb128 0x12
+ 1846 00f1 06       		.uleb128 0x6
+ 1847 00f2 40       		.uleb128 0x40
+ 1848 00f3 18       		.uleb128 0x18
+ 1849 00f4 9742     		.uleb128 0x2117
+ 1850 00f6 19       		.uleb128 0x19
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 39
+
+
+ 1851 00f7 01       		.uleb128 0x1
+ 1852 00f8 13       		.uleb128 0x13
+ 1853 00f9 00       		.byte	0
+ 1854 00fa 00       		.byte	0
+ 1855 00fb 13       		.uleb128 0x13
+ 1856 00fc 898201   		.uleb128 0x4109
+ 1857 00ff 01       		.byte	0x1
+ 1858 0100 11       		.uleb128 0x11
+ 1859 0101 01       		.uleb128 0x1
+ 1860 0102 31       		.uleb128 0x31
+ 1861 0103 13       		.uleb128 0x13
+ 1862 0104 01       		.uleb128 0x1
+ 1863 0105 13       		.uleb128 0x13
+ 1864 0106 00       		.byte	0
+ 1865 0107 00       		.byte	0
+ 1866 0108 14       		.uleb128 0x14
+ 1867 0109 2E       		.uleb128 0x2e
+ 1868 010a 01       		.byte	0x1
+ 1869 010b 3F       		.uleb128 0x3f
+ 1870 010c 19       		.uleb128 0x19
+ 1871 010d 03       		.uleb128 0x3
+ 1872 010e 0E       		.uleb128 0xe
+ 1873 010f 3A       		.uleb128 0x3a
+ 1874 0110 0B       		.uleb128 0xb
+ 1875 0111 3B       		.uleb128 0x3b
+ 1876 0112 0B       		.uleb128 0xb
+ 1877 0113 27       		.uleb128 0x27
+ 1878 0114 19       		.uleb128 0x19
+ 1879 0115 11       		.uleb128 0x11
+ 1880 0116 01       		.uleb128 0x1
+ 1881 0117 12       		.uleb128 0x12
+ 1882 0118 06       		.uleb128 0x6
+ 1883 0119 40       		.uleb128 0x40
+ 1884 011a 18       		.uleb128 0x18
+ 1885 011b 9742     		.uleb128 0x2117
+ 1886 011d 19       		.uleb128 0x19
+ 1887 011e 01       		.uleb128 0x1
+ 1888 011f 13       		.uleb128 0x13
+ 1889 0120 00       		.byte	0
+ 1890 0121 00       		.byte	0
+ 1891 0122 15       		.uleb128 0x15
+ 1892 0123 05       		.uleb128 0x5
+ 1893 0124 00       		.byte	0
+ 1894 0125 03       		.uleb128 0x3
+ 1895 0126 08       		.uleb128 0x8
+ 1896 0127 3A       		.uleb128 0x3a
+ 1897 0128 0B       		.uleb128 0xb
+ 1898 0129 3B       		.uleb128 0x3b
+ 1899 012a 0B       		.uleb128 0xb
+ 1900 012b 49       		.uleb128 0x49
+ 1901 012c 13       		.uleb128 0x13
+ 1902 012d 02       		.uleb128 0x2
+ 1903 012e 17       		.uleb128 0x17
+ 1904 012f 00       		.byte	0
+ 1905 0130 00       		.byte	0
+ 1906 0131 16       		.uleb128 0x16
+ 1907 0132 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 40
+
+
+ 1908 0133 01       		.byte	0x1
+ 1909 0134 3F       		.uleb128 0x3f
+ 1910 0135 19       		.uleb128 0x19
+ 1911 0136 03       		.uleb128 0x3
+ 1912 0137 0E       		.uleb128 0xe
+ 1913 0138 3A       		.uleb128 0x3a
+ 1914 0139 0B       		.uleb128 0xb
+ 1915 013a 3B       		.uleb128 0x3b
+ 1916 013b 0B       		.uleb128 0xb
+ 1917 013c 11       		.uleb128 0x11
+ 1918 013d 01       		.uleb128 0x1
+ 1919 013e 12       		.uleb128 0x12
+ 1920 013f 06       		.uleb128 0x6
+ 1921 0140 40       		.uleb128 0x40
+ 1922 0141 18       		.uleb128 0x18
+ 1923 0142 9742     		.uleb128 0x2117
+ 1924 0144 19       		.uleb128 0x19
+ 1925 0145 01       		.uleb128 0x1
+ 1926 0146 13       		.uleb128 0x13
+ 1927 0147 00       		.byte	0
+ 1928 0148 00       		.byte	0
+ 1929 0149 17       		.uleb128 0x17
+ 1930 014a 34       		.uleb128 0x34
+ 1931 014b 00       		.byte	0
+ 1932 014c 03       		.uleb128 0x3
+ 1933 014d 0E       		.uleb128 0xe
+ 1934 014e 3A       		.uleb128 0x3a
+ 1935 014f 0B       		.uleb128 0xb
+ 1936 0150 3B       		.uleb128 0x3b
+ 1937 0151 0B       		.uleb128 0xb
+ 1938 0152 49       		.uleb128 0x49
+ 1939 0153 13       		.uleb128 0x13
+ 1940 0154 02       		.uleb128 0x2
+ 1941 0155 18       		.uleb128 0x18
+ 1942 0156 00       		.byte	0
+ 1943 0157 00       		.byte	0
+ 1944 0158 18       		.uleb128 0x18
+ 1945 0159 34       		.uleb128 0x34
+ 1946 015a 00       		.byte	0
+ 1947 015b 03       		.uleb128 0x3
+ 1948 015c 0E       		.uleb128 0xe
+ 1949 015d 3A       		.uleb128 0x3a
+ 1950 015e 0B       		.uleb128 0xb
+ 1951 015f 3B       		.uleb128 0x3b
+ 1952 0160 0B       		.uleb128 0xb
+ 1953 0161 49       		.uleb128 0x49
+ 1954 0162 13       		.uleb128 0x13
+ 1955 0163 3F       		.uleb128 0x3f
+ 1956 0164 19       		.uleb128 0x19
+ 1957 0165 3C       		.uleb128 0x3c
+ 1958 0166 19       		.uleb128 0x19
+ 1959 0167 00       		.byte	0
+ 1960 0168 00       		.byte	0
+ 1961 0169 19       		.uleb128 0x19
+ 1962 016a 34       		.uleb128 0x34
+ 1963 016b 00       		.byte	0
+ 1964 016c 03       		.uleb128 0x3
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 41
+
+
+ 1965 016d 0E       		.uleb128 0xe
+ 1966 016e 3A       		.uleb128 0x3a
+ 1967 016f 0B       		.uleb128 0xb
+ 1968 0170 3B       		.uleb128 0x3b
+ 1969 0171 05       		.uleb128 0x5
+ 1970 0172 49       		.uleb128 0x49
+ 1971 0173 13       		.uleb128 0x13
+ 1972 0174 3F       		.uleb128 0x3f
+ 1973 0175 19       		.uleb128 0x19
+ 1974 0176 3C       		.uleb128 0x3c
+ 1975 0177 19       		.uleb128 0x19
+ 1976 0178 00       		.byte	0
+ 1977 0179 00       		.byte	0
+ 1978 017a 1A       		.uleb128 0x1a
+ 1979 017b 34       		.uleb128 0x34
+ 1980 017c 00       		.byte	0
+ 1981 017d 03       		.uleb128 0x3
+ 1982 017e 0E       		.uleb128 0xe
+ 1983 017f 3A       		.uleb128 0x3a
+ 1984 0180 0B       		.uleb128 0xb
+ 1985 0181 3B       		.uleb128 0x3b
+ 1986 0182 0B       		.uleb128 0xb
+ 1987 0183 49       		.uleb128 0x49
+ 1988 0184 13       		.uleb128 0x13
+ 1989 0185 3F       		.uleb128 0x3f
+ 1990 0186 19       		.uleb128 0x19
+ 1991 0187 02       		.uleb128 0x2
+ 1992 0188 18       		.uleb128 0x18
+ 1993 0189 00       		.byte	0
+ 1994 018a 00       		.byte	0
+ 1995 018b 1B       		.uleb128 0x1b
+ 1996 018c 01       		.uleb128 0x1
+ 1997 018d 01       		.byte	0x1
+ 1998 018e 49       		.uleb128 0x49
+ 1999 018f 13       		.uleb128 0x13
+ 2000 0190 01       		.uleb128 0x1
+ 2001 0191 13       		.uleb128 0x13
+ 2002 0192 00       		.byte	0
+ 2003 0193 00       		.byte	0
+ 2004 0194 1C       		.uleb128 0x1c
+ 2005 0195 21       		.uleb128 0x21
+ 2006 0196 00       		.byte	0
+ 2007 0197 49       		.uleb128 0x49
+ 2008 0198 13       		.uleb128 0x13
+ 2009 0199 2F       		.uleb128 0x2f
+ 2010 019a 0B       		.uleb128 0xb
+ 2011 019b 00       		.byte	0
+ 2012 019c 00       		.byte	0
+ 2013 019d 1D       		.uleb128 0x1d
+ 2014 019e 2E       		.uleb128 0x2e
+ 2015 019f 00       		.byte	0
+ 2016 01a0 3F       		.uleb128 0x3f
+ 2017 01a1 19       		.uleb128 0x19
+ 2018 01a2 3C       		.uleb128 0x3c
+ 2019 01a3 19       		.uleb128 0x19
+ 2020 01a4 6E       		.uleb128 0x6e
+ 2021 01a5 0E       		.uleb128 0xe
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 42
+
+
+ 2022 01a6 03       		.uleb128 0x3
+ 2023 01a7 0E       		.uleb128 0xe
+ 2024 01a8 3A       		.uleb128 0x3a
+ 2025 01a9 0B       		.uleb128 0xb
+ 2026 01aa 3B       		.uleb128 0x3b
+ 2027 01ab 0B       		.uleb128 0xb
+ 2028 01ac 00       		.byte	0
+ 2029 01ad 00       		.byte	0
+ 2030 01ae 1E       		.uleb128 0x1e
+ 2031 01af 2E       		.uleb128 0x2e
+ 2032 01b0 00       		.byte	0
+ 2033 01b1 3F       		.uleb128 0x3f
+ 2034 01b2 19       		.uleb128 0x19
+ 2035 01b3 3C       		.uleb128 0x3c
+ 2036 01b4 19       		.uleb128 0x19
+ 2037 01b5 6E       		.uleb128 0x6e
+ 2038 01b6 0E       		.uleb128 0xe
+ 2039 01b7 03       		.uleb128 0x3
+ 2040 01b8 0E       		.uleb128 0xe
+ 2041 01b9 3A       		.uleb128 0x3a
+ 2042 01ba 0B       		.uleb128 0xb
+ 2043 01bb 3B       		.uleb128 0x3b
+ 2044 01bc 05       		.uleb128 0x5
+ 2045 01bd 00       		.byte	0
+ 2046 01be 00       		.byte	0
+ 2047 01bf 00       		.byte	0
+ 2048              		.section	.debug_loc,"",%progbits
+ 2049              	.Ldebug_loc0:
+ 2050              	.LLST0:
+ 2051 0000 00000000 		.4byte	.LVL0
+ 2052 0004 09000000 		.4byte	.LVL1-1
+ 2053 0008 0100     		.2byte	0x1
+ 2054 000a 50       		.byte	0x50
+ 2055 000b 09000000 		.4byte	.LVL1-1
+ 2056 000f 2A000000 		.4byte	.LFE111
+ 2057 0013 0400     		.2byte	0x4
+ 2058 0015 F3       		.byte	0xf3
+ 2059 0016 01       		.uleb128 0x1
+ 2060 0017 50       		.byte	0x50
+ 2061 0018 9F       		.byte	0x9f
+ 2062 0019 00000000 		.4byte	0
+ 2063 001d 00000000 		.4byte	0
+ 2064              	.LLST1:
+ 2065 0021 00000000 		.4byte	.LVL0
+ 2066 0025 09000000 		.4byte	.LVL1-1
+ 2067 0029 0100     		.2byte	0x1
+ 2068 002b 51       		.byte	0x51
+ 2069 002c 09000000 		.4byte	.LVL1-1
+ 2070 0030 2A000000 		.4byte	.LFE111
+ 2071 0034 0400     		.2byte	0x4
+ 2072 0036 F3       		.byte	0xf3
+ 2073 0037 01       		.uleb128 0x1
+ 2074 0038 51       		.byte	0x51
+ 2075 0039 9F       		.byte	0x9f
+ 2076 003a 00000000 		.4byte	0
+ 2077 003e 00000000 		.4byte	0
+ 2078              	.LLST2:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 43
+
+
+ 2079 0042 16000000 		.4byte	.LVL2
+ 2080 0046 22000000 		.4byte	.LVL3
+ 2081 004a 0100     		.2byte	0x1
+ 2082 004c 50       		.byte	0x50
+ 2083 004d 00000000 		.4byte	0
+ 2084 0051 00000000 		.4byte	0
+ 2085              	.LLST3:
+ 2086 0055 00000000 		.4byte	.LVL8
+ 2087 0059 18000000 		.4byte	.LVL9
+ 2088 005d 0100     		.2byte	0x1
+ 2089 005f 50       		.byte	0x50
+ 2090 0060 18000000 		.4byte	.LVL9
+ 2091 0064 1A000000 		.4byte	.LVL10
+ 2092 0068 0400     		.2byte	0x4
+ 2093 006a F3       		.byte	0xf3
+ 2094 006b 01       		.uleb128 0x1
+ 2095 006c 50       		.byte	0x50
+ 2096 006d 9F       		.byte	0x9f
+ 2097 006e 1A000000 		.4byte	.LVL10
+ 2098 0072 1C000000 		.4byte	.LVL11
+ 2099 0076 0100     		.2byte	0x1
+ 2100 0078 50       		.byte	0x50
+ 2101 0079 1C000000 		.4byte	.LVL11
+ 2102 007d 1E000000 		.4byte	.LVL12
+ 2103 0081 0400     		.2byte	0x4
+ 2104 0083 F3       		.byte	0xf3
+ 2105 0084 01       		.uleb128 0x1
+ 2106 0085 50       		.byte	0x50
+ 2107 0086 9F       		.byte	0x9f
+ 2108 0087 1E000000 		.4byte	.LVL12
+ 2109 008b 20000000 		.4byte	.LVL13
+ 2110 008f 0100     		.2byte	0x1
+ 2111 0091 50       		.byte	0x50
+ 2112 0092 20000000 		.4byte	.LVL13
+ 2113 0096 22000000 		.4byte	.LVL14
+ 2114 009a 0400     		.2byte	0x4
+ 2115 009c F3       		.byte	0xf3
+ 2116 009d 01       		.uleb128 0x1
+ 2117 009e 50       		.byte	0x50
+ 2118 009f 9F       		.byte	0x9f
+ 2119 00a0 22000000 		.4byte	.LVL14
+ 2120 00a4 24000000 		.4byte	.LVL15
+ 2121 00a8 0100     		.2byte	0x1
+ 2122 00aa 50       		.byte	0x50
+ 2123 00ab 24000000 		.4byte	.LVL15
+ 2124 00af 2C000000 		.4byte	.LFE113
+ 2125 00b3 0400     		.2byte	0x4
+ 2126 00b5 F3       		.byte	0xf3
+ 2127 00b6 01       		.uleb128 0x1
+ 2128 00b7 50       		.byte	0x50
+ 2129 00b8 9F       		.byte	0x9f
+ 2130 00b9 00000000 		.4byte	0
+ 2131 00bd 00000000 		.4byte	0
+ 2132              	.LLST4:
+ 2133 00c1 00000000 		.4byte	.LVL16
+ 2134 00c5 05000000 		.4byte	.LVL17-1
+ 2135 00c9 0100     		.2byte	0x1
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 44
+
+
+ 2136 00cb 50       		.byte	0x50
+ 2137 00cc 05000000 		.4byte	.LVL17-1
+ 2138 00d0 08000000 		.4byte	.LFE117
+ 2139 00d4 0400     		.2byte	0x4
+ 2140 00d6 F3       		.byte	0xf3
+ 2141 00d7 01       		.uleb128 0x1
+ 2142 00d8 50       		.byte	0x50
+ 2143 00d9 9F       		.byte	0x9f
+ 2144 00da 00000000 		.4byte	0
+ 2145 00de 00000000 		.4byte	0
+ 2146              	.LLST5:
+ 2147 00e2 00000000 		.4byte	.LVL37
+ 2148 00e6 1B000000 		.4byte	.LVL39-1
+ 2149 00ea 0100     		.2byte	0x1
+ 2150 00ec 50       		.byte	0x50
+ 2151 00ed 1B000000 		.4byte	.LVL39-1
+ 2152 00f1 24000000 		.4byte	.LVL40
+ 2153 00f5 0400     		.2byte	0x4
+ 2154 00f7 F3       		.byte	0xf3
+ 2155 00f8 01       		.uleb128 0x1
+ 2156 00f9 50       		.byte	0x50
+ 2157 00fa 9F       		.byte	0x9f
+ 2158 00fb 24000000 		.4byte	.LVL40
+ 2159 00ff 2B000000 		.4byte	.LVL41-1
+ 2160 0103 0100     		.2byte	0x1
+ 2161 0105 50       		.byte	0x50
+ 2162 0106 2B000000 		.4byte	.LVL41-1
+ 2163 010a 4E000000 		.4byte	.LVL44
+ 2164 010e 0400     		.2byte	0x4
+ 2165 0110 F3       		.byte	0xf3
+ 2166 0111 01       		.uleb128 0x1
+ 2167 0112 50       		.byte	0x50
+ 2168 0113 9F       		.byte	0x9f
+ 2169 0114 4E000000 		.4byte	.LVL44
+ 2170 0118 54000000 		.4byte	.LVL45
+ 2171 011c 0100     		.2byte	0x1
+ 2172 011e 50       		.byte	0x50
+ 2173 011f 54000000 		.4byte	.LVL45
+ 2174 0123 FC000000 		.4byte	.LFE114
+ 2175 0127 0400     		.2byte	0x4
+ 2176 0129 F3       		.byte	0xf3
+ 2177 012a 01       		.uleb128 0x1
+ 2178 012b 50       		.byte	0x50
+ 2179 012c 9F       		.byte	0x9f
+ 2180 012d 00000000 		.4byte	0
+ 2181 0131 00000000 		.4byte	0
+ 2182              	.LLST6:
+ 2183 0135 00000000 		.4byte	.LVL37
+ 2184 0139 18000000 		.4byte	.LVL38
+ 2185 013d 0100     		.2byte	0x1
+ 2186 013f 51       		.byte	0x51
+ 2187 0140 18000000 		.4byte	.LVL38
+ 2188 0144 24000000 		.4byte	.LVL40
+ 2189 0148 0400     		.2byte	0x4
+ 2190 014a F3       		.byte	0xf3
+ 2191 014b 01       		.uleb128 0x1
+ 2192 014c 51       		.byte	0x51
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 45
+
+
+ 2193 014d 9F       		.byte	0x9f
+ 2194 014e 24000000 		.4byte	.LVL40
+ 2195 0152 2B000000 		.4byte	.LVL41-1
+ 2196 0156 0100     		.2byte	0x1
+ 2197 0158 51       		.byte	0x51
+ 2198 0159 2B000000 		.4byte	.LVL41-1
+ 2199 015d 4E000000 		.4byte	.LVL44
+ 2200 0161 0400     		.2byte	0x4
+ 2201 0163 F3       		.byte	0xf3
+ 2202 0164 01       		.uleb128 0x1
+ 2203 0165 51       		.byte	0x51
+ 2204 0166 9F       		.byte	0x9f
+ 2205 0167 4E000000 		.4byte	.LVL44
+ 2206 016b 57000000 		.4byte	.LVL46-1
+ 2207 016f 0100     		.2byte	0x1
+ 2208 0171 51       		.byte	0x51
+ 2209 0172 57000000 		.4byte	.LVL46-1
+ 2210 0176 FC000000 		.4byte	.LFE114
+ 2211 017a 0400     		.2byte	0x4
+ 2212 017c F3       		.byte	0xf3
+ 2213 017d 01       		.uleb128 0x1
+ 2214 017e 51       		.byte	0x51
+ 2215 017f 9F       		.byte	0x9f
+ 2216 0180 00000000 		.4byte	0
+ 2217 0184 00000000 		.4byte	0
+ 2218              		.section	.debug_aranges,"",%progbits
+ 2219 0000 4C000000 		.4byte	0x4c
+ 2220 0004 0200     		.2byte	0x2
+ 2221 0006 00000000 		.4byte	.Ldebug_info0
+ 2222 000a 04       		.byte	0x4
+ 2223 000b 00       		.byte	0
+ 2224 000c 0000     		.2byte	0
+ 2225 000e 0000     		.2byte	0
+ 2226 0010 00000000 		.4byte	.LFB111
+ 2227 0014 2A000000 		.4byte	.LFE111-.LFB111
+ 2228 0018 00000000 		.4byte	.LFB112
+ 2229 001c 3C000000 		.4byte	.LFE112-.LFB112
+ 2230 0020 00000000 		.4byte	.LFB113
+ 2231 0024 2C000000 		.4byte	.LFE113-.LFB113
+ 2232 0028 00000000 		.4byte	.LFB117
+ 2233 002c 08000000 		.4byte	.LFE117-.LFB117
+ 2234 0030 00000000 		.4byte	.LFB115
+ 2235 0034 B0000000 		.4byte	.LFE115-.LFB115
+ 2236 0038 00000000 		.4byte	.LFB116
+ 2237 003c 58000000 		.4byte	.LFE116-.LFB116
+ 2238 0040 00000000 		.4byte	.LFB114
+ 2239 0044 FC000000 		.4byte	.LFE114-.LFB114
+ 2240 0048 00000000 		.4byte	0
+ 2241 004c 00000000 		.4byte	0
+ 2242              		.section	.debug_ranges,"",%progbits
+ 2243              	.Ldebug_ranges0:
+ 2244 0000 00000000 		.4byte	.LFB111
+ 2245 0004 2A000000 		.4byte	.LFE111
+ 2246 0008 00000000 		.4byte	.LFB112
+ 2247 000c 3C000000 		.4byte	.LFE112
+ 2248 0010 00000000 		.4byte	.LFB113
+ 2249 0014 2C000000 		.4byte	.LFE113
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 46
+
+
+ 2250 0018 00000000 		.4byte	.LFB117
+ 2251 001c 08000000 		.4byte	.LFE117
+ 2252 0020 00000000 		.4byte	.LFB115
+ 2253 0024 B0000000 		.4byte	.LFE115
+ 2254 0028 00000000 		.4byte	.LFB116
+ 2255 002c 58000000 		.4byte	.LFE116
+ 2256 0030 00000000 		.4byte	.LFB114
+ 2257 0034 FC000000 		.4byte	.LFE114
+ 2258 0038 00000000 		.4byte	0
+ 2259 003c 00000000 		.4byte	0
+ 2260              		.section	.debug_line,"",%progbits
+ 2261              	.Ldebug_line0:
+ 2262 0000 C4030000 		.section	.debug_str,"MS",%progbits,1
+ 2262      0200F902 
+ 2262      00000201 
+ 2262      FB0E0D00 
+ 2262      01010101 
+ 2263              	.LASF21:
+ 2264 0000 52435F45 		.ascii	"RC_ERROR_BUFFER_FULL\000"
+ 2264      52524F52 
+ 2264      5F425546 
+ 2264      4645525F 
+ 2264      46554C4C 
+ 2265              	.LASF50:
+ 2266 0015 45455F55 		.ascii	"EE_UREG\000"
+ 2266      52454700 
+ 2267              	.LASF13:
+ 2268 001d 52435F53 		.ascii	"RC_SUCCESS\000"
+ 2268      55434345 
+ 2268      535300
+ 2269              	.LASF66:
+ 2270 0028 47414D45 		.ascii	"GAME__CorrectButton\000"
+ 2270      5F5F436F 
+ 2270      72726563 
+ 2270      74427574 
+ 2270      746F6E00 
+ 2271              	.LASF74:
+ 2272 003c 65765F53 		.ascii	"ev_State\000"
+ 2272      74617465 
+ 2272      00
+ 2273              	.LASF53:
+ 2274 0045 4576656E 		.ascii	"EventMaskType\000"
+ 2274      744D6173 
+ 2274      6B547970 
+ 2274      6500
+ 2275              	.LASF63:
+ 2276 0053 6D696E74 		.ascii	"mintimeInms\000"
+ 2276      696D6549 
+ 2276      6E6D7300 
+ 2277              	.LASF2:
+ 2278 005f 73686F72 		.ascii	"short int\000"
+ 2278      7420696E 
+ 2278      7400
+ 2279              	.LASF19:
+ 2280 0069 52435F45 		.ascii	"RC_ERROR_OVERRUN\000"
+ 2280      52524F52 
+ 2280      5F4F5645 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 47
+
+
+ 2280      5252554E 
+ 2280      00
+ 2281              	.LASF31:
+ 2282 007a 52435F45 		.ascii	"RC_ERROR_WRITE_FAILS\000"
+ 2282      52524F52 
+ 2282      5F575249 
+ 2282      54455F46 
+ 2282      41494C53 
+ 2283              	.LASF54:
+ 2284 008f 73697A65 		.ascii	"sizetype\000"
+ 2284      74797065 
+ 2284      00
+ 2285              	.LASF62:
+ 2286 0098 47414D45 		.ascii	"GAME__State_t\000"
+ 2286      5F5F5374 
+ 2286      6174655F 
+ 2286      7400
+ 2287              	.LASF16:
+ 2288 00a6 52435F45 		.ascii	"RC_ERROR_ZERO\000"
+ 2288      52524F52 
+ 2288      5F5A4552 
+ 2288      4F00
+ 2289              	.LASF51:
+ 2290 00b4 45455F46 		.ascii	"EE_FREG\000"
+ 2290      52454700 
+ 2291              	.LASF30:
+ 2292 00bc 52435F45 		.ascii	"RC_ERROR_READ_FAILS\000"
+ 2292      52524F52 
+ 2292      5F524541 
+ 2292      445F4641 
+ 2292      494C5300 
+ 2293              	.LASF93:
+ 2294 00d0 45455F6F 		.ascii	"EE_oo_SetRelAlarm\000"
+ 2294      6F5F5365 
+ 2294      7452656C 
+ 2294      416C6172 
+ 2294      6D00
+ 2295              	.LASF87:
+ 2296 00e2 61766572 		.ascii	"average_game_time\000"
+ 2296      6167655F 
+ 2296      67616D65 
+ 2296      5F74696D 
+ 2296      6500
+ 2297              	.LASF52:
+ 2298 00f4 45455F54 		.ascii	"EE_TID\000"
+ 2298      494400
+ 2299              	.LASF56:
+ 2300 00fb 47414D45 		.ascii	"GAME_BUTTON\000"
+ 2300      5F425554 
+ 2300      544F4E00 
+ 2301              	.LASF84:
+ 2302 0107 67616D65 		.ascii	"game_rounds\000"
+ 2302      5F726F75 
+ 2302      6E647300 
+ 2303              	.LASF45:
+ 2304 0113 75696E74 		.ascii	"uint16\000"
+ 2304      313600
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 48
+
+
+ 2305              	.LASF88:
+ 2306 011a 74656D70 		.ascii	"temp1\000"
+ 2306      3100
+ 2307              	.LASF97:
+ 2308 0120 45455F6F 		.ascii	"EE_oo_CancelAlarm\000"
+ 2308      6F5F4361 
+ 2308      6E63656C 
+ 2308      416C6172 
+ 2308      6D00
+ 2309              	.LASF92:
+ 2310 0132 72616E64 		.ascii	"rand\000"
+ 2310      00
+ 2311              	.LASF82:
+ 2312 0137 45455F49 		.ascii	"EE_IRQ_nesting_level\000"
+ 2312      52515F6E 
+ 2312      65737469 
+ 2312      6E675F6C 
+ 2312      6576656C 
+ 2313              	.LASF37:
+ 2314 014c 52435F45 		.ascii	"RC_ERROR_UNKNOWN\000"
+ 2314      52524F52 
+ 2314      5F554E4B 
+ 2314      4E4F574E 
+ 2314      00
+ 2315              	.LASF18:
+ 2316 015d 52435F45 		.ascii	"RC_ERROR_RANGE\000"
+ 2316      52524F52 
+ 2316      5F52414E 
+ 2316      474500
+ 2317              	.LASF86:
+ 2318 016c 7379735F 		.ascii	"sys_tick_count\000"
+ 2318      7469636B 
+ 2318      5F636F75 
+ 2318      6E7400
+ 2319              	.LASF6:
+ 2320 017b 666C6F61 		.ascii	"float\000"
+ 2320      7400
+ 2321              	.LASF28:
+ 2322 0181 52435F45 		.ascii	"RC_ERROR_WRITE_ONLY\000"
+ 2322      52524F52 
+ 2322      5F575249 
+ 2322      54455F4F 
+ 2322      4E4C5900 
+ 2323              	.LASF58:
+ 2324 0195 47414D45 		.ascii	"GAME_event_t\000"
+ 2324      5F657665 
+ 2324      6E745F74 
+ 2324      00
+ 2325              	.LASF38:
+ 2326 01a2 52435F45 		.ascii	"RC_ERROR_NOT_IMPLEMENTED\000"
+ 2326      52524F52 
+ 2326      5F4E4F54 
+ 2326      5F494D50 
+ 2326      4C454D45 
+ 2327              	.LASF8:
+ 2328 01bb 6C6F6E67 		.ascii	"long long int\000"
+ 2328      206C6F6E 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 49
+
+
+ 2328      6720696E 
+ 2328      7400
+ 2329              	.LASF94:
+ 2330 01c9 53657665 		.ascii	"Seven_Segment_Write\000"
+ 2330      6E5F5365 
+ 2330      676D656E 
+ 2330      745F5772 
+ 2330      69746500 
+ 2331              	.LASF79:
+ 2332 01dd 45455F6F 		.ascii	"EE_oo_IRQ_suspend_status\000"
+ 2332      6F5F4952 
+ 2332      515F7375 
+ 2332      7370656E 
+ 2332      645F7374 
+ 2333              	.LASF73:
+ 2334 01f6 47616D65 		.ascii	"Game\000"
+ 2334      00
+ 2335              	.LASF41:
+ 2336 01fb 53657665 		.ascii	"Seven_Segment_Right\000"
+ 2336      6E5F5365 
+ 2336      676D656E 
+ 2336      745F5269 
+ 2336      67687400 
+ 2337              	.LASF32:
+ 2338 020f 52435F45 		.ascii	"RC_ERROR_NOT_MATCH\000"
+ 2338      52524F52 
+ 2338      5F4E4F54 
+ 2338      5F4D4154 
+ 2338      434800
+ 2339              	.LASF77:
+ 2340 0222 72616E64 		.ascii	"random_7segment_value\000"
+ 2340      6F6D5F37 
+ 2340      7365676D 
+ 2340      656E745F 
+ 2340      76616C75 
+ 2341              	.LASF4:
+ 2342 0238 6C6F6E67 		.ascii	"long int\000"
+ 2342      20696E74 
+ 2342      00
+ 2343              	.LASF20:
+ 2344 0241 52435F45 		.ascii	"RC_ERROR_UNDERRUN\000"
+ 2344      52524F52 
+ 2344      5F554E44 
+ 2344      45525255 
+ 2344      4E00
+ 2345              	.LASF23:
+ 2346 0253 52435F45 		.ascii	"RC_ERROR_BUSY\000"
+ 2346      52524F52 
+ 2346      5F425553 
+ 2346      5900
+ 2347              	.LASF98:
+ 2348 0261 53657665 		.ascii	"SevenSegmentClear\000"
+ 2348      6E536567 
+ 2348      6D656E74 
+ 2348      436C6561 
+ 2348      7200
+ 2349              	.LASF29:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 50
+
+
+ 2350 0273 52435F45 		.ascii	"RC_ERROR_INVALID\000"
+ 2350      52524F52 
+ 2350      5F494E56 
+ 2350      414C4944 
+ 2350      00
+ 2351              	.LASF34:
+ 2352 0284 52435F45 		.ascii	"RC_ERROR_BAD_DATA\000"
+ 2352      52524F52 
+ 2352      5F424144 
+ 2352      5F444154 
+ 2352      4100
+ 2353              	.LASF11:
+ 2354 0296 626F6F6C 		.ascii	"boolean_t\000"
+ 2354      65616E5F 
+ 2354      7400
+ 2355              	.LASF27:
+ 2356 02a0 52435F45 		.ascii	"RC_ERROR_READ_ONLY\000"
+ 2356      52524F52 
+ 2356      5F524541 
+ 2356      445F4F4E 
+ 2356      4C5900
+ 2357              	.LASF61:
+ 2358 02b3 47414D45 		.ascii	"GAME__ISWAITINGBUTTON\000"
+ 2358      5F5F4953 
+ 2358      57414954 
+ 2358      494E4742 
+ 2358      5554544F 
+ 2359              	.LASF95:
+ 2360 02c9 55415254 		.ascii	"UART_LOG_PutString\000"
+ 2360      5F4C4F47 
+ 2360      5F507574 
+ 2360      53747269 
+ 2360      6E6700
+ 2361              	.LASF47:
+ 2362 02dc 6C6F6E67 		.ascii	"long double\000"
+ 2362      20646F75 
+ 2362      626C6500 
+ 2363              	.LASF96:
+ 2364 02e8 69746F61 		.ascii	"itoa\000"
+ 2364      00
+ 2365              	.LASF68:
+ 2366 02ed 47414D45 		.ascii	"GAME__ShowRandom7SegmentValue\000"
+ 2366      5F5F5368 
+ 2366      6F775261 
+ 2366      6E646F6D 
+ 2366      37536567 
+ 2367              	.LASF1:
+ 2368 030b 756E7369 		.ascii	"unsigned char\000"
+ 2368      676E6564 
+ 2368      20636861 
+ 2368      7200
+ 2369              	.LASF101:
+ 2370 0319 433A5C55 		.ascii	"C:\\Users\\giris\\OneDrive\\Documents\\PSoC Creator"
+ 2370      73657273 
+ 2370      5C676972 
+ 2370      69735C4F 
+ 2370      6E654472 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 51
+
+
+ 2371 0347 5C457269 		.ascii	"\\Erika_OS_ReactionGame\\Erika_Reaction_Game.cydsn\000"
+ 2371      6B615F4F 
+ 2371      535F5265 
+ 2371      61637469 
+ 2371      6F6E4761 
+ 2372              	.LASF49:
+ 2373 0378 45455F55 		.ascii	"EE_UINT32\000"
+ 2373      494E5433 
+ 2373      3200
+ 2374              	.LASF0:
+ 2375 0382 7369676E 		.ascii	"signed char\000"
+ 2375      65642063 
+ 2375      68617200 
+ 2376              	.LASF9:
+ 2377 038e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2377      206C6F6E 
+ 2377      6720756E 
+ 2377      7369676E 
+ 2377      65642069 
+ 2378              	.LASF67:
+ 2379 03a5 6576656E 		.ascii	"event_state\000"
+ 2379      745F7374 
+ 2379      61746500 
+ 2380              	.LASF85:
+ 2381 03b1 636F7272 		.ascii	"correct_button_pressed\000"
+ 2381      6563745F 
+ 2381      62757474 
+ 2381      6F6E5F70 
+ 2381      72657373 
+ 2382              	.LASF70:
+ 2383 03c8 47414D45 		.ascii	"GAME__DisplayTime\000"
+ 2383      5F5F4469 
+ 2383      73706C61 
+ 2383      7954696D 
+ 2383      6500
+ 2384              	.LASF43:
+ 2385 03da 756E7369 		.ascii	"unsigned int\000"
+ 2385      676E6564 
+ 2385      20696E74 
+ 2385      00
+ 2386              	.LASF25:
+ 2387 03e7 52435F45 		.ascii	"RC_ERROR_OPEN\000"
+ 2387      52524F52 
+ 2387      5F4F5045 
+ 2387      4E00
+ 2388              	.LASF10:
+ 2389 03f5 75696E74 		.ascii	"uint16_t\000"
+ 2389      31365F74 
+ 2389      00
+ 2390              	.LASF76:
+ 2391 03fe 47414D45 		.ascii	"GAME__State\000"
+ 2391      5F5F5374 
+ 2391      61746500 
+ 2392              	.LASF15:
+ 2393 040a 52435F45 		.ascii	"RC_ERROR_NULL\000"
+ 2393      52524F52 
+ 2393      5F4E554C 
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 52
+
+
+ 2393      4C00
+ 2394              	.LASF81:
+ 2395 0418 45455F73 		.ascii	"EE_std_endcycle_next_tid\000"
+ 2395      74645F65 
+ 2395      6E646379 
+ 2395      636C655F 
+ 2395      6E657874 
+ 2396              	.LASF48:
+ 2397 0431 45455F49 		.ascii	"EE_INT32\000"
+ 2397      4E543332 
+ 2397      00
+ 2398              	.LASF3:
+ 2399 043a 73686F72 		.ascii	"short unsigned int\000"
+ 2399      7420756E 
+ 2399      7369676E 
+ 2399      65642069 
+ 2399      6E7400
+ 2400              	.LASF12:
+ 2401 044d 63686172 		.ascii	"char\000"
+ 2401      00
+ 2402              	.LASF64:
+ 2403 0452 6D617874 		.ascii	"maxtimeInms\000"
+ 2403      696D6549 
+ 2403      6E6D7300 
+ 2404              	.LASF75:
+ 2405 045e 72616E64 		.ascii	"randomTime\000"
+ 2405      6F6D5469 
+ 2405      6D6500
+ 2406              	.LASF44:
+ 2407 0469 696E7433 		.ascii	"int32_t\000"
+ 2407      325F7400 
+ 2408              	.LASF102:
+ 2409 0471 65536576 		.ascii	"eSeven\000"
+ 2409      656E00
+ 2410              	.LASF33:
+ 2411 0478 52435F45 		.ascii	"RC_ERROR_BAD_PARAM\000"
+ 2411      52524F52 
+ 2411      5F424144 
+ 2411      5F504152 
+ 2411      414D00
+ 2412              	.LASF14:
+ 2413 048b 52435F45 		.ascii	"RC_ERROR\000"
+ 2413      52524F52 
+ 2413      00
+ 2414              	.LASF40:
+ 2415 0494 53657665 		.ascii	"Seven_Segment_Left\000"
+ 2415      6E5F5365 
+ 2415      676D656E 
+ 2415      745F4C65 
+ 2415      667400
+ 2416              	.LASF60:
+ 2417 04a7 47414D45 		.ascii	"GAME__ISWAITINGRANDOMTIME\000"
+ 2417      5F5F4953 
+ 2417      57414954 
+ 2417      494E4752 
+ 2417      414E444F 
+ 2418              	.LASF91:
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 53
+
+
+ 2419 04c1 62756666 		.ascii	"buffer\000"
+ 2419      657200
+ 2420              	.LASF69:
+ 2421 04c8 47414D45 		.ascii	"GAME__Show\000"
+ 2421      5F5F5368 
+ 2421      6F7700
+ 2422              	.LASF46:
+ 2423 04d3 75696E74 		.ascii	"uint32\000"
+ 2423      333200
+ 2424              	.LASF80:
+ 2425 04da 45455F41 		.ascii	"EE_ApplicationMode\000"
+ 2425      70706C69 
+ 2425      63617469 
+ 2425      6F6E4D6F 
+ 2425      646500
+ 2426              	.LASF5:
+ 2427 04ed 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2427      20756E73 
+ 2427      69676E65 
+ 2427      6420696E 
+ 2427      7400
+ 2428              	.LASF59:
+ 2429 04ff 47414D45 		.ascii	"GAME__ISIDLE\000"
+ 2429      5F5F4953 
+ 2429      49444C45 
+ 2429      00
+ 2430              	.LASF72:
+ 2431 050c 47414D45 		.ascii	"GAME__Play\000"
+ 2431      5F5F506C 
+ 2431      617900
+ 2432              	.LASF65:
+ 2433 0517 47414D45 		.ascii	"GAME__StartRandomTimer\000"
+ 2433      5F5F5374 
+ 2433      61727452 
+ 2433      616E646F 
+ 2433      6D54696D 
+ 2434              	.LASF71:
+ 2435 052e 47414D45 		.ascii	"GAME__DisplayResult\000"
+ 2435      5F5F4469 
+ 2435      73706C61 
+ 2435      79526573 
+ 2435      756C7400 
+ 2436              	.LASF26:
+ 2437 0542 52435F45 		.ascii	"RC_ERROR_CHECKSUM\000"
+ 2437      52524F52 
+ 2437      5F434845 
+ 2437      434B5355 
+ 2437      4D00
+ 2438              	.LASF42:
+ 2439 0554 5F5F696E 		.ascii	"__int32_t\000"
+ 2439      7433325F 
+ 2439      7400
+ 2440              	.LASF90:
+ 2441 055e 72656163 		.ascii	"reaction_time\000"
+ 2441      74696F6E 
+ 2441      5F74696D 
+ 2441      6500
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 54
+
+
+ 2442              	.LASF57:
+ 2443 056c 47414D45 		.ascii	"GAME_TIMEOUT\000"
+ 2443      5F54494D 
+ 2443      454F5554 
+ 2443      00
+ 2444              	.LASF100:
+ 2445 0579 736F7572 		.ascii	"source\\asw\\game.c\000"
+ 2445      63655C61 
+ 2445      73775C67 
+ 2445      616D652E 
+ 2445      6300
+ 2446              	.LASF36:
+ 2447 058b 52435F45 		.ascii	"RC_ERROR_INVALID_STATE\000"
+ 2447      52524F52 
+ 2447      5F494E56 
+ 2447      414C4944 
+ 2447      5F535441 
+ 2448              	.LASF35:
+ 2449 05a2 52435F45 		.ascii	"RC_ERROR_CANCELED\000"
+ 2449      52524F52 
+ 2449      5F43414E 
+ 2449      43454C45 
+ 2449      4400
+ 2450              	.LASF89:
+ 2451 05b4 74656D70 		.ascii	"temp2\000"
+ 2451      3200
+ 2452              	.LASF7:
+ 2453 05ba 646F7562 		.ascii	"double\000"
+ 2453      6C6500
+ 2454              	.LASF83:
+ 2455 05c1 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2455      52784275 
+ 2455      66666572 
+ 2455      00
+ 2456              	.LASF99:
+ 2457 05ce 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2457      43313120 
+ 2457      352E342E 
+ 2457      31203230 
+ 2457      31363036 
+ 2458 0601 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2458      20726576 
+ 2458      6973696F 
+ 2458      6E203233 
+ 2458      37373135 
+ 2459 0634 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2459      66756E63 
+ 2459      74696F6E 
+ 2459      2D736563 
+ 2459      74696F6E 
+ 2460              	.LASF55:
+ 2461 065c 47414D45 		.ascii	"GAME_NOEVENT\000"
+ 2461      5F4E4F45 
+ 2461      56454E54 
+ 2461      00
+ 2462              	.LASF17:
+ 2463 0669 52435F45 		.ascii	"RC_ERROR_MEMORY\000"
+ARM GAS  C:\Users\giris\AppData\Local\Temp\ccLipuO9.s 			page 55
+
+
+ 2463      52524F52 
+ 2463      5F4D454D 
+ 2463      4F525900 
+ 2464              	.LASF78:
+ 2465 0679 45455F6F 		.ascii	"EE_oo_IRQ_disable_count\000"
+ 2465      6F5F4952 
+ 2465      515F6469 
+ 2465      7361626C 
+ 2465      655F636F 
+ 2466              	.LASF22:
+ 2467 0691 52435F45 		.ascii	"RC_ERROR_BUFFER_EMTPY\000"
+ 2467      52524F52 
+ 2467      5F425546 
+ 2467      4645525F 
+ 2467      454D5450 
+ 2468              	.LASF39:
+ 2469 06a7 52435F74 		.ascii	"RC_t\000"
+ 2469      00
+ 2470              	.LASF24:
+ 2471 06ac 52435F45 		.ascii	"RC_ERROR_TIME_OUT\000"
+ 2471      52524F52 
+ 2471      5F54494D 
+ 2471      455F4F55 
+ 2471      5400
+ 2472              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
