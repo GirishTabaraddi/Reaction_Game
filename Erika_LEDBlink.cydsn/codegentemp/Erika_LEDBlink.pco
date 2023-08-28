@@ -1,0 +1,13 @@
+# Erika_LEDBlink
+# 2022-12-01 09:14:58Z
+
+set_location "ClockBlock" clockblockcell -1 -1 0
+set_io "BUTTON_1(0)" iocell 0 3
+set_io "BUTTON_2(0)" iocell 0 4
+set_io "BUTTON_3(0)" iocell 0 5
+set_io "BUTTON_4(0)" iocell 3 2
+set_io "Pin_LED_RED(0)" iocell 0 6
+set_io "Pin_LED_GREEN(0)" iocell 0 7
+set_io "Pin_LED_YELLOW(0)" iocell 2 0
+set_location "Net_84" 3 4 0 0
+set_location "isr_button" interrupt -1 -1 0

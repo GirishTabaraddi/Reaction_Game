@@ -1,0 +1,1902 @@
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"fader.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Fader_Set,"ax",%progbits
+  20              		.align	2
+  21              		.global	Fader_Set
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	Fader_Set, %function
+  25              	Fader_Set:
+  26              	.LFB111:
+  27              		.file 1 "source\\bsw\\fader.c"
+   1:source\bsw/fader.c **** /**
+   2:source\bsw/fader.c **** * \file <filename>
+   3:source\bsw/fader.c **** * \author <author-name>
+   4:source\bsw/fader.c **** * \date <date>
+   5:source\bsw/fader.c **** *
+   6:source\bsw/fader.c **** * \brief <Symbolic File name>
+   7:source\bsw/fader.c **** *
+   8:source\bsw/fader.c **** * \copyright Copyright ©2016
+   9:source\bsw/fader.c **** * Department of electrical engineering and information technology, Hochschule Darmstadt - Universit
+  10:source\bsw/fader.c **** * Permission to use, copy, modify, and distribute this software and its documentation for education
+  11:source\bsw/fader.c **** * (unless permitted by h_da) and official h_da projects, is hereby granted for enrolled students of
+  12:source\bsw/fader.c **** * this paragraph and the following paragraph appear in all copies, modifications, and distributions
+  13:source\bsw/fader.c **** * Contact Prof.Dr.-Ing. Peter Fromm, peter.fromm@h-da.de, Birkenweg 8 64295 Darmstadt - GERMANY for
+  14:source\bsw/fader.c **** *
+  15:source\bsw/fader.c **** * \warning This software is a PROTOTYPE version and is not designed or intended for use in producti
+  16:source\bsw/fader.c **** * The user represents and warrants that it will NOT use or redistribute the Software for such purpo
+  17:source\bsw/fader.c **** * This prototype is for research purposes only. This software is provided "AS IS," without a warran
+  18:source\bsw/fader.c **** */
+  19:source\bsw/fader.c **** 
+  20:source\bsw/fader.c **** /*****************************************************************************/
+  21:source\bsw/fader.c **** /* Include files                                                             */
+  22:source\bsw/fader.c **** /*****************************************************************************/
+  23:source\bsw/fader.c **** #include "fader.h"
+  24:source\bsw/fader.c **** #include "project.h"
+  25:source\bsw/fader.c **** 
+  26:source\bsw/fader.c **** #include <stdio.h>
+  27:source\bsw/fader.c **** #include <stdlib.h>
+  28:source\bsw/fader.c **** #include <time.h>
+  29:source\bsw/fader.c **** /*****************************************************************************/
+  30:source\bsw/fader.c **** /* Local pre-processor symbols/macros ('#define')                            */
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 2
+
+
+  31:source\bsw/fader.c **** /*****************************************************************************/
+  32:source\bsw/fader.c **** 
+  33:source\bsw/fader.c **** /*****************************************************************************/
+  34:source\bsw/fader.c **** /* Global variable definitions (declared in header file with 'extern')       */
+  35:source\bsw/fader.c **** /*****************************************************************************/
+  36:source\bsw/fader.c **** 
+  37:source\bsw/fader.c **** /*****************************************************************************/
+  38:source\bsw/fader.c **** /* Local type definitions ('typedef')                                        */
+  39:source\bsw/fader.c **** /*****************************************************************************/
+  40:source\bsw/fader.c **** 
+  41:source\bsw/fader.c **** /*****************************************************************************/
+  42:source\bsw/fader.c **** /* Local variable definitions ('static')                                     */
+  43:source\bsw/fader.c **** /*****************************************************************************/
+  44:source\bsw/fader.c **** 
+  45:source\bsw/fader.c **** /*****************************************************************************/
+  46:source\bsw/fader.c **** /* Local function prototypes ('static')                                      */
+  47:source\bsw/fader.c **** /*****************************************************************************/
+  48:source\bsw/fader.c **** //const static uint16 LED__Pulse_Width[256] = {
+  49:source\bsw/fader.c **** //    0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3,
+  50:source\bsw/fader.c **** //    3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7,
+  51:source\bsw/fader.c **** //    7, 7, 8, 8, 8, 9, 9, 10, 10, 10, 11, 11, 12, 12, 13, 13, 14, 15,
+  52:source\bsw/fader.c **** //    15, 16, 17, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+  53:source\bsw/fader.c **** //    31, 32, 33, 35, 36, 38, 40, 41, 43, 45, 47, 49, 52, 54, 56, 59,
+  54:source\bsw/fader.c **** //    61, 64, 67, 70, 73, 76, 79, 83, 87, 91, 95, 99, 103, 108, 112,
+  55:source\bsw/fader.c **** //    117, 123, 128, 134, 140, 146, 152, 159, 166, 173, 181, 189, 197,
+  56:source\bsw/fader.c **** //    206, 215, 225, 235, 245, 256, 267, 279, 292, 304, 318, 332, 347,
+  57:source\bsw/fader.c **** //    362, 378, 395, 412, 431, 450, 470, 490, 512, 535, 558, 583, 609,
+  58:source\bsw/fader.c **** //    636, 664, 693, 724, 756, 790, 825, 861, 899, 939, 981, 1024, 1069,
+  59:source\bsw/fader.c **** //    1117, 1166, 1218, 1272, 1328, 1387, 1448, 1512, 1579, 1649, 1722,
+  60:source\bsw/fader.c **** //    1798, 1878, 1961, 2048, 2139, 2233, 2332, 2435, 2543, 2656, 2773,
+  61:source\bsw/fader.c **** //    2896, 3025, 3158, 3298, 3444, 3597, 3756, 3922, 4096, 4277, 4467,
+  62:source\bsw/fader.c **** //    4664, 4871, 5087, 5312, 5547, 5793, 6049, 6317, 6596, 6889, 7194,
+  63:source\bsw/fader.c **** //    7512, 7845, 8192, 8555, 8933, 9329, 9742, 10173, 10624, 11094,
+  64:source\bsw/fader.c **** //    11585, 12098, 12634, 13193, 13777, 14387, 15024, 15689, 16384,
+  65:source\bsw/fader.c **** //    17109, 17867, 18658, 19484, 20346, 21247, 22188, 23170, 24196,
+  66:source\bsw/fader.c **** //    25267, 26386, 27554, 28774, 30048, 31378, 32768, 34218, 35733,
+  67:source\bsw/fader.c **** //    37315, 38967, 40693, 42494, 44376, 46340, 48392, 50534, 52772,
+  68:source\bsw/fader.c **** //    55108, 57548, 60096, 62757, 65535
+  69:source\bsw/fader.c **** //};
+  70:source\bsw/fader.c **** 
+  71:source\bsw/fader.c **** /*****************************************************************************/
+  72:source\bsw/fader.c **** /* Function implementation - global ('extern') and local ('static')          */
+  73:source\bsw/fader.c **** /*****************************************************************************/
+  74:source\bsw/fader.c **** char buffer[32];
+  75:source\bsw/fader.c **** /**
+  76:source\bsw/fader.c ****  * This function performs the operation to sequence the RED, YELLOW, BLUE sequence in a Fader Patte
+  77:source\bsw/fader.c ****  * @param none
+  78:source\bsw/fader.c ****  * @return RC_SUCCESS if ok.
+  79:source\bsw/fader.c ****  */
+  80:source\bsw/fader.c **** RC_t Fader_Set()
+  81:source\bsw/fader.c **** {
+  28              		.loc 1 81 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 38B5     		push	{r3, r4, r5, lr}
+  33              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 3
+
+
+  34              		.cfi_offset 3, -16
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  82:source\bsw/fader.c ****     RGB_Red_Write(255);
+  38              		.loc 1 82 0
+  39 0002 FF20     		movs	r0, #255
+  40 0004 FFF7FEFF 		bl	RGB_Red_Write
+  41              	.LVL0:
+  83:source\bsw/fader.c ****     static uint16_t Fader__Brightness = 0;
+  84:source\bsw/fader.c ****     static uint16_t i = 0;
+  85:source\bsw/fader.c **** 
+  86:source\bsw/fader.c ****     Fader__Brightness = sys_tick_count % 255;
+  42              		.loc 1 86 0
+  43 0008 0F4B     		ldr	r3, .L4
+  44 000a 1A88     		ldrh	r2, [r3]
+  45 000c 0F4B     		ldr	r3, .L4+4
+  46 000e A3FB0213 		umull	r1, r3, r3, r2
+  47 0012 DB09     		lsrs	r3, r3, #7
+  48 0014 C3EB0323 		rsb	r3, r3, r3, lsl #8
+  49 0018 D31A     		subs	r3, r2, r3
+  50 001a 9BB2     		uxth	r3, r3
+  87:source\bsw/fader.c **** 
+  88:source\bsw/fader.c ****     if(Fader__Brightness == 0)
+  51              		.loc 1 88 0
+  52 001c 93B9     		cbnz	r3, .L2
+  89:source\bsw/fader.c ****     {
+  90:source\bsw/fader.c ****         i++;   
+  53              		.loc 1 90 0
+  54 001e 0C4C     		ldr	r4, .L4+8
+  55 0020 2388     		ldrh	r3, [r4]
+  56 0022 0133     		adds	r3, r3, #1
+  57 0024 2380     		strh	r3, [r4]	@ movhi
+  91:source\bsw/fader.c ****         UART_LOG_PutString("i value after mod 25: ");
+  58              		.loc 1 91 0
+  59 0026 0B48     		ldr	r0, .L4+12
+  60 0028 FFF7FEFF 		bl	UART_LOG_PutString
+  61              	.LVL1:
+  92:source\bsw/fader.c ****         itoa(i,buffer,10);
+  62              		.loc 1 92 0
+  63 002c 0A4D     		ldr	r5, .L4+16
+  64 002e 0A22     		movs	r2, #10
+  65 0030 2946     		mov	r1, r5
+  66 0032 2088     		ldrh	r0, [r4]
+  67 0034 FFF7FEFF 		bl	itoa
+  68              	.LVL2:
+  93:source\bsw/fader.c ****         UART_LOG_PutString(buffer);
+  69              		.loc 1 93 0
+  70 0038 2846     		mov	r0, r5
+  71 003a FFF7FEFF 		bl	UART_LOG_PutString
+  72              	.LVL3:
+  94:source\bsw/fader.c ****         UART_LOG_PutString("\n");
+  73              		.loc 1 94 0
+  74 003e 0748     		ldr	r0, .L4+20
+  75 0040 FFF7FEFF 		bl	UART_LOG_PutString
+  76              	.LVL4:
+  77              	.L2:
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 4
+
+
+  95:source\bsw/fader.c ****         
+  96:source\bsw/fader.c **** 
+  97:source\bsw/fader.c **** 
+  98:source\bsw/fader.c ****         
+  99:source\bsw/fader.c ****     }
+ 100:source\bsw/fader.c **** //    boolean_t flag_first_time   = TRUE;
+ 101:source\bsw/fader.c **** //    
+ 102:source\bsw/fader.c **** //    if(Fader__Brightness >= 0 && Fader__Brightness < 255)
+ 103:source\bsw/fader.c **** //    {
+ 104:source\bsw/fader.c **** //        if(flag_first_time == FALSE)
+ 105:source\bsw/fader.c **** //        {
+ 106:source\bsw/fader.c **** //            PWM_Led_Green_WriteCompare(LED__Pulse_Width[(255 - Fader__Brightness)]);
+ 107:source\bsw/fader.c **** //        }
+ 108:source\bsw/fader.c **** //        PWM_Led_Red_Start();
+ 109:source\bsw/fader.c **** //        PWM_Led_Red_WriteCompare(LED__Pulse_Width[Fader__Brightness]); //0 to 255
+ 110:source\bsw/fader.c **** //        PWM_Led_Yellow_WriteCompare(0);
+ 111:source\bsw/fader.c **** //        
+ 112:source\bsw/fader.c **** //        Fader__Brightness++;
+ 113:source\bsw/fader.c **** //    }
+ 114:source\bsw/fader.c ****     
+ 115:source\bsw/fader.c ****     return RC_SUCCESS;
+ 116:source\bsw/fader.c **** }...
+  78              		.loc 1 116 0
+  79 0044 0020     		movs	r0, #0
+  80 0046 38BD     		pop	{r3, r4, r5, pc}
+  81              	.L5:
+  82              		.align	2
+  83              	.L4:
+  84 0048 00000000 		.word	sys_tick_count
+  85 004c 81808080 		.word	-2139062143
+  86 0050 00000000 		.word	.LANCHOR0
+  87 0054 00000000 		.word	.LC0
+  88 0058 00000000 		.word	buffer
+  89 005c 18000000 		.word	.LC1
+  90              		.cfi_endproc
+  91              	.LFE111:
+  92              		.size	Fader_Set, .-Fader_Set
+  93              		.comm	buffer,32,4
+  94              		.section	.rodata.str1.4,"aMS",%progbits,1
+  95              		.align	2
+  96              	.LC0:
+  97 0000 69207661 		.ascii	"i value after mod 25: \000"
+  97      6C756520 
+  97      61667465 
+  97      72206D6F 
+  97      64203235 
+  98 0017 00       		.space	1
+  99              	.LC1:
+ 100 0018 0A00     		.ascii	"\012\000"
+ 101              		.bss
+ 102              		.align	1
+ 103              		.set	.LANCHOR0,. + 0
+ 104              		.type	i.7579, %object
+ 105              		.size	i.7579, 2
+ 106              	i.7579:
+ 107 0000 0000     		.space	2
+ 108              		.text
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 5
+
+
+ 109              	.Letext0:
+ 110              		.file 2 "source\\bsw\\global.h"
+ 111              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 112              		.file 4 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 113              		.file 5 "Generated_Source\\PSoC5/cytypes.h"
+ 114              		.file 6 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_types.inc"
+ 115              		.file 7 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_cpu.inc"
+ 116              		.file 8 "Generated_Source\\PSoC5/ErikaOS_1_ee_oo_intfunc.inc"
+ 117              		.file 9 "Generated_Source\\PSoC5/ErikaOS_1_cortex_mx_ee_context.inc"
+ 118              		.file 10 "Generated_Source\\PSoC5/ErikaOS_1_common_ee_primitives.inc"
+ 119              		.file 11 "Generated_Source\\PSoC5/core_cm3.h"
+ 120              		.file 12 "source\\bsw\\fader.h"
+ 121              		.file 13 "Generated_Source\\PSoC5/RGB_Red.h"
+ 122              		.file 14 "Generated_Source\\PSoC5/UART_LOG.h"
+ 123              		.file 15 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4
+ 124              		.section	.debug_info,"",%progbits
+ 125              	.Ldebug_info0:
+ 126 0000 FE040000 		.4byte	0x4fe
+ 127 0004 0400     		.2byte	0x4
+ 128 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 129 000a 04       		.byte	0x4
+ 130 000b 01       		.uleb128 0x1
+ 131 000c 99020000 		.4byte	.LASF62
+ 132 0010 0C       		.byte	0xc
+ 133 0011 BA030000 		.4byte	.LASF63
+ 134 0015 27030000 		.4byte	.LASF64
+ 135 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 136 001d 00000000 		.4byte	0
+ 137 0021 00000000 		.4byte	.Ldebug_line0
+ 138 0025 02       		.uleb128 0x2
+ 139 0026 01       		.byte	0x1
+ 140 0027 06       		.byte	0x6
+ 141 0028 12020000 		.4byte	.LASF0
+ 142 002c 02       		.uleb128 0x2
+ 143 002d 01       		.byte	0x1
+ 144 002e 08       		.byte	0x8
+ 145 002f 04020000 		.4byte	.LASF1
+ 146 0033 02       		.uleb128 0x2
+ 147 0034 02       		.byte	0x2
+ 148 0035 05       		.byte	0x5
+ 149 0036 43000000 		.4byte	.LASF2
+ 150 003a 03       		.uleb128 0x3
+ 151 003b 50020000 		.4byte	.LASF37
+ 152 003f 02       		.byte	0x2
+ 153 0040 93       		.byte	0x93
+ 154 0041 45000000 		.4byte	0x45
+ 155 0045 02       		.uleb128 0x2
+ 156 0046 02       		.byte	0x2
+ 157 0047 07       		.byte	0x7
+ 158 0048 86020000 		.4byte	.LASF3
+ 159 004c 02       		.uleb128 0x2
+ 160 004d 04       		.byte	0x4
+ 161 004e 05       		.byte	0x5
+ 162 004f 8A010000 		.4byte	.LASF4
+ 163 0053 02       		.uleb128 0x2
+ 164 0054 04       		.byte	0x4
+ 165 0055 07       		.byte	0x7
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 6
+
+
+ 166 0056 E7030000 		.4byte	.LASF5
+ 167 005a 02       		.uleb128 0x2
+ 168 005b 04       		.byte	0x4
+ 169 005c 04       		.byte	0x4
+ 170 005d 20010000 		.4byte	.LASF6
+ 171 0061 02       		.uleb128 0x2
+ 172 0062 08       		.byte	0x8
+ 173 0063 04       		.byte	0x4
+ 174 0064 F9030000 		.4byte	.LASF7
+ 175 0068 02       		.uleb128 0x2
+ 176 0069 08       		.byte	0x8
+ 177 006a 05       		.byte	0x5
+ 178 006b 3F010000 		.4byte	.LASF8
+ 179 006f 02       		.uleb128 0x2
+ 180 0070 08       		.byte	0x8
+ 181 0071 07       		.byte	0x7
+ 182 0072 1E020000 		.4byte	.LASF9
+ 183 0076 02       		.uleb128 0x2
+ 184 0077 01       		.byte	0x1
+ 185 0078 08       		.byte	0x8
+ 186 0079 85030000 		.4byte	.LASF10
+ 187 007d 04       		.uleb128 0x4
+ 188 007e 01       		.byte	0x1
+ 189 007f 25000000 		.4byte	0x25
+ 190 0083 02       		.byte	0x2
+ 191 0084 CF       		.byte	0xcf
+ 192 0085 26010000 		.4byte	0x126
+ 193 0089 05       		.uleb128 0x5
+ 194 008a 13000000 		.4byte	.LASF11
+ 195 008e 00       		.byte	0
+ 196 008f 06       		.uleb128 0x6
+ 197 0090 55040000 		.4byte	.LASF12
+ 198 0094 7F       		.sleb128 -1
+ 199 0095 06       		.uleb128 0x6
+ 200 0096 59020000 		.4byte	.LASF13
+ 201 009a 7E       		.sleb128 -2
+ 202 009b 06       		.uleb128 0x6
+ 203 009c 7C000000 		.4byte	.LASF14
+ 204 00a0 7D       		.sleb128 -3
+ 205 00a1 06       		.uleb128 0x6
+ 206 00a2 6D040000 		.4byte	.LASF15
+ 207 00a6 7C       		.sleb128 -4
+ 208 00a7 06       		.uleb128 0x6
+ 209 00a8 11010000 		.4byte	.LASF16
+ 210 00ac 7B       		.sleb128 -5
+ 211 00ad 06       		.uleb128 0x6
+ 212 00ae 4D000000 		.4byte	.LASF17
+ 213 00b2 7A       		.sleb128 -6
+ 214 00b3 06       		.uleb128 0x6
+ 215 00b4 93010000 		.4byte	.LASF18
+ 216 00b8 79       		.sleb128 -7
+ 217 00b9 06       		.uleb128 0x6
+ 218 00ba 8A030000 		.4byte	.LASF19
+ 219 00be 78       		.sleb128 -8
+ 220 00bf 06       		.uleb128 0x6
+ 221 00c0 67020000 		.4byte	.LASF20
+ 222 00c4 77       		.sleb128 -9
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 7
+
+
+ 223 00c5 06       		.uleb128 0x6
+ 224 00c6 A5010000 		.4byte	.LASF21
+ 225 00ca 76       		.sleb128 -10
+ 226 00cb 06       		.uleb128 0x6
+ 227 00cc 9A040000 		.4byte	.LASF22
+ 228 00d0 75       		.sleb128 -11
+ 229 00d1 06       		.uleb128 0x6
+ 230 00d2 42020000 		.4byte	.LASF23
+ 231 00d6 74       		.sleb128 -12
+ 232 00d7 06       		.uleb128 0x6
+ 233 00d8 00040000 		.4byte	.LASF24
+ 234 00dc 73       		.sleb128 -13
+ 235 00dd 06       		.uleb128 0x6
+ 236 00de 00000000 		.4byte	.LASF25
+ 237 00e2 72       		.sleb128 -14
+ 238 00e3 06       		.uleb128 0x6
+ 239 00e4 2F000000 		.4byte	.LASF26
+ 240 00e8 71       		.sleb128 -15
+ 241 00e9 06       		.uleb128 0x6
+ 242 00ea B3010000 		.4byte	.LASF27
+ 243 00ee 70       		.sleb128 -16
+ 244 00ef 06       		.uleb128 0x6
+ 245 00f0 92000000 		.4byte	.LASF28
+ 246 00f4 6F       		.sleb128 -17
+ 247 00f5 06       		.uleb128 0x6
+ 248 00f6 5E000000 		.4byte	.LASF29
+ 249 00fa 6E       		.sleb128 -18
+ 250 00fb 06       		.uleb128 0x6
+ 251 00fc 66010000 		.4byte	.LASF30
+ 252 0100 6D       		.sleb128 -19
+ 253 0101 06       		.uleb128 0x6
+ 254 0102 A7030000 		.4byte	.LASF31
+ 255 0106 6C       		.sleb128 -20
+ 256 0107 06       		.uleb128 0x6
+ 257 0108 C4010000 		.4byte	.LASF32
+ 258 010c 6B       		.sleb128 -21
+ 259 010d 06       		.uleb128 0x6
+ 260 010e 36040000 		.4byte	.LASF33
+ 261 0112 6A       		.sleb128 -22
+ 262 0113 06       		.uleb128 0x6
+ 263 0114 BE000000 		.4byte	.LASF34
+ 264 0118 69       		.sleb128 -23
+ 265 0119 06       		.uleb128 0x6
+ 266 011a 79010000 		.4byte	.LASF35
+ 267 011e 68       		.sleb128 -24
+ 268 011f 06       		.uleb128 0x6
+ 269 0120 26010000 		.4byte	.LASF36
+ 270 0124 67       		.sleb128 -25
+ 271 0125 00       		.byte	0
+ 272 0126 03       		.uleb128 0x3
+ 273 0127 95040000 		.4byte	.LASF38
+ 274 012b 02       		.byte	0x2
+ 275 012c EA       		.byte	0xea
+ 276 012d 7D000000 		.4byte	0x7d
+ 277 0131 03       		.uleb128 0x3
+ 278 0132 1A040000 		.4byte	.LASF39
+ 279 0136 03       		.byte	0x3
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 8
+
+
+ 280 0137 3F       		.byte	0x3f
+ 281 0138 4C000000 		.4byte	0x4c
+ 282 013c 07       		.uleb128 0x7
+ 283 013d 04       		.byte	0x4
+ 284 013e 05       		.byte	0x5
+ 285 013f 696E7400 		.ascii	"int\000"
+ 286 0143 02       		.uleb128 0x2
+ 287 0144 04       		.byte	0x4
+ 288 0145 07       		.byte	0x7
+ 289 0146 35020000 		.4byte	.LASF40
+ 290 014a 03       		.uleb128 0x3
+ 291 014b 9F030000 		.4byte	.LASF41
+ 292 014f 04       		.byte	0x4
+ 293 0150 2C       		.byte	0x2c
+ 294 0151 31010000 		.4byte	0x131
+ 295 0155 08       		.uleb128 0x8
+ 296 0156 B7000000 		.4byte	.LASF42
+ 297 015a 05       		.byte	0x5
+ 298 015b E901     		.2byte	0x1e9
+ 299 015d 45000000 		.4byte	0x45
+ 300 0161 02       		.uleb128 0x2
+ 301 0162 08       		.byte	0x8
+ 302 0163 04       		.byte	0x4
+ 303 0164 F3010000 		.4byte	.LASF43
+ 304 0168 02       		.uleb128 0x2
+ 305 0169 04       		.byte	0x4
+ 306 016a 07       		.byte	0x7
+ 307 016b 73000000 		.4byte	.LASF44
+ 308 016f 03       		.uleb128 0x3
+ 309 0170 7D020000 		.4byte	.LASF45
+ 310 0174 06       		.byte	0x6
+ 311 0175 53       		.byte	0x53
+ 312 0176 3C010000 		.4byte	0x13c
+ 313 017a 03       		.uleb128 0x3
+ 314 017b A6000000 		.4byte	.LASF46
+ 315 017f 06       		.byte	0x6
+ 316 0180 54       		.byte	0x54
+ 317 0181 43010000 		.4byte	0x143
+ 318 0185 03       		.uleb128 0x3
+ 319 0186 12040000 		.4byte	.LASF47
+ 320 018a 07       		.byte	0x7
+ 321 018b 4D       		.byte	0x4d
+ 322 018c 7A010000 		.4byte	0x17a
+ 323 0190 03       		.uleb128 0x3
+ 324 0191 8A000000 		.4byte	.LASF48
+ 325 0195 07       		.byte	0x7
+ 326 0196 4F       		.byte	0x4f
+ 327 0197 7A010000 		.4byte	0x17a
+ 328 019b 03       		.uleb128 0x3
+ 329 019c B0000000 		.4byte	.LASF49
+ 330 01a0 07       		.byte	0x7
+ 331 01a1 78       		.byte	0x78
+ 332 01a2 6F010000 		.4byte	0x16f
+ 333 01a6 09       		.uleb128 0x9
+ 334 01a7 D6010000 		.4byte	.LASF65
+ 335 01ab 01       		.byte	0x1
+ 336 01ac 50       		.byte	0x50
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 9
+
+
+ 337 01ad 26010000 		.4byte	0x126
+ 338 01b1 00000000 		.4byte	.LFB111
+ 339 01b5 60000000 		.4byte	.LFE111-.LFB111
+ 340 01b9 01       		.uleb128 0x1
+ 341 01ba 9C       		.byte	0x9c
+ 342 01bb 45020000 		.4byte	0x245
+ 343 01bf 0A       		.uleb128 0xa
+ 344 01c0 24040000 		.4byte	.LASF66
+ 345 01c4 01       		.byte	0x1
+ 346 01c5 53       		.byte	0x53
+ 347 01c6 3A000000 		.4byte	0x3a
+ 348 01ca 0B       		.uleb128 0xb
+ 349 01cb 6900     		.ascii	"i\000"
+ 350 01cd 01       		.byte	0x1
+ 351 01ce 54       		.byte	0x54
+ 352 01cf 3A000000 		.4byte	0x3a
+ 353 01d3 05       		.uleb128 0x5
+ 354 01d4 03       		.byte	0x3
+ 355 01d5 00000000 		.4byte	i.7579
+ 356 01d9 0C       		.uleb128 0xc
+ 357 01da 08000000 		.4byte	.LVL0
+ 358 01de E0040000 		.4byte	0x4e0
+ 359 01e2 ED010000 		.4byte	0x1ed
+ 360 01e6 0D       		.uleb128 0xd
+ 361 01e7 01       		.uleb128 0x1
+ 362 01e8 50       		.byte	0x50
+ 363 01e9 02       		.uleb128 0x2
+ 364 01ea 09       		.byte	0x9
+ 365 01eb FF       		.byte	0xff
+ 366 01ec 00       		.byte	0
+ 367 01ed 0C       		.uleb128 0xc
+ 368 01ee 2C000000 		.4byte	.LVL1
+ 369 01f2 EB040000 		.4byte	0x4eb
+ 370 01f6 04020000 		.4byte	0x204
+ 371 01fa 0D       		.uleb128 0xd
+ 372 01fb 01       		.uleb128 0x1
+ 373 01fc 50       		.byte	0x50
+ 374 01fd 05       		.uleb128 0x5
+ 375 01fe 03       		.byte	0x3
+ 376 01ff 00000000 		.4byte	.LC0
+ 377 0203 00       		.byte	0
+ 378 0204 0C       		.uleb128 0xc
+ 379 0205 38000000 		.4byte	.LVL2
+ 380 0209 F6040000 		.4byte	0x4f6
+ 381 020d 1D020000 		.4byte	0x21d
+ 382 0211 0D       		.uleb128 0xd
+ 383 0212 01       		.uleb128 0x1
+ 384 0213 51       		.byte	0x51
+ 385 0214 02       		.uleb128 0x2
+ 386 0215 75       		.byte	0x75
+ 387 0216 00       		.sleb128 0
+ 388 0217 0D       		.uleb128 0xd
+ 389 0218 01       		.uleb128 0x1
+ 390 0219 52       		.byte	0x52
+ 391 021a 01       		.uleb128 0x1
+ 392 021b 3A       		.byte	0x3a
+ 393 021c 00       		.byte	0
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 10
+
+
+ 394 021d 0C       		.uleb128 0xc
+ 395 021e 3E000000 		.4byte	.LVL3
+ 396 0222 EB040000 		.4byte	0x4eb
+ 397 0226 31020000 		.4byte	0x231
+ 398 022a 0D       		.uleb128 0xd
+ 399 022b 01       		.uleb128 0x1
+ 400 022c 50       		.byte	0x50
+ 401 022d 02       		.uleb128 0x2
+ 402 022e 75       		.byte	0x75
+ 403 022f 00       		.sleb128 0
+ 404 0230 00       		.byte	0
+ 405 0231 0E       		.uleb128 0xe
+ 406 0232 44000000 		.4byte	.LVL4
+ 407 0236 EB040000 		.4byte	0x4eb
+ 408 023a 0D       		.uleb128 0xd
+ 409 023b 01       		.uleb128 0x1
+ 410 023c 50       		.byte	0x50
+ 411 023d 05       		.uleb128 0x5
+ 412 023e 03       		.byte	0x3
+ 413 023f 18000000 		.4byte	.LC1
+ 414 0243 00       		.byte	0
+ 415 0244 00       		.byte	0
+ 416 0245 0F       		.uleb128 0xf
+ 417 0246 55020000 		.4byte	0x255
+ 418 024a 55020000 		.4byte	0x255
+ 419 024e 10       		.uleb128 0x10
+ 420 024f 68010000 		.4byte	0x168
+ 421 0253 FF       		.byte	0xff
+ 422 0254 00       		.byte	0
+ 423 0255 11       		.uleb128 0x11
+ 424 0256 55010000 		.4byte	0x155
+ 425 025a 12       		.uleb128 0x12
+ 426 025b 1E000000 		.4byte	.LASF50
+ 427 025f 0C       		.byte	0xc
+ 428 0260 5B       		.byte	0x5b
+ 429 0261 67040000 		.4byte	0x467
+ 430 0265 0002     		.2byte	0x200
+ 431 0267 00       		.byte	0
+ 432 0268 00       		.byte	0
+ 433 0269 01       		.byte	0x1
+ 434 026a 00       		.byte	0
+ 435 026b 01       		.byte	0x1
+ 436 026c 00       		.byte	0
+ 437 026d 01       		.byte	0x1
+ 438 026e 00       		.byte	0
+ 439 026f 01       		.byte	0x1
+ 440 0270 00       		.byte	0
+ 441 0271 01       		.byte	0x1
+ 442 0272 00       		.byte	0
+ 443 0273 01       		.byte	0x1
+ 444 0274 00       		.byte	0
+ 445 0275 01       		.byte	0x1
+ 446 0276 00       		.byte	0
+ 447 0277 01       		.byte	0x1
+ 448 0278 00       		.byte	0
+ 449 0279 02       		.byte	0x2
+ 450 027a 00       		.byte	0
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 11
+
+
+ 451 027b 02       		.byte	0x2
+ 452 027c 00       		.byte	0
+ 453 027d 02       		.byte	0x2
+ 454 027e 00       		.byte	0
+ 455 027f 02       		.byte	0x2
+ 456 0280 00       		.byte	0
+ 457 0281 02       		.byte	0x2
+ 458 0282 00       		.byte	0
+ 459 0283 02       		.byte	0x2
+ 460 0284 00       		.byte	0
+ 461 0285 02       		.byte	0x2
+ 462 0286 00       		.byte	0
+ 463 0287 02       		.byte	0x2
+ 464 0288 00       		.byte	0
+ 465 0289 02       		.byte	0x2
+ 466 028a 00       		.byte	0
+ 467 028b 02       		.byte	0x2
+ 468 028c 00       		.byte	0
+ 469 028d 02       		.byte	0x2
+ 470 028e 00       		.byte	0
+ 471 028f 02       		.byte	0x2
+ 472 0290 00       		.byte	0
+ 473 0291 03       		.byte	0x3
+ 474 0292 00       		.byte	0
+ 475 0293 03       		.byte	0x3
+ 476 0294 00       		.byte	0
+ 477 0295 03       		.byte	0x3
+ 478 0296 00       		.byte	0
+ 479 0297 03       		.byte	0x3
+ 480 0298 00       		.byte	0
+ 481 0299 03       		.byte	0x3
+ 482 029a 00       		.byte	0
+ 483 029b 03       		.byte	0x3
+ 484 029c 00       		.byte	0
+ 485 029d 03       		.byte	0x3
+ 486 029e 00       		.byte	0
+ 487 029f 04       		.byte	0x4
+ 488 02a0 00       		.byte	0
+ 489 02a1 04       		.byte	0x4
+ 490 02a2 00       		.byte	0
+ 491 02a3 04       		.byte	0x4
+ 492 02a4 00       		.byte	0
+ 493 02a5 04       		.byte	0x4
+ 494 02a6 00       		.byte	0
+ 495 02a7 04       		.byte	0x4
+ 496 02a8 00       		.byte	0
+ 497 02a9 04       		.byte	0x4
+ 498 02aa 00       		.byte	0
+ 499 02ab 05       		.byte	0x5
+ 500 02ac 00       		.byte	0
+ 501 02ad 05       		.byte	0x5
+ 502 02ae 00       		.byte	0
+ 503 02af 05       		.byte	0x5
+ 504 02b0 00       		.byte	0
+ 505 02b1 05       		.byte	0x5
+ 506 02b2 00       		.byte	0
+ 507 02b3 05       		.byte	0x5
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 12
+
+
+ 508 02b4 00       		.byte	0
+ 509 02b5 06       		.byte	0x6
+ 510 02b6 00       		.byte	0
+ 511 02b7 06       		.byte	0x6
+ 512 02b8 00       		.byte	0
+ 513 02b9 06       		.byte	0x6
+ 514 02ba 00       		.byte	0
+ 515 02bb 06       		.byte	0x6
+ 516 02bc 00       		.byte	0
+ 517 02bd 07       		.byte	0x7
+ 518 02be 00       		.byte	0
+ 519 02bf 07       		.byte	0x7
+ 520 02c0 00       		.byte	0
+ 521 02c1 07       		.byte	0x7
+ 522 02c2 00       		.byte	0
+ 523 02c3 08       		.byte	0x8
+ 524 02c4 00       		.byte	0
+ 525 02c5 08       		.byte	0x8
+ 526 02c6 00       		.byte	0
+ 527 02c7 08       		.byte	0x8
+ 528 02c8 00       		.byte	0
+ 529 02c9 09       		.byte	0x9
+ 530 02ca 00       		.byte	0
+ 531 02cb 09       		.byte	0x9
+ 532 02cc 00       		.byte	0
+ 533 02cd 0A       		.byte	0xa
+ 534 02ce 00       		.byte	0
+ 535 02cf 0A       		.byte	0xa
+ 536 02d0 00       		.byte	0
+ 537 02d1 0A       		.byte	0xa
+ 538 02d2 00       		.byte	0
+ 539 02d3 0B       		.byte	0xb
+ 540 02d4 00       		.byte	0
+ 541 02d5 0B       		.byte	0xb
+ 542 02d6 00       		.byte	0
+ 543 02d7 0C       		.byte	0xc
+ 544 02d8 00       		.byte	0
+ 545 02d9 0C       		.byte	0xc
+ 546 02da 00       		.byte	0
+ 547 02db 0D       		.byte	0xd
+ 548 02dc 00       		.byte	0
+ 549 02dd 0D       		.byte	0xd
+ 550 02de 00       		.byte	0
+ 551 02df 0E       		.byte	0xe
+ 552 02e0 00       		.byte	0
+ 553 02e1 0F       		.byte	0xf
+ 554 02e2 00       		.byte	0
+ 555 02e3 0F       		.byte	0xf
+ 556 02e4 00       		.byte	0
+ 557 02e5 10       		.byte	0x10
+ 558 02e6 00       		.byte	0
+ 559 02e7 11       		.byte	0x11
+ 560 02e8 00       		.byte	0
+ 561 02e9 11       		.byte	0x11
+ 562 02ea 00       		.byte	0
+ 563 02eb 12       		.byte	0x12
+ 564 02ec 00       		.byte	0
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 13
+
+
+ 565 02ed 13       		.byte	0x13
+ 566 02ee 00       		.byte	0
+ 567 02ef 14       		.byte	0x14
+ 568 02f0 00       		.byte	0
+ 569 02f1 15       		.byte	0x15
+ 570 02f2 00       		.byte	0
+ 571 02f3 16       		.byte	0x16
+ 572 02f4 00       		.byte	0
+ 573 02f5 17       		.byte	0x17
+ 574 02f6 00       		.byte	0
+ 575 02f7 18       		.byte	0x18
+ 576 02f8 00       		.byte	0
+ 577 02f9 19       		.byte	0x19
+ 578 02fa 00       		.byte	0
+ 579 02fb 1A       		.byte	0x1a
+ 580 02fc 00       		.byte	0
+ 581 02fd 1B       		.byte	0x1b
+ 582 02fe 00       		.byte	0
+ 583 02ff 1C       		.byte	0x1c
+ 584 0300 00       		.byte	0
+ 585 0301 1D       		.byte	0x1d
+ 586 0302 00       		.byte	0
+ 587 0303 1F       		.byte	0x1f
+ 588 0304 00       		.byte	0
+ 589 0305 20       		.byte	0x20
+ 590 0306 00       		.byte	0
+ 591 0307 21       		.byte	0x21
+ 592 0308 00       		.byte	0
+ 593 0309 23       		.byte	0x23
+ 594 030a 00       		.byte	0
+ 595 030b 24       		.byte	0x24
+ 596 030c 00       		.byte	0
+ 597 030d 26       		.byte	0x26
+ 598 030e 00       		.byte	0
+ 599 030f 28       		.byte	0x28
+ 600 0310 00       		.byte	0
+ 601 0311 29       		.byte	0x29
+ 602 0312 00       		.byte	0
+ 603 0313 2B       		.byte	0x2b
+ 604 0314 00       		.byte	0
+ 605 0315 2D       		.byte	0x2d
+ 606 0316 00       		.byte	0
+ 607 0317 2F       		.byte	0x2f
+ 608 0318 00       		.byte	0
+ 609 0319 31       		.byte	0x31
+ 610 031a 00       		.byte	0
+ 611 031b 34       		.byte	0x34
+ 612 031c 00       		.byte	0
+ 613 031d 36       		.byte	0x36
+ 614 031e 00       		.byte	0
+ 615 031f 38       		.byte	0x38
+ 616 0320 00       		.byte	0
+ 617 0321 3B       		.byte	0x3b
+ 618 0322 00       		.byte	0
+ 619 0323 3D       		.byte	0x3d
+ 620 0324 00       		.byte	0
+ 621 0325 40       		.byte	0x40
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 14
+
+
+ 622 0326 00       		.byte	0
+ 623 0327 43       		.byte	0x43
+ 624 0328 00       		.byte	0
+ 625 0329 46       		.byte	0x46
+ 626 032a 00       		.byte	0
+ 627 032b 49       		.byte	0x49
+ 628 032c 00       		.byte	0
+ 629 032d 4C       		.byte	0x4c
+ 630 032e 00       		.byte	0
+ 631 032f 4F       		.byte	0x4f
+ 632 0330 00       		.byte	0
+ 633 0331 53       		.byte	0x53
+ 634 0332 00       		.byte	0
+ 635 0333 57       		.byte	0x57
+ 636 0334 00       		.byte	0
+ 637 0335 5B       		.byte	0x5b
+ 638 0336 00       		.byte	0
+ 639 0337 5F       		.byte	0x5f
+ 640 0338 00       		.byte	0
+ 641 0339 63       		.byte	0x63
+ 642 033a 00       		.byte	0
+ 643 033b 67       		.byte	0x67
+ 644 033c 00       		.byte	0
+ 645 033d 6C       		.byte	0x6c
+ 646 033e 00       		.byte	0
+ 647 033f 70       		.byte	0x70
+ 648 0340 00       		.byte	0
+ 649 0341 75       		.byte	0x75
+ 650 0342 00       		.byte	0
+ 651 0343 7B       		.byte	0x7b
+ 652 0344 00       		.byte	0
+ 653 0345 80       		.byte	0x80
+ 654 0346 00       		.byte	0
+ 655 0347 86       		.byte	0x86
+ 656 0348 00       		.byte	0
+ 657 0349 8C       		.byte	0x8c
+ 658 034a 00       		.byte	0
+ 659 034b 92       		.byte	0x92
+ 660 034c 00       		.byte	0
+ 661 034d 98       		.byte	0x98
+ 662 034e 00       		.byte	0
+ 663 034f 9F       		.byte	0x9f
+ 664 0350 00       		.byte	0
+ 665 0351 A6       		.byte	0xa6
+ 666 0352 00       		.byte	0
+ 667 0353 AD       		.byte	0xad
+ 668 0354 00       		.byte	0
+ 669 0355 B5       		.byte	0xb5
+ 670 0356 00       		.byte	0
+ 671 0357 BD       		.byte	0xbd
+ 672 0358 00       		.byte	0
+ 673 0359 C5       		.byte	0xc5
+ 674 035a 00       		.byte	0
+ 675 035b CE       		.byte	0xce
+ 676 035c 00       		.byte	0
+ 677 035d D7       		.byte	0xd7
+ 678 035e 00       		.byte	0
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 15
+
+
+ 679 035f E1       		.byte	0xe1
+ 680 0360 00       		.byte	0
+ 681 0361 EB       		.byte	0xeb
+ 682 0362 00       		.byte	0
+ 683 0363 F5       		.byte	0xf5
+ 684 0364 00       		.byte	0
+ 685 0365 00       		.byte	0
+ 686 0366 01       		.byte	0x1
+ 687 0367 0B       		.byte	0xb
+ 688 0368 01       		.byte	0x1
+ 689 0369 17       		.byte	0x17
+ 690 036a 01       		.byte	0x1
+ 691 036b 24       		.byte	0x24
+ 692 036c 01       		.byte	0x1
+ 693 036d 30       		.byte	0x30
+ 694 036e 01       		.byte	0x1
+ 695 036f 3E       		.byte	0x3e
+ 696 0370 01       		.byte	0x1
+ 697 0371 4C       		.byte	0x4c
+ 698 0372 01       		.byte	0x1
+ 699 0373 5B       		.byte	0x5b
+ 700 0374 01       		.byte	0x1
+ 701 0375 6A       		.byte	0x6a
+ 702 0376 01       		.byte	0x1
+ 703 0377 7A       		.byte	0x7a
+ 704 0378 01       		.byte	0x1
+ 705 0379 8B       		.byte	0x8b
+ 706 037a 01       		.byte	0x1
+ 707 037b 9C       		.byte	0x9c
+ 708 037c 01       		.byte	0x1
+ 709 037d AF       		.byte	0xaf
+ 710 037e 01       		.byte	0x1
+ 711 037f C2       		.byte	0xc2
+ 712 0380 01       		.byte	0x1
+ 713 0381 D6       		.byte	0xd6
+ 714 0382 01       		.byte	0x1
+ 715 0383 EA       		.byte	0xea
+ 716 0384 01       		.byte	0x1
+ 717 0385 00       		.byte	0
+ 718 0386 02       		.byte	0x2
+ 719 0387 17       		.byte	0x17
+ 720 0388 02       		.byte	0x2
+ 721 0389 2E       		.byte	0x2e
+ 722 038a 02       		.byte	0x2
+ 723 038b 47       		.byte	0x47
+ 724 038c 02       		.byte	0x2
+ 725 038d 61       		.byte	0x61
+ 726 038e 02       		.byte	0x2
+ 727 038f 7C       		.byte	0x7c
+ 728 0390 02       		.byte	0x2
+ 729 0391 98       		.byte	0x98
+ 730 0392 02       		.byte	0x2
+ 731 0393 B5       		.byte	0xb5
+ 732 0394 02       		.byte	0x2
+ 733 0395 D4       		.byte	0xd4
+ 734 0396 02       		.byte	0x2
+ 735 0397 F4       		.byte	0xf4
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 16
+
+
+ 736 0398 02       		.byte	0x2
+ 737 0399 16       		.byte	0x16
+ 738 039a 03       		.byte	0x3
+ 739 039b 39       		.byte	0x39
+ 740 039c 03       		.byte	0x3
+ 741 039d 5D       		.byte	0x5d
+ 742 039e 03       		.byte	0x3
+ 743 039f 83       		.byte	0x83
+ 744 03a0 03       		.byte	0x3
+ 745 03a1 AB       		.byte	0xab
+ 746 03a2 03       		.byte	0x3
+ 747 03a3 D5       		.byte	0xd5
+ 748 03a4 03       		.byte	0x3
+ 749 03a5 00       		.byte	0
+ 750 03a6 04       		.byte	0x4
+ 751 03a7 2D       		.byte	0x2d
+ 752 03a8 04       		.byte	0x4
+ 753 03a9 5D       		.byte	0x5d
+ 754 03aa 04       		.byte	0x4
+ 755 03ab 8E       		.byte	0x8e
+ 756 03ac 04       		.byte	0x4
+ 757 03ad C2       		.byte	0xc2
+ 758 03ae 04       		.byte	0x4
+ 759 03af F8       		.byte	0xf8
+ 760 03b0 04       		.byte	0x4
+ 761 03b1 30       		.byte	0x30
+ 762 03b2 05       		.byte	0x5
+ 763 03b3 6B       		.byte	0x6b
+ 764 03b4 05       		.byte	0x5
+ 765 03b5 A8       		.byte	0xa8
+ 766 03b6 05       		.byte	0x5
+ 767 03b7 E8       		.byte	0xe8
+ 768 03b8 05       		.byte	0x5
+ 769 03b9 2B       		.byte	0x2b
+ 770 03ba 06       		.byte	0x6
+ 771 03bb 71       		.byte	0x71
+ 772 03bc 06       		.byte	0x6
+ 773 03bd BA       		.byte	0xba
+ 774 03be 06       		.byte	0x6
+ 775 03bf 06       		.byte	0x6
+ 776 03c0 07       		.byte	0x7
+ 777 03c1 56       		.byte	0x56
+ 778 03c2 07       		.byte	0x7
+ 779 03c3 A9       		.byte	0xa9
+ 780 03c4 07       		.byte	0x7
+ 781 03c5 00       		.byte	0
+ 782 03c6 08       		.byte	0x8
+ 783 03c7 5B       		.byte	0x5b
+ 784 03c8 08       		.byte	0x8
+ 785 03c9 B9       		.byte	0xb9
+ 786 03ca 08       		.byte	0x8
+ 787 03cb 1C       		.byte	0x1c
+ 788 03cc 09       		.byte	0x9
+ 789 03cd 83       		.byte	0x83
+ 790 03ce 09       		.byte	0x9
+ 791 03cf EF       		.byte	0xef
+ 792 03d0 09       		.byte	0x9
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 17
+
+
+ 793 03d1 60       		.byte	0x60
+ 794 03d2 0A       		.byte	0xa
+ 795 03d3 D5       		.byte	0xd5
+ 796 03d4 0A       		.byte	0xa
+ 797 03d5 50       		.byte	0x50
+ 798 03d6 0B       		.byte	0xb
+ 799 03d7 D1       		.byte	0xd1
+ 800 03d8 0B       		.byte	0xb
+ 801 03d9 56       		.byte	0x56
+ 802 03da 0C       		.byte	0xc
+ 803 03db E2       		.byte	0xe2
+ 804 03dc 0C       		.byte	0xc
+ 805 03dd 74       		.byte	0x74
+ 806 03de 0D       		.byte	0xd
+ 807 03df 0D       		.byte	0xd
+ 808 03e0 0E       		.byte	0xe
+ 809 03e1 AC       		.byte	0xac
+ 810 03e2 0E       		.byte	0xe
+ 811 03e3 52       		.byte	0x52
+ 812 03e4 0F       		.byte	0xf
+ 813 03e5 00       		.byte	0
+ 814 03e6 10       		.byte	0x10
+ 815 03e7 B5       		.byte	0xb5
+ 816 03e8 10       		.byte	0x10
+ 817 03e9 73       		.byte	0x73
+ 818 03ea 11       		.byte	0x11
+ 819 03eb 38       		.byte	0x38
+ 820 03ec 12       		.byte	0x12
+ 821 03ed 07       		.byte	0x7
+ 822 03ee 13       		.byte	0x13
+ 823 03ef DF       		.byte	0xdf
+ 824 03f0 13       		.byte	0x13
+ 825 03f1 C0       		.byte	0xc0
+ 826 03f2 14       		.byte	0x14
+ 827 03f3 AB       		.byte	0xab
+ 828 03f4 15       		.byte	0x15
+ 829 03f5 A1       		.byte	0xa1
+ 830 03f6 16       		.byte	0x16
+ 831 03f7 A1       		.byte	0xa1
+ 832 03f8 17       		.byte	0x17
+ 833 03f9 AD       		.byte	0xad
+ 834 03fa 18       		.byte	0x18
+ 835 03fb C4       		.byte	0xc4
+ 836 03fc 19       		.byte	0x19
+ 837 03fd E9       		.byte	0xe9
+ 838 03fe 1A       		.byte	0x1a
+ 839 03ff 1A       		.byte	0x1a
+ 840 0400 1C       		.byte	0x1c
+ 841 0401 58       		.byte	0x58
+ 842 0402 1D       		.byte	0x1d
+ 843 0403 A5       		.byte	0xa5
+ 844 0404 1E       		.byte	0x1e
+ 845 0405 00       		.byte	0
+ 846 0406 20       		.byte	0x20
+ 847 0407 6B       		.byte	0x6b
+ 848 0408 21       		.byte	0x21
+ 849 0409 E5       		.byte	0xe5
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 18
+
+
+ 850 040a 22       		.byte	0x22
+ 851 040b 71       		.byte	0x71
+ 852 040c 24       		.byte	0x24
+ 853 040d 0E       		.byte	0xe
+ 854 040e 26       		.byte	0x26
+ 855 040f BD       		.byte	0xbd
+ 856 0410 27       		.byte	0x27
+ 857 0411 80       		.byte	0x80
+ 858 0412 29       		.byte	0x29
+ 859 0413 56       		.byte	0x56
+ 860 0414 2B       		.byte	0x2b
+ 861 0415 41       		.byte	0x41
+ 862 0416 2D       		.byte	0x2d
+ 863 0417 42       		.byte	0x42
+ 864 0418 2F       		.byte	0x2f
+ 865 0419 5A       		.byte	0x5a
+ 866 041a 31       		.byte	0x31
+ 867 041b 89       		.byte	0x89
+ 868 041c 33       		.byte	0x33
+ 869 041d D1       		.byte	0xd1
+ 870 041e 35       		.byte	0x35
+ 871 041f 33       		.byte	0x33
+ 872 0420 38       		.byte	0x38
+ 873 0421 B0       		.byte	0xb0
+ 874 0422 3A       		.byte	0x3a
+ 875 0423 49       		.byte	0x49
+ 876 0424 3D       		.byte	0x3d
+ 877 0425 00       		.byte	0
+ 878 0426 40       		.byte	0x40
+ 879 0427 D5       		.byte	0xd5
+ 880 0428 42       		.byte	0x42
+ 881 0429 CB       		.byte	0xcb
+ 882 042a 45       		.byte	0x45
+ 883 042b E2       		.byte	0xe2
+ 884 042c 48       		.byte	0x48
+ 885 042d 1C       		.byte	0x1c
+ 886 042e 4C       		.byte	0x4c
+ 887 042f 7A       		.byte	0x7a
+ 888 0430 4F       		.byte	0x4f
+ 889 0431 FF       		.byte	0xff
+ 890 0432 52       		.byte	0x52
+ 891 0433 AC       		.byte	0xac
+ 892 0434 56       		.byte	0x56
+ 893 0435 82       		.byte	0x82
+ 894 0436 5A       		.byte	0x5a
+ 895 0437 84       		.byte	0x84
+ 896 0438 5E       		.byte	0x5e
+ 897 0439 B3       		.byte	0xb3
+ 898 043a 62       		.byte	0x62
+ 899 043b 12       		.byte	0x12
+ 900 043c 67       		.byte	0x67
+ 901 043d A2       		.byte	0xa2
+ 902 043e 6B       		.byte	0x6b
+ 903 043f 66       		.byte	0x66
+ 904 0440 70       		.byte	0x70
+ 905 0441 60       		.byte	0x60
+ 906 0442 75       		.byte	0x75
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 19
+
+
+ 907 0443 92       		.byte	0x92
+ 908 0444 7A       		.byte	0x7a
+ 909 0445 00       		.byte	0
+ 910 0446 80       		.byte	0x80
+ 911 0447 AA       		.byte	0xaa
+ 912 0448 85       		.byte	0x85
+ 913 0449 95       		.byte	0x95
+ 914 044a 8B       		.byte	0x8b
+ 915 044b C3       		.byte	0xc3
+ 916 044c 91       		.byte	0x91
+ 917 044d 37       		.byte	0x37
+ 918 044e 98       		.byte	0x98
+ 919 044f F5       		.byte	0xf5
+ 920 0450 9E       		.byte	0x9e
+ 921 0451 FE       		.byte	0xfe
+ 922 0452 A5       		.byte	0xa5
+ 923 0453 58       		.byte	0x58
+ 924 0454 AD       		.byte	0xad
+ 925 0455 04       		.byte	0x4
+ 926 0456 B5       		.byte	0xb5
+ 927 0457 08       		.byte	0x8
+ 928 0458 BD       		.byte	0xbd
+ 929 0459 66       		.byte	0x66
+ 930 045a C5       		.byte	0xc5
+ 931 045b 24       		.byte	0x24
+ 932 045c CE       		.byte	0xce
+ 933 045d 44       		.byte	0x44
+ 934 045e D7       		.byte	0xd7
+ 935 045f CC       		.byte	0xcc
+ 936 0460 E0       		.byte	0xe0
+ 937 0461 C0       		.byte	0xc0
+ 938 0462 EA       		.byte	0xea
+ 939 0463 25       		.byte	0x25
+ 940 0464 F5       		.byte	0xf5
+ 941 0465 FF       		.byte	0xff
+ 942 0466 FF       		.byte	0xff
+ 943 0467 11       		.uleb128 0x11
+ 944 0468 45020000 		.4byte	0x245
+ 945 046c 13       		.uleb128 0x13
+ 946 046d 7D040000 		.4byte	.LASF51
+ 947 0471 08       		.byte	0x8
+ 948 0472 40       		.byte	0x40
+ 949 0473 85010000 		.4byte	0x185
+ 950 0477 13       		.uleb128 0x13
+ 951 0478 4D010000 		.4byte	.LASF52
+ 952 047c 08       		.byte	0x8
+ 953 047d 47       		.byte	0x47
+ 954 047e 90010000 		.4byte	0x190
+ 955 0482 13       		.uleb128 0x13
+ 956 0483 D4030000 		.4byte	.LASF53
+ 957 0487 08       		.byte	0x8
+ 958 0488 4A       		.byte	0x4a
+ 959 0489 85010000 		.4byte	0x185
+ 960 048d 13       		.uleb128 0x13
+ 961 048e F8000000 		.4byte	.LASF54
+ 962 0492 09       		.byte	0x9
+ 963 0493 48       		.byte	0x48
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 20
+
+
+ 964 0494 9B010000 		.4byte	0x19b
+ 965 0498 13       		.uleb128 0x13
+ 966 0499 D5000000 		.4byte	.LASF55
+ 967 049d 0A       		.byte	0xa
+ 968 049e 44       		.byte	0x44
+ 969 049f 85010000 		.4byte	0x185
+ 970 04a3 14       		.uleb128 0x14
+ 971 04a4 48040000 		.4byte	.LASF56
+ 972 04a8 0B       		.byte	0xb
+ 973 04a9 1207     		.2byte	0x712
+ 974 04ab AF040000 		.4byte	0x4af
+ 975 04af 15       		.uleb128 0x15
+ 976 04b0 4A010000 		.4byte	0x14a
+ 977 04b4 13       		.uleb128 0x13
+ 978 04b5 5E040000 		.4byte	.LASF57
+ 979 04b9 0C       		.byte	0xc
+ 980 04ba 72       		.byte	0x72
+ 981 04bb 3A000000 		.4byte	0x3a
+ 982 04bf 0F       		.uleb128 0xf
+ 983 04c0 76000000 		.4byte	0x76
+ 984 04c4 CF040000 		.4byte	0x4cf
+ 985 04c8 10       		.uleb128 0x10
+ 986 04c9 68010000 		.4byte	0x168
+ 987 04cd 1F       		.byte	0x1f
+ 988 04ce 00       		.byte	0
+ 989 04cf 16       		.uleb128 0x16
+ 990 04d0 CD030000 		.4byte	.LASF58
+ 991 04d4 01       		.byte	0x1
+ 992 04d5 4A       		.byte	0x4a
+ 993 04d6 BF040000 		.4byte	0x4bf
+ 994 04da 05       		.uleb128 0x5
+ 995 04db 03       		.byte	0x3
+ 996 04dc 00000000 		.4byte	buffer
+ 997 04e0 17       		.uleb128 0x17
+ 998 04e1 EA000000 		.4byte	.LASF59
+ 999 04e5 EA000000 		.4byte	.LASF59
+ 1000 04e9 0D       		.byte	0xd
+ 1001 04ea 26       		.byte	0x26
+ 1002 04eb 17       		.uleb128 0x17
+ 1003 04ec E0010000 		.4byte	.LASF60
+ 1004 04f0 E0010000 		.4byte	.LASF60
+ 1005 04f4 0E       		.byte	0xe
+ 1006 04f5 8B       		.byte	0x8b
+ 1007 04f6 17       		.uleb128 0x17
+ 1008 04f7 FF010000 		.4byte	.LASF61
+ 1009 04fb FF010000 		.4byte	.LASF61
+ 1010 04ff 0F       		.byte	0xf
+ 1011 0500 CB       		.byte	0xcb
+ 1012 0501 00       		.byte	0
+ 1013              		.section	.debug_abbrev,"",%progbits
+ 1014              	.Ldebug_abbrev0:
+ 1015 0000 01       		.uleb128 0x1
+ 1016 0001 11       		.uleb128 0x11
+ 1017 0002 01       		.byte	0x1
+ 1018 0003 25       		.uleb128 0x25
+ 1019 0004 0E       		.uleb128 0xe
+ 1020 0005 13       		.uleb128 0x13
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 21
+
+
+ 1021 0006 0B       		.uleb128 0xb
+ 1022 0007 03       		.uleb128 0x3
+ 1023 0008 0E       		.uleb128 0xe
+ 1024 0009 1B       		.uleb128 0x1b
+ 1025 000a 0E       		.uleb128 0xe
+ 1026 000b 55       		.uleb128 0x55
+ 1027 000c 17       		.uleb128 0x17
+ 1028 000d 11       		.uleb128 0x11
+ 1029 000e 01       		.uleb128 0x1
+ 1030 000f 10       		.uleb128 0x10
+ 1031 0010 17       		.uleb128 0x17
+ 1032 0011 00       		.byte	0
+ 1033 0012 00       		.byte	0
+ 1034 0013 02       		.uleb128 0x2
+ 1035 0014 24       		.uleb128 0x24
+ 1036 0015 00       		.byte	0
+ 1037 0016 0B       		.uleb128 0xb
+ 1038 0017 0B       		.uleb128 0xb
+ 1039 0018 3E       		.uleb128 0x3e
+ 1040 0019 0B       		.uleb128 0xb
+ 1041 001a 03       		.uleb128 0x3
+ 1042 001b 0E       		.uleb128 0xe
+ 1043 001c 00       		.byte	0
+ 1044 001d 00       		.byte	0
+ 1045 001e 03       		.uleb128 0x3
+ 1046 001f 16       		.uleb128 0x16
+ 1047 0020 00       		.byte	0
+ 1048 0021 03       		.uleb128 0x3
+ 1049 0022 0E       		.uleb128 0xe
+ 1050 0023 3A       		.uleb128 0x3a
+ 1051 0024 0B       		.uleb128 0xb
+ 1052 0025 3B       		.uleb128 0x3b
+ 1053 0026 0B       		.uleb128 0xb
+ 1054 0027 49       		.uleb128 0x49
+ 1055 0028 13       		.uleb128 0x13
+ 1056 0029 00       		.byte	0
+ 1057 002a 00       		.byte	0
+ 1058 002b 04       		.uleb128 0x4
+ 1059 002c 04       		.uleb128 0x4
+ 1060 002d 01       		.byte	0x1
+ 1061 002e 0B       		.uleb128 0xb
+ 1062 002f 0B       		.uleb128 0xb
+ 1063 0030 49       		.uleb128 0x49
+ 1064 0031 13       		.uleb128 0x13
+ 1065 0032 3A       		.uleb128 0x3a
+ 1066 0033 0B       		.uleb128 0xb
+ 1067 0034 3B       		.uleb128 0x3b
+ 1068 0035 0B       		.uleb128 0xb
+ 1069 0036 01       		.uleb128 0x1
+ 1070 0037 13       		.uleb128 0x13
+ 1071 0038 00       		.byte	0
+ 1072 0039 00       		.byte	0
+ 1073 003a 05       		.uleb128 0x5
+ 1074 003b 28       		.uleb128 0x28
+ 1075 003c 00       		.byte	0
+ 1076 003d 03       		.uleb128 0x3
+ 1077 003e 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 22
+
+
+ 1078 003f 1C       		.uleb128 0x1c
+ 1079 0040 0B       		.uleb128 0xb
+ 1080 0041 00       		.byte	0
+ 1081 0042 00       		.byte	0
+ 1082 0043 06       		.uleb128 0x6
+ 1083 0044 28       		.uleb128 0x28
+ 1084 0045 00       		.byte	0
+ 1085 0046 03       		.uleb128 0x3
+ 1086 0047 0E       		.uleb128 0xe
+ 1087 0048 1C       		.uleb128 0x1c
+ 1088 0049 0D       		.uleb128 0xd
+ 1089 004a 00       		.byte	0
+ 1090 004b 00       		.byte	0
+ 1091 004c 07       		.uleb128 0x7
+ 1092 004d 24       		.uleb128 0x24
+ 1093 004e 00       		.byte	0
+ 1094 004f 0B       		.uleb128 0xb
+ 1095 0050 0B       		.uleb128 0xb
+ 1096 0051 3E       		.uleb128 0x3e
+ 1097 0052 0B       		.uleb128 0xb
+ 1098 0053 03       		.uleb128 0x3
+ 1099 0054 08       		.uleb128 0x8
+ 1100 0055 00       		.byte	0
+ 1101 0056 00       		.byte	0
+ 1102 0057 08       		.uleb128 0x8
+ 1103 0058 16       		.uleb128 0x16
+ 1104 0059 00       		.byte	0
+ 1105 005a 03       		.uleb128 0x3
+ 1106 005b 0E       		.uleb128 0xe
+ 1107 005c 3A       		.uleb128 0x3a
+ 1108 005d 0B       		.uleb128 0xb
+ 1109 005e 3B       		.uleb128 0x3b
+ 1110 005f 05       		.uleb128 0x5
+ 1111 0060 49       		.uleb128 0x49
+ 1112 0061 13       		.uleb128 0x13
+ 1113 0062 00       		.byte	0
+ 1114 0063 00       		.byte	0
+ 1115 0064 09       		.uleb128 0x9
+ 1116 0065 2E       		.uleb128 0x2e
+ 1117 0066 01       		.byte	0x1
+ 1118 0067 3F       		.uleb128 0x3f
+ 1119 0068 19       		.uleb128 0x19
+ 1120 0069 03       		.uleb128 0x3
+ 1121 006a 0E       		.uleb128 0xe
+ 1122 006b 3A       		.uleb128 0x3a
+ 1123 006c 0B       		.uleb128 0xb
+ 1124 006d 3B       		.uleb128 0x3b
+ 1125 006e 0B       		.uleb128 0xb
+ 1126 006f 49       		.uleb128 0x49
+ 1127 0070 13       		.uleb128 0x13
+ 1128 0071 11       		.uleb128 0x11
+ 1129 0072 01       		.uleb128 0x1
+ 1130 0073 12       		.uleb128 0x12
+ 1131 0074 06       		.uleb128 0x6
+ 1132 0075 40       		.uleb128 0x40
+ 1133 0076 18       		.uleb128 0x18
+ 1134 0077 9742     		.uleb128 0x2117
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 23
+
+
+ 1135 0079 19       		.uleb128 0x19
+ 1136 007a 01       		.uleb128 0x1
+ 1137 007b 13       		.uleb128 0x13
+ 1138 007c 00       		.byte	0
+ 1139 007d 00       		.byte	0
+ 1140 007e 0A       		.uleb128 0xa
+ 1141 007f 34       		.uleb128 0x34
+ 1142 0080 00       		.byte	0
+ 1143 0081 03       		.uleb128 0x3
+ 1144 0082 0E       		.uleb128 0xe
+ 1145 0083 3A       		.uleb128 0x3a
+ 1146 0084 0B       		.uleb128 0xb
+ 1147 0085 3B       		.uleb128 0x3b
+ 1148 0086 0B       		.uleb128 0xb
+ 1149 0087 49       		.uleb128 0x49
+ 1150 0088 13       		.uleb128 0x13
+ 1151 0089 00       		.byte	0
+ 1152 008a 00       		.byte	0
+ 1153 008b 0B       		.uleb128 0xb
+ 1154 008c 34       		.uleb128 0x34
+ 1155 008d 00       		.byte	0
+ 1156 008e 03       		.uleb128 0x3
+ 1157 008f 08       		.uleb128 0x8
+ 1158 0090 3A       		.uleb128 0x3a
+ 1159 0091 0B       		.uleb128 0xb
+ 1160 0092 3B       		.uleb128 0x3b
+ 1161 0093 0B       		.uleb128 0xb
+ 1162 0094 49       		.uleb128 0x49
+ 1163 0095 13       		.uleb128 0x13
+ 1164 0096 02       		.uleb128 0x2
+ 1165 0097 18       		.uleb128 0x18
+ 1166 0098 00       		.byte	0
+ 1167 0099 00       		.byte	0
+ 1168 009a 0C       		.uleb128 0xc
+ 1169 009b 898201   		.uleb128 0x4109
+ 1170 009e 01       		.byte	0x1
+ 1171 009f 11       		.uleb128 0x11
+ 1172 00a0 01       		.uleb128 0x1
+ 1173 00a1 31       		.uleb128 0x31
+ 1174 00a2 13       		.uleb128 0x13
+ 1175 00a3 01       		.uleb128 0x1
+ 1176 00a4 13       		.uleb128 0x13
+ 1177 00a5 00       		.byte	0
+ 1178 00a6 00       		.byte	0
+ 1179 00a7 0D       		.uleb128 0xd
+ 1180 00a8 8A8201   		.uleb128 0x410a
+ 1181 00ab 00       		.byte	0
+ 1182 00ac 02       		.uleb128 0x2
+ 1183 00ad 18       		.uleb128 0x18
+ 1184 00ae 9142     		.uleb128 0x2111
+ 1185 00b0 18       		.uleb128 0x18
+ 1186 00b1 00       		.byte	0
+ 1187 00b2 00       		.byte	0
+ 1188 00b3 0E       		.uleb128 0xe
+ 1189 00b4 898201   		.uleb128 0x4109
+ 1190 00b7 01       		.byte	0x1
+ 1191 00b8 11       		.uleb128 0x11
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 24
+
+
+ 1192 00b9 01       		.uleb128 0x1
+ 1193 00ba 31       		.uleb128 0x31
+ 1194 00bb 13       		.uleb128 0x13
+ 1195 00bc 00       		.byte	0
+ 1196 00bd 00       		.byte	0
+ 1197 00be 0F       		.uleb128 0xf
+ 1198 00bf 01       		.uleb128 0x1
+ 1199 00c0 01       		.byte	0x1
+ 1200 00c1 49       		.uleb128 0x49
+ 1201 00c2 13       		.uleb128 0x13
+ 1202 00c3 01       		.uleb128 0x1
+ 1203 00c4 13       		.uleb128 0x13
+ 1204 00c5 00       		.byte	0
+ 1205 00c6 00       		.byte	0
+ 1206 00c7 10       		.uleb128 0x10
+ 1207 00c8 21       		.uleb128 0x21
+ 1208 00c9 00       		.byte	0
+ 1209 00ca 49       		.uleb128 0x49
+ 1210 00cb 13       		.uleb128 0x13
+ 1211 00cc 2F       		.uleb128 0x2f
+ 1212 00cd 0B       		.uleb128 0xb
+ 1213 00ce 00       		.byte	0
+ 1214 00cf 00       		.byte	0
+ 1215 00d0 11       		.uleb128 0x11
+ 1216 00d1 26       		.uleb128 0x26
+ 1217 00d2 00       		.byte	0
+ 1218 00d3 49       		.uleb128 0x49
+ 1219 00d4 13       		.uleb128 0x13
+ 1220 00d5 00       		.byte	0
+ 1221 00d6 00       		.byte	0
+ 1222 00d7 12       		.uleb128 0x12
+ 1223 00d8 34       		.uleb128 0x34
+ 1224 00d9 00       		.byte	0
+ 1225 00da 03       		.uleb128 0x3
+ 1226 00db 0E       		.uleb128 0xe
+ 1227 00dc 3A       		.uleb128 0x3a
+ 1228 00dd 0B       		.uleb128 0xb
+ 1229 00de 3B       		.uleb128 0x3b
+ 1230 00df 0B       		.uleb128 0xb
+ 1231 00e0 49       		.uleb128 0x49
+ 1232 00e1 13       		.uleb128 0x13
+ 1233 00e2 1C       		.uleb128 0x1c
+ 1234 00e3 03       		.uleb128 0x3
+ 1235 00e4 00       		.byte	0
+ 1236 00e5 00       		.byte	0
+ 1237 00e6 13       		.uleb128 0x13
+ 1238 00e7 34       		.uleb128 0x34
+ 1239 00e8 00       		.byte	0
+ 1240 00e9 03       		.uleb128 0x3
+ 1241 00ea 0E       		.uleb128 0xe
+ 1242 00eb 3A       		.uleb128 0x3a
+ 1243 00ec 0B       		.uleb128 0xb
+ 1244 00ed 3B       		.uleb128 0x3b
+ 1245 00ee 0B       		.uleb128 0xb
+ 1246 00ef 49       		.uleb128 0x49
+ 1247 00f0 13       		.uleb128 0x13
+ 1248 00f1 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 25
+
+
+ 1249 00f2 19       		.uleb128 0x19
+ 1250 00f3 3C       		.uleb128 0x3c
+ 1251 00f4 19       		.uleb128 0x19
+ 1252 00f5 00       		.byte	0
+ 1253 00f6 00       		.byte	0
+ 1254 00f7 14       		.uleb128 0x14
+ 1255 00f8 34       		.uleb128 0x34
+ 1256 00f9 00       		.byte	0
+ 1257 00fa 03       		.uleb128 0x3
+ 1258 00fb 0E       		.uleb128 0xe
+ 1259 00fc 3A       		.uleb128 0x3a
+ 1260 00fd 0B       		.uleb128 0xb
+ 1261 00fe 3B       		.uleb128 0x3b
+ 1262 00ff 05       		.uleb128 0x5
+ 1263 0100 49       		.uleb128 0x49
+ 1264 0101 13       		.uleb128 0x13
+ 1265 0102 3F       		.uleb128 0x3f
+ 1266 0103 19       		.uleb128 0x19
+ 1267 0104 3C       		.uleb128 0x3c
+ 1268 0105 19       		.uleb128 0x19
+ 1269 0106 00       		.byte	0
+ 1270 0107 00       		.byte	0
+ 1271 0108 15       		.uleb128 0x15
+ 1272 0109 35       		.uleb128 0x35
+ 1273 010a 00       		.byte	0
+ 1274 010b 49       		.uleb128 0x49
+ 1275 010c 13       		.uleb128 0x13
+ 1276 010d 00       		.byte	0
+ 1277 010e 00       		.byte	0
+ 1278 010f 16       		.uleb128 0x16
+ 1279 0110 34       		.uleb128 0x34
+ 1280 0111 00       		.byte	0
+ 1281 0112 03       		.uleb128 0x3
+ 1282 0113 0E       		.uleb128 0xe
+ 1283 0114 3A       		.uleb128 0x3a
+ 1284 0115 0B       		.uleb128 0xb
+ 1285 0116 3B       		.uleb128 0x3b
+ 1286 0117 0B       		.uleb128 0xb
+ 1287 0118 49       		.uleb128 0x49
+ 1288 0119 13       		.uleb128 0x13
+ 1289 011a 3F       		.uleb128 0x3f
+ 1290 011b 19       		.uleb128 0x19
+ 1291 011c 02       		.uleb128 0x2
+ 1292 011d 18       		.uleb128 0x18
+ 1293 011e 00       		.byte	0
+ 1294 011f 00       		.byte	0
+ 1295 0120 17       		.uleb128 0x17
+ 1296 0121 2E       		.uleb128 0x2e
+ 1297 0122 00       		.byte	0
+ 1298 0123 3F       		.uleb128 0x3f
+ 1299 0124 19       		.uleb128 0x19
+ 1300 0125 3C       		.uleb128 0x3c
+ 1301 0126 19       		.uleb128 0x19
+ 1302 0127 6E       		.uleb128 0x6e
+ 1303 0128 0E       		.uleb128 0xe
+ 1304 0129 03       		.uleb128 0x3
+ 1305 012a 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 26
+
+
+ 1306 012b 3A       		.uleb128 0x3a
+ 1307 012c 0B       		.uleb128 0xb
+ 1308 012d 3B       		.uleb128 0x3b
+ 1309 012e 0B       		.uleb128 0xb
+ 1310 012f 00       		.byte	0
+ 1311 0130 00       		.byte	0
+ 1312 0131 00       		.byte	0
+ 1313              		.section	.debug_aranges,"",%progbits
+ 1314 0000 1C000000 		.4byte	0x1c
+ 1315 0004 0200     		.2byte	0x2
+ 1316 0006 00000000 		.4byte	.Ldebug_info0
+ 1317 000a 04       		.byte	0x4
+ 1318 000b 00       		.byte	0
+ 1319 000c 0000     		.2byte	0
+ 1320 000e 0000     		.2byte	0
+ 1321 0010 00000000 		.4byte	.LFB111
+ 1322 0014 60000000 		.4byte	.LFE111-.LFB111
+ 1323 0018 00000000 		.4byte	0
+ 1324 001c 00000000 		.4byte	0
+ 1325              		.section	.debug_ranges,"",%progbits
+ 1326              	.Ldebug_ranges0:
+ 1327 0000 00000000 		.4byte	.LFB111
+ 1328 0004 60000000 		.4byte	.LFE111
+ 1329 0008 00000000 		.4byte	0
+ 1330 000c 00000000 		.4byte	0
+ 1331              		.section	.debug_line,"",%progbits
+ 1332              	.Ldebug_line0:
+ 1333 0000 CD020000 		.section	.debug_str,"MS",%progbits,1
+ 1333      0200AC02 
+ 1333      00000201 
+ 1333      FB0E0D00 
+ 1333      01010101 
+ 1334              	.LASF25:
+ 1335 0000 52435F45 		.ascii	"RC_ERROR_READ_ONLY\000"
+ 1335      52524F52 
+ 1335      5F524541 
+ 1335      445F4F4E 
+ 1335      4C5900
+ 1336              	.LASF11:
+ 1337 0013 52435F53 		.ascii	"RC_SUCCESS\000"
+ 1337      55434345 
+ 1337      535300
+ 1338              	.LASF50:
+ 1339 001e 4C45445F 		.ascii	"LED__Pulse_Width\000"
+ 1339      5F50756C 
+ 1339      73655F57 
+ 1339      69647468 
+ 1339      00
+ 1340              	.LASF26:
+ 1341 002f 52435F45 		.ascii	"RC_ERROR_WRITE_ONLY\000"
+ 1341      52524F52 
+ 1341      5F575249 
+ 1341      54455F4F 
+ 1341      4E4C5900 
+ 1342              	.LASF2:
+ 1343 0043 73686F72 		.ascii	"short int\000"
+ 1343      7420696E 
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 27
+
+
+ 1343      7400
+ 1344              	.LASF17:
+ 1345 004d 52435F45 		.ascii	"RC_ERROR_OVERRUN\000"
+ 1345      52524F52 
+ 1345      5F4F5645 
+ 1345      5252554E 
+ 1345      00
+ 1346              	.LASF29:
+ 1347 005e 52435F45 		.ascii	"RC_ERROR_WRITE_FAILS\000"
+ 1347      52524F52 
+ 1347      5F575249 
+ 1347      54455F46 
+ 1347      41494C53 
+ 1348              	.LASF44:
+ 1349 0073 73697A65 		.ascii	"sizetype\000"
+ 1349      74797065 
+ 1349      00
+ 1350              	.LASF14:
+ 1351 007c 52435F45 		.ascii	"RC_ERROR_ZERO\000"
+ 1351      52524F52 
+ 1351      5F5A4552 
+ 1351      4F00
+ 1352              	.LASF48:
+ 1353 008a 45455F46 		.ascii	"EE_FREG\000"
+ 1353      52454700 
+ 1354              	.LASF28:
+ 1355 0092 52435F45 		.ascii	"RC_ERROR_READ_FAILS\000"
+ 1355      52524F52 
+ 1355      5F524541 
+ 1355      445F4641 
+ 1355      494C5300 
+ 1356              	.LASF46:
+ 1357 00a6 45455F55 		.ascii	"EE_UINT32\000"
+ 1357      494E5433 
+ 1357      3200
+ 1358              	.LASF49:
+ 1359 00b0 45455F54 		.ascii	"EE_TID\000"
+ 1359      494400
+ 1360              	.LASF42:
+ 1361 00b7 75696E74 		.ascii	"uint16\000"
+ 1361      313600
+ 1362              	.LASF34:
+ 1363 00be 52435F45 		.ascii	"RC_ERROR_INVALID_STATE\000"
+ 1363      52524F52 
+ 1363      5F494E56 
+ 1363      414C4944 
+ 1363      5F535441 
+ 1364              	.LASF55:
+ 1365 00d5 45455F49 		.ascii	"EE_IRQ_nesting_level\000"
+ 1365      52515F6E 
+ 1365      65737469 
+ 1365      6E675F6C 
+ 1365      6576656C 
+ 1366              	.LASF59:
+ 1367 00ea 5247425F 		.ascii	"RGB_Red_Write\000"
+ 1367      5265645F 
+ 1367      57726974 
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 28
+
+
+ 1367      6500
+ 1368              	.LASF54:
+ 1369 00f8 45455F73 		.ascii	"EE_std_endcycle_next_tid\000"
+ 1369      74645F65 
+ 1369      6E646379 
+ 1369      636C655F 
+ 1369      6E657874 
+ 1370              	.LASF16:
+ 1371 0111 52435F45 		.ascii	"RC_ERROR_RANGE\000"
+ 1371      52524F52 
+ 1371      5F52414E 
+ 1371      474500
+ 1372              	.LASF6:
+ 1373 0120 666C6F61 		.ascii	"float\000"
+ 1373      7400
+ 1374              	.LASF36:
+ 1375 0126 52435F45 		.ascii	"RC_ERROR_NOT_IMPLEMENTED\000"
+ 1375      52524F52 
+ 1375      5F4E4F54 
+ 1375      5F494D50 
+ 1375      4C454D45 
+ 1376              	.LASF8:
+ 1377 013f 6C6F6E67 		.ascii	"long long int\000"
+ 1377      206C6F6E 
+ 1377      6720696E 
+ 1377      7400
+ 1378              	.LASF52:
+ 1379 014d 45455F6F 		.ascii	"EE_oo_IRQ_suspend_status\000"
+ 1379      6F5F4952 
+ 1379      515F7375 
+ 1379      7370656E 
+ 1379      645F7374 
+ 1380              	.LASF30:
+ 1381 0166 52435F45 		.ascii	"RC_ERROR_NOT_MATCH\000"
+ 1381      52524F52 
+ 1381      5F4E4F54 
+ 1381      5F4D4154 
+ 1381      434800
+ 1382              	.LASF35:
+ 1383 0179 52435F45 		.ascii	"RC_ERROR_UNKNOWN\000"
+ 1383      52524F52 
+ 1383      5F554E4B 
+ 1383      4E4F574E 
+ 1383      00
+ 1384              	.LASF4:
+ 1385 018a 6C6F6E67 		.ascii	"long int\000"
+ 1385      20696E74 
+ 1385      00
+ 1386              	.LASF18:
+ 1387 0193 52435F45 		.ascii	"RC_ERROR_UNDERRUN\000"
+ 1387      52524F52 
+ 1387      5F554E44 
+ 1387      45525255 
+ 1387      4E00
+ 1388              	.LASF21:
+ 1389 01a5 52435F45 		.ascii	"RC_ERROR_BUSY\000"
+ 1389      52524F52 
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 29
+
+
+ 1389      5F425553 
+ 1389      5900
+ 1390              	.LASF27:
+ 1391 01b3 52435F45 		.ascii	"RC_ERROR_INVALID\000"
+ 1391      52524F52 
+ 1391      5F494E56 
+ 1391      414C4944 
+ 1391      00
+ 1392              	.LASF32:
+ 1393 01c4 52435F45 		.ascii	"RC_ERROR_BAD_DATA\000"
+ 1393      52524F52 
+ 1393      5F424144 
+ 1393      5F444154 
+ 1393      4100
+ 1394              	.LASF65:
+ 1395 01d6 46616465 		.ascii	"Fader_Set\000"
+ 1395      725F5365 
+ 1395      7400
+ 1396              	.LASF60:
+ 1397 01e0 55415254 		.ascii	"UART_LOG_PutString\000"
+ 1397      5F4C4F47 
+ 1397      5F507574 
+ 1397      53747269 
+ 1397      6E6700
+ 1398              	.LASF43:
+ 1399 01f3 6C6F6E67 		.ascii	"long double\000"
+ 1399      20646F75 
+ 1399      626C6500 
+ 1400              	.LASF61:
+ 1401 01ff 69746F61 		.ascii	"itoa\000"
+ 1401      00
+ 1402              	.LASF1:
+ 1403 0204 756E7369 		.ascii	"unsigned char\000"
+ 1403      676E6564 
+ 1403      20636861 
+ 1403      7200
+ 1404              	.LASF0:
+ 1405 0212 7369676E 		.ascii	"signed char\000"
+ 1405      65642063 
+ 1405      68617200 
+ 1406              	.LASF9:
+ 1407 021e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1407      206C6F6E 
+ 1407      6720756E 
+ 1407      7369676E 
+ 1407      65642069 
+ 1408              	.LASF40:
+ 1409 0235 756E7369 		.ascii	"unsigned int\000"
+ 1409      676E6564 
+ 1409      20696E74 
+ 1409      00
+ 1410              	.LASF23:
+ 1411 0242 52435F45 		.ascii	"RC_ERROR_OPEN\000"
+ 1411      52524F52 
+ 1411      5F4F5045 
+ 1411      4E00
+ 1412              	.LASF37:
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 30
+
+
+ 1413 0250 75696E74 		.ascii	"uint16_t\000"
+ 1413      31365F74 
+ 1413      00
+ 1414              	.LASF13:
+ 1415 0259 52435F45 		.ascii	"RC_ERROR_NULL\000"
+ 1415      52524F52 
+ 1415      5F4E554C 
+ 1415      4C00
+ 1416              	.LASF20:
+ 1417 0267 52435F45 		.ascii	"RC_ERROR_BUFFER_EMTPY\000"
+ 1417      52524F52 
+ 1417      5F425546 
+ 1417      4645525F 
+ 1417      454D5450 
+ 1418              	.LASF45:
+ 1419 027d 45455F49 		.ascii	"EE_INT32\000"
+ 1419      4E543332 
+ 1419      00
+ 1420              	.LASF3:
+ 1421 0286 73686F72 		.ascii	"short unsigned int\000"
+ 1421      7420756E 
+ 1421      7369676E 
+ 1421      65642069 
+ 1421      6E7400
+ 1422              	.LASF62:
+ 1423 0299 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1423      43313120 
+ 1423      352E342E 
+ 1423      31203230 
+ 1423      31363036 
+ 1424 02cc 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1424      20726576 
+ 1424      6973696F 
+ 1424      6E203233 
+ 1424      37373135 
+ 1425 02ff 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1425      66756E63 
+ 1425      74696F6E 
+ 1425      2D736563 
+ 1425      74696F6E 
+ 1426              	.LASF64:
+ 1427 0327 433A5C55 		.ascii	"C:\\Users\\Girish\\OneDrive\\Documents\\PSoC Creato"
+ 1427      73657273 
+ 1427      5C476972 
+ 1427      6973685C 
+ 1427      4F6E6544 
+ 1428 0355 725C4572 		.ascii	"r\\Erika_OS_WorkSpace\\Erika_Arcadian_Fader.cydsn\000"
+ 1428      696B615F 
+ 1428      4F535F57 
+ 1428      6F726B53 
+ 1428      70616365 
+ 1429              	.LASF10:
+ 1430 0385 63686172 		.ascii	"char\000"
+ 1430      00
+ 1431              	.LASF19:
+ 1432 038a 52435F45 		.ascii	"RC_ERROR_BUFFER_FULL\000"
+ 1432      52524F52 
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 31
+
+
+ 1432      5F425546 
+ 1432      4645525F 
+ 1432      46554C4C 
+ 1433              	.LASF41:
+ 1434 039f 696E7433 		.ascii	"int32_t\000"
+ 1434      325F7400 
+ 1435              	.LASF31:
+ 1436 03a7 52435F45 		.ascii	"RC_ERROR_BAD_PARAM\000"
+ 1436      52524F52 
+ 1436      5F424144 
+ 1436      5F504152 
+ 1436      414D00
+ 1437              	.LASF63:
+ 1438 03ba 736F7572 		.ascii	"source\\bsw\\fader.c\000"
+ 1438      63655C62 
+ 1438      73775C66 
+ 1438      61646572 
+ 1438      2E6300
+ 1439              	.LASF58:
+ 1440 03cd 62756666 		.ascii	"buffer\000"
+ 1440      657200
+ 1441              	.LASF53:
+ 1442 03d4 45455F41 		.ascii	"EE_ApplicationMode\000"
+ 1442      70706C69 
+ 1442      63617469 
+ 1442      6F6E4D6F 
+ 1442      646500
+ 1443              	.LASF5:
+ 1444 03e7 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1444      20756E73 
+ 1444      69676E65 
+ 1444      6420696E 
+ 1444      7400
+ 1445              	.LASF7:
+ 1446 03f9 646F7562 		.ascii	"double\000"
+ 1446      6C6500
+ 1447              	.LASF24:
+ 1448 0400 52435F45 		.ascii	"RC_ERROR_CHECKSUM\000"
+ 1448      52524F52 
+ 1448      5F434845 
+ 1448      434B5355 
+ 1448      4D00
+ 1449              	.LASF47:
+ 1450 0412 45455F55 		.ascii	"EE_UREG\000"
+ 1450      52454700 
+ 1451              	.LASF39:
+ 1452 041a 5F5F696E 		.ascii	"__int32_t\000"
+ 1452      7433325F 
+ 1452      7400
+ 1453              	.LASF66:
+ 1454 0424 46616465 		.ascii	"Fader__Brightness\000"
+ 1454      725F5F42 
+ 1454      72696768 
+ 1454      746E6573 
+ 1454      7300
+ 1455              	.LASF33:
+ 1456 0436 52435F45 		.ascii	"RC_ERROR_CANCELED\000"
+ARM GAS  C:\Users\Girish\AppData\Local\Temp\ccatCAfB.s 			page 32
+
+
+ 1456      52524F52 
+ 1456      5F43414E 
+ 1456      43454C45 
+ 1456      4400
+ 1457              	.LASF56:
+ 1458 0448 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1458      52784275 
+ 1458      66666572 
+ 1458      00
+ 1459              	.LASF12:
+ 1460 0455 52435F45 		.ascii	"RC_ERROR\000"
+ 1460      52524F52 
+ 1460      00
+ 1461              	.LASF57:
+ 1462 045e 7379735F 		.ascii	"sys_tick_count\000"
+ 1462      7469636B 
+ 1462      5F636F75 
+ 1462      6E7400
+ 1463              	.LASF15:
+ 1464 046d 52435F45 		.ascii	"RC_ERROR_MEMORY\000"
+ 1464      52524F52 
+ 1464      5F4D454D 
+ 1464      4F525900 
+ 1465              	.LASF51:
+ 1466 047d 45455F6F 		.ascii	"EE_oo_IRQ_disable_count\000"
+ 1466      6F5F4952 
+ 1466      515F6469 
+ 1466      7361626C 
+ 1466      655F636F 
+ 1467              	.LASF38:
+ 1468 0495 52435F74 		.ascii	"RC_t\000"
+ 1468      00
+ 1469              	.LASF22:
+ 1470 049a 52435F45 		.ascii	"RC_ERROR_TIME_OUT\000"
+ 1470      52524F52 
+ 1470      5F54494D 
+ 1470      455F4F55 
+ 1470      5400
+ 1471              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
