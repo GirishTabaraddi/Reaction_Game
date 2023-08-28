@@ -42,28 +42,30 @@ The task is to develop a simple reaction game using Erika OS and to extend this 
 ## Glower
 
 Using the RGB LED, we want to implement an easily configurable glowing function. Using a const - table like the following (pseudo code)
-		const RG__Glow_t RG_glowtable_1[] = {
-		//Red Green Blue TimeInMS
-		{255, 0, 0, 500},
-		{0, 255, 0, 500},
-		{0, 0, 255, 500},
-		{0, 0, 0, 100},
-		{255, 255, 255, 100},
-		{0, 0, 0, 100},
-		{255, 255, 255, 100},
-		{0, 0, 0, 100},
-		{255, 255, 255, 100}
-		};
+
+	const RG__Glow_t RG_glowtable_1[] = {
+	//Red Green Blue TimeInMS
+	{255, 0, 0, 500},
+	{0, 255, 0, 500},
+	{0, 0, 255, 500},
+	{0, 0, 0, 100},
+	{255, 255, 255, 100},
+	{0, 0, 0, 100},
+	{255, 255, 255, 100},
+	{0, 0, 0, 100},
+	{255, 255, 255, 100}
+	};
 
 will create the sequence:
-• 500ms red
-• 500ms green
-• 500ms blue
-• 100ms off
-• 100ms white
-• 100ms off
-• 100ms white
-• 100ms off
-• 100ms white
+
+	• 500ms red
+	• 500ms green
+	• 500ms blue
+	• 100ms off
+	• 100ms white
+	• 100ms off
+	• 100ms white
+	• 100ms off
+	• 100ms white
 
 This sequence will be repeated permanently.
